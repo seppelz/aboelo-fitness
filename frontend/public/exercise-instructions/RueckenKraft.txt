@@ -1,0 +1,168 @@
+VideoID: 500
+Name: Kräftigung der Rückenmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Stellen Sie sich vor Sie werden am Scheitel nach oben gezogen, Rücken und Hals werden gestreckt. Position für 10 sec halten. Spannung lösen, Kopf nach unten hängen lassen. 3 x Wiederholen
+Ziel: Kräftigung der geraden Rückenmuskulatur
+Tipps: Achten Sie auf eine gleichmäßige Atmung
+Muskelgruppe: Rücken
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: false
+IsEinseitig: false
+Übungsvideo: bb6dESlx-rY
+--
+VideoID: 501
+Name: Kräftigung der Rückenmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Ziehen Sie ein Knie hoch und führen den gegenüberliegenden Ellbogen zum Knie. Rücken möglichst gerade halten
+Ziel: Kräftigung der schrägen Rücken- und Bauchmuskulatur
+Tipps: Achten Sie auf eine gleichmäßige Atmung
+Muskelgruppe: Rücken
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: I3PUoxyW6NA
+--
+VideoID: 502
+Name: Kräftigung der Rückenmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls. Die Füße sind schulterbreit auseinander, die Arme zeigen ausgestreckt Richtung Füße, Bauchmuskeln anspannen
+Ausfuehrung: Stellen Sie sich vor, Sie werden am Scheitel nach oben gezogen. Gehen Sie dann mit gestrecktem Oberkörper 45° nach vorne. Übung langsam und ohne Schwung ausführen
+Ziel: Kräftigung der geraden Rückenmuskulatur
+Tipps: Achten Sie auf eine gleichmäßige Atmung. Endposition kurz halten.
+Muskelgruppe: Rücken
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: false
+IsEinseitig: false
+Übungsvideo: mz1gCTNgMG4
+--
+VideoID: 503
+Name: Kräftigung der Rückenmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Neigen Sie den aufrechten Oberkörper nach hinten, die Streckung erfolgt nur in den Hüftgelenken. Spannung halten. Dann den aufrechten Oberkörper nach vorne neigen
+Ziel: Kräftigung der geraden Rückenmuskulatur und der geraden Bauchmuskulatur
+Tipps: Achten Sie auf eine gleichmäßige Atmung. Strecken Sie das Brustbein nach vorne um die gerade Oberkörperhaltung zu gewährleisten. 3 x 10 sec
+Muskelgruppe: Rücken
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: false
+IsEinseitig: false
+Übungsvideo: IX9_runU6Iw
+--
+VideoID: 505
+Name: Kräftigung der Rückenmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls 
+Ausfuehrung: Neigen Sie den aufrechten Oberkörper nach vorne, die Streckung erfolgt nur in den Hüftgelenken. Nehmen Sie die Arme in U-Halte und drehen Sie den Oberkörper nach rechts und links
+Ziel: Kräftigung der Rückenmuskulatur
+Tipps: Achten Sie auf eine gleichmäßige Atmung. Strecken Sie das Brustbein nach vorne um die gerade Oberkörperhaltung zu gewährleisten
+Muskelgruppe: Rücken
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: uiC4SPfZ-kE
+--
+VideoID: 507
+Name: Kräftigung der Rückenmuskulatur - stehend rechts
+Vorbereitung: Stellen Sie sich aufrecht hin
+Ausfuehrung: Ziehen Sie ein Knie hoch und führen den gegenüberliegenden Ellbogen zum Knie. Den Oberkörper gerade halten
+Ziel: Kräftigung der schrägen Rücken- und Bauchmuskulatur
+Tipps: Achten Sie auf eine gleichmäßige Atmung. Strecken Sie das Brustbein nach vorne um die gerade Oberkörperhaltung zu gewährleisten
+Muskelgruppe: Rücken
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: 8pMnpXYfLR8
+--
+VideoID: 515
+Name: Kräftigung der Rückenmuskulatur - stehend links
+Vorbereitung: Stellen Sie sich aufrecht hin
+Ausfuehrung: Ziehen Sie ein Knie hoch und führen den gegenüberliegenden Ellbogen zum Knie. Den Oberkörper gerade halten
+Ziel: Kräftigung der schrägen Rücken- und Bauchmuskulatur
+Tipps: Achten Sie auf eine gleichmäßige Atmung. Strecken Sie das Brustbein nach vorne um die gerade Oberkörperhaltung zu gewährleisten
+Muskelgruppe: Rücken
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: d6V79p2u6aA
+--
+VideoID: 508
+Name: Kräftigung der Rückenmuskulatur - stehend
+Vorbereitung: Stellen Sie sich aufrecht hin, die Knie sind leicht gebeugt, die Hüfte bleibt fixiert.Greifen Sie das Band vorm Körper auf Brusthöhe. Abstand zwischen den Händen ca 10 cm
+Ausfuehrung: Abwechselnd einen Arm vorne gestreckt fixieren und den anderen Arm nach hinten ziehen
+Ziel: Kräftigung der schrägen Rücken- und Bauchmuskulatur
+Tipps: Bei der Belastung ausatmen, bei Entlastung einatmen
+Muskelgruppe: Rücken
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: eVIdZX9tPD0
+--
+VideoID: 510
+Name: Kräftigung der Rückenmuskulatur - stehend
+Vorbereitung: Stellen Sie sich aufrecht hin, die Knie sind leicht gebeugt, die Füße schulterbreit auseinander. Gesäßmuskulatur anspannen, Becken und Knie sollen sich nicht bewegen
+Ausfuehrung: Beugen Sie den Oberkörper nach vorne und richten ihn anschließend wieder auf. Übung langsam und ohne Schwung ausführen
+Ziel: Kräftigung der Rückenmuskulatur
+Tipps: Durch den Grad der Beckenkippung kann der Traininswiderstand variiert werden
+Muskelgruppe: Rücken
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: fPea70wFDrs
+--
+VideoID: 512
+Name: Kräftigung der Rückenmuskulatur - stehend
+Vorbereitung: Stellen Sie sich aufrecht hin, die Knie sind leicht gebeugt. Das Becken leicht nach vorne kippen. Gesäßmuskulatur anspannen
+Ausfuehrung: Den Oberkörper kontrolliert nach unten beugen und dann langsam so weit wie möglich wieder aufrollen
+Ziel: Kräftigung der tiefen Rückenmuskulatur
+Tipps: Achten Sie auf eine gleichmäßige Atmung
+Muskelgruppe: Rücken
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: NoepF3q_hLs
+--
+VideoID: 513
+Name: Kräftigung der Rückenmuskulatur - stehend
+Vorbereitung: Stellen Sie sich aufrecht hin, die Knie sind leicht gebeugt. Das Becken leicht nach vorne kippen. Gesäßmuskulatur anspannen
+Ausfuehrung: Stützen Sie sich mit der linken Hand am linken Knie ab. Führen Sie die rechte Hand vom linken Fuß über die rechte Schulter nach hinten und oben
+Ziel: Kräftigung der tiefen Rückenmuskulatur
+Tipps: Achten Sie auf eine gleichmäßige Atmung. Achten Sie darauf das sich die Beckenstellung nicht ändert
+Muskelgruppe: Rücken
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: 7JoHzePuSRU
+--
+VideoID: 514
+Name: Kräftigung der Rückenmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich auf den vorderen Teil Ihres Stuhls und öffnen Sie leicht die Beine. Die Arme sind vorm Brustkorb verschränkt, die Hände liegen jeweils auf der anderen Schulter
+Ausfuehrung: Beugen und drehen Sie den Rumpf unter Anspannung der Bauchmuskulatur. Dabei bewegt sich der rechte Ellbogen zum linken Hüftgelenk. Halten Sie die Spannung
+Ziel: Kräftigung der schrägen Rückenmuskulatur
+Tipps: Achten Sie auf eine gleichmäßige Atmung
+Muskelgruppe: Rücken
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: uD4pIRdYlVM
+--

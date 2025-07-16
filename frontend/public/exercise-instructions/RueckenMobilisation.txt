@@ -1,0 +1,84 @@
+VideoID: 520
+Name: Rücken Mobilisation Extension - sitzend
+Vorbereitung: Setzen Sie sich auf dem Stuhl mit dem Gesäß bis an die Rückenlehne. Legen Sie einen Fuß auf das andere Knie. Ziehen Sie das Kinn ein
+Ausfuehrung: Verschränken Sie ihre Hände hinter dem Kopf und dehnen Sie langsam den Oberkörper über den Stuhl nach hinten  
+Ziel: Mobilisation der Brustwirbelsäule
+Tipps: Achten Sie auf eine gleichmäßige Atmung. Vermeiden Sie eine Hohlkreuzstellung
+Muskelgruppe: Rücken
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: L75JtiVDJd0
+--
+VideoID: 521
+Name: Rücken Mobilisation Rotation - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Legen Sie den linken Handrücken auf Ihr rechtes Knie. Drehen Sie behutsam den Körper nach rechts. Anschließend wechseln Sie die Seite
+Ziel: Mobilisation der Wirbelsäule
+Tipps: Achten Sie auf eine gleichmäßige Atmung 
+Muskelgruppe: Rücken
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: 60sXD_emL3I
+--
+VideoID: 523
+Name: Rücken Mobilisation Flexion - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Führen Sie den Oberkörper langsam nach vorne. Lassen Sie Kopf und Schultern locker nach unten hängen
+Ziel: Mobilisation der Wirbelsäule
+Tipps: Achten Sie auf eine gleichmäßige Atmung 
+Muskelgruppe: Rücken
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: kbIOYY1v7Qw
+--
+VideoID: 550
+Name: Rücken Mobilisation - stehend
+Vorbereitung: Stellen Sie sich aufrecht hin
+Ausfuehrung: Ziehen Sie die Arme weit nach oben. Atmen Sie tief ein. Beim ausatmen lassen Sie nun den Oberkörper nach unten fallen, die Arme schwingen dabei locker mit
+Ziel: Mobilisation der Rückenmuskeln
+Tipps: Achten Sie auf eine gleichmäßige Atmung 
+Muskelgruppe: Rücken
+Kategorie: Mobilisation
+IsSitzend: false
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: t7ubETTJWDE
+--
+VideoID: 551
+Name: Rücken Mobilisation Extension - stehend
+Vorbereitung: Stellen Sie sich aufrecht hin und legen Sie beide Hände ans Kreuz
+Ausfuehrung: Bewegen Sie den Oberkörper langsam nach hinten und richten Sie den Blick gegen die Decke, die Knie bleiben gestreckt. Bleiben Sie kurz in der Endstellung
+Ziel: Mobilisation der Rückenmuskeln
+Tipps: Achten Sie auf eine gleichmäßige Atmung 
+Muskelgruppe: Rücken
+Kategorie: Mobilisation
+IsSitzend: false
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: sxB7MwlXAZo
+--
+VideoID: 552
+Name: Rücken Mobilisation obere Wirbelsäule - stehend
+Vorbereitung: Stellen Sie sich aufrecht hin.Heben Sie beide Arme seitwärts, so dass der Daumen auf der einen Seite nach unten, auf der anderen nach oben gerichtet ist. Drehen Sie den Kopf auf jene Seite, auf welcher der Daumen nach unten gerichtet ist 
+Ausfuehrung:  Drehen Sie den Kopf auf die andere Seite und richten Sie dabei gleichzeitig den Daumen dort nach unten, auf der Gegenseite nach oben. Bleiben Sie kurz in dieser Endstellung
+Ziel: Mobilisation der Rückenmuskeln
+Tipps: Achten Sie auf eine gleichmäßige Atmung 
+Muskelgruppe: Rücken
+Kategorie: Mobilisation
+IsSitzend: false
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: dh7dpNmem3A
+--

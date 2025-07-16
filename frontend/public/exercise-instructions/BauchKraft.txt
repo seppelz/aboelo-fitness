@@ -1,0 +1,70 @@
+VideoID: 100
+Name: Kräftigung der Bauchmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls. Ziehen Sie die Schultern nach unten und spannen die Bauchmuskeln an
+Ausfuehrung: Neigen Sie im aufrechten Sitz den fixierten Oberkörper von der Hüfte ausgehend nach hinten. Die Bewegung erfolgt nur durch Streckung in den Hüftgelenken. Spannung halten
+Ziel: Kräftigung des geraden Bauchmuskels 
+Tipps: Intensivieren Sie die Spannung indem Sie die Arme nach oben nehmen und kleine Bewegungen durchführen
+Muskelgruppe: Bauch
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: false
+IsEinseitig: false
+Übungsvideo: qdm-jslCxyM
+--
+VideoID: 102
+Name: Kräftigung der Bauchmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Legen Sie eine Hand aufs Knie.Heben Sie das Bein und drücken Sie Hand und Knie gegeneinander, der Oberkörper bleibt aufrecht
+Ziel: Kräftigung der Bauchmuskulatur
+Tipps: Atmen Sie ruhig weiter
+Muskelgruppe: Bauch
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: false
+IsEinseitig: true
+Übungsvideo: yvIecluSuDA
+--
+VideoID: 103
+Name: Kräftigung der Bauchmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Stemmen Sie sich leicht mit den Ellenbogen in den Schreibtisch. Heben Sie die Füße einige Zentimeter vom Boden ab, der Oberkörper bleibt aufrecht
+Ziel: Kräftigung der Bauchmuskulatur
+Tipps: Atmen Sie ruhig weiter
+Muskelgruppe: Bauch
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: false
+IsEinseitig: false
+Übungsvideo: GOcRyBrp04c
+--
+VideoID: 105
+Name: Kräftigung der Bauchmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Das rechte Knie leicht anheben und mit der linken Hand gegen die Innenseite des Oberschenkels drücken, der Oberschenkel gibt Gegendruck. Anschließend Seite wechseln
+Ziel: Kräftigung der vorderen Rumpfmuskulatur
+Tipps: Atmen Sie ruhig weiter 
+Muskelgruppe: Bauch
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: false
+IsEinseitig: true
+Übungsvideo: ho0JGBaZmL4
+--
+VideoID: 106
+Name: Kräftigung der Bauchmuskulatur - stehend
+Vorbereitung: Stellen Sie sich aufrecht hin, nehmen beide Theraband Enden in eine Hand und treten Hüftbreit auf das Band. Hüfte und Knie sind leicht gebeugt, den Oberkörper leicht nach vorne lehnen
+Ausfuehrung: Strecken Sie einen Arm bis der Ellenbogen über dem Kopf ist
+Ziel: Kräftigung der schrägen Bauchmuskulatur
+Tipps: Atmen Sie bei der Belastung ein und bei der Entlastung aus
+Muskelgruppe: Bauch
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: ZZmfJTrwDio
+--

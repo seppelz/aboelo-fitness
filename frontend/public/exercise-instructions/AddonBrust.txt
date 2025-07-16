@@ -1,0 +1,27 @@
+VideoID: 203
+Name: Brust mit Theraband einseitig - stehend
+Vorbereitung: Fixieren Sie mit einem Fuß die Mitte des Therabandes und greifen mit der Hand das Ende des Therabandes
+Ausführung: Beugen Sie Ihren Ellenbogen und führen die Hand zur Schulter. Langsam in die Startposition zurückkehren
+Ziel: Kräftigung des Bizeps und Brustmuskels
+Tipps: Durch die Grundspannung des Therabandes in der Ausgansposition können Sie die Schwierigkeit variieren. Atmen Sie ruhig weiter und halten Sie die Oberkörperspannung
+Muskelgruppe: Brust
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: xxx
+--
+VideoID: 200
+Name: Brust mit Theraband einseitig - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls. Fixieren Sie ein Ende des Therabands unter dem rechten Fuß und greifen das Theraband mit der rechten Hand
+Ausführung: In der Ausgangsposition zeigt die Hand nach vorn. Ellenbogen anwinkeln und Hand zur Schulter führen, die Handinnenfläche zeigt nun zu Ihnen
+Ziel: Kräftigung des Bizeps und Brustmuskels
+Tipps: Durch die Grundspannung des Therabandes in der Ausgansposition können Sie die Schwierigkeit variieren. Atmen Sie ruhig weiter
+Muskelgruppe: Brust
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: xxx

@@ -1,0 +1,14 @@
+VideoID: 101
+Name: Bauch 2 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls
+Ausführung: Beugen Sie ihren Oberkörper im Bereich der Brustwirbelsäule minimal gegen einen gedachten Widerstand. Beugen Sie nun weiter unten im Bereich der Lendenwirbelsäule.Spannung halten
+Ziel: Kräftigung des geraden Bauchmuskels 
+Tipps: 
+Muskelgruppe: Bauch
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: false
+IsEinseitig: false
+Übungsvideo: xxx
+--

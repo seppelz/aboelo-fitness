@@ -1,0 +1,70 @@
+VideoID: 522
+Name: Rücken Mobilisation 3 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil des Stuhls
+Ausführung: Schwingen Sie locker die Arme seitlich am Körper entlang. Nehmen Sie den Oberkörper und den Kopf in die Bewegung mit. Der Rücken bleibt gerade
+Ziel: Mobilisation der Wirbelsäule
+Tipps: Achten Sie auf eine gleichmäßige Atmung 
+Muskelgruppe: Rücken
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 524
+Name: Rücken Mobilisation 5 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf ihren Stuhl. Legen Sie die Hände hinter dem Rücken übereinander
+Ausführung: Drücken Sie ihre Hände unter Anspannung der Bauch- und Gesäßmuskulatur mit dem Körper gegen die Lehne. Position halten
+Ziel: Mobilisation der Wirbelsäule
+Tipps: Achten Sie auf eine gleichmäßige Atmung 
+Muskelgruppe: Rücken
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 525
+Name: Rücken Mobilisation 6 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil des Stuhls
+Ausführung: Strecken Sie beide Arme nach vorne. Winkel Sie einen Arm an und ziehen diesen nach hinten. Zur Verstärkung folgen Sie mit dem Kopf der Bewegung
+Ziel: Mobilisation der Wirbelsäule
+Tipps: Achten Sie auf eine gleichmäßige Atmung 
+Muskelgruppe: Rücken
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 509
+Name: Rücken 3 - stehend
+Vorbereitung: Stellen Sie sich aufrecht hin, die Knie sind leicht gebeugt
+Ausführung: Den Oberkörper nach vorn neigen, daß Brustbein dabei nach vorn strecken. Beine und Becken bleiben stabil in Position. Die BWS Wirbel für Wirbel beugen und strecken, die Bewegung mit Außen- und Innenrotation der Arme kombinieren
+Ziel: Kräftigung der Rückenmuskulatur, speziell der Brustwirbelsäule
+Tipps: Achten Sie auf eine gleichmäßige Atmung. Strecken Sie das Brustbein nach vorne um die gerade Oberkörperhaltung zu gewährleisten
+Muskelgruppe: Rücken
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 107
+Name: Bauch 6 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls.Neigen Sie im aufrechten Sitz den fixierten Oberkörper von der Hüfte ausgehend nach hinten
+Ausführung: Blicken Sie nun abwechselnd nach links und rechts über Ihre Schulter und halten Sie einen Moment die Endposition. Jede Seite 5 x trainieren
+Ziel: Kräftigung der schrägen Bauchmuskulatur
+Tipps: Atmen Sie ruhig weiter
+Muskelgruppe: Bauch
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: xxx
+--

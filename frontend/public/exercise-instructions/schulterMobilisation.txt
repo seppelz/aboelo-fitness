@@ -1,0 +1,70 @@
+VideoID: 1
+Name: Mobilisation Schultergürtel 1 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls
+Ausfuehrung: Strecken Sie abwechselnd den rechten und linken Arm bis in die Fingerspitzen, so hoch es geht
+Ziel: Mobilisation des Schultergürtels
+Tipps: 
+Muskelgruppe: Schulter
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: 4a2qcPcn62A
+--
+VideoID: 2
+Name: Mobilisation Schultergürtel 2 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls. Die Arme hängen locker herab
+Ausfuehrung: Führen Sie die rechte Schulter hoch und gleichzeitig die linke herunter. Heben Sie anschließend beide Schultern an und lassen sie wieder fallen
+Ziel: Mobilisation des Schultergürtels
+Tipps: 
+Muskelgruppe: Schulter
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: 8QnjAqC-Px0
+--
+VideoID: 3
+Name: Mobilisation Schultergürtel 3 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls
+Ausfuehrung: Legen Sie die Hände auf die Schultern. Beschreiben Sie mit den Ellenbogen große Kreise vorwärts und rückwärts
+Ziel: Mobilisation des Schultergürtels
+Tipps: 
+Muskelgruppe: Schulter
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: 2g-Q_tBrAeE
+--
+VideoID: 31
+Name: Mobilisation Schultergürtel 5 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Nehmen Sie die Schultern nach vorne, heben Sie die Schultern an und bewegen Sie sie nach hinten. Atmen Sie dabei ein. Dann Schultern fallen lassen und ausatmen. Anschließend rückwärts kreisen
+Ziel: Mobilisation des Schultergürtels
+Tipps: Achten Sie auf eine gleichmäßige Atmung 
+Muskelgruppe: Schulter
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: tbLeawafjac
+--
+VideoID: 32
+Name: Mobilisation Schultergürtel 6 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Lassen Sie die Schultern nach vorne fallen und drehen Sie die Daumen nach innen, atmen Sie dabei aus. Dann nehmen Sie die Schultern nach hinten und drehen die Daumen dabei nach außen, einatmen
+Ziel: Mobilisation des Schultergürtels und der Brustwirbelsäule
+Tipps: Achten Sie auf eine gleichmäßige Atmung 
+Muskelgruppe: Schulter
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: lQFk-TlBPXU
+--

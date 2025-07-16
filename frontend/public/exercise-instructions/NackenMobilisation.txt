@@ -1,0 +1,56 @@
+VideoID: 408
+Name: Mobilisation der HWS Seitneigung - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Neigen Sie den Kopf im Wechsel zur rechten und zur linken Schulter
+Ziel: Mobilisation des Nackens
+Tipps: Bewegung langsam ausführen. Ruhig weiteratmen
+Muskelgruppe: Nacken
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: YAelLSfG6fA
+--
+VideoID: 409
+Name: Mobilisation der HWS Rotation 1 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Drehen Sie den Kopf langsam nach rechts, heben Sie das Kinn an, schauen Sie soweit wie möglich über die Schulter, einatmen. Kopf geradeaus und nach vorn beugen, ausatmen. Dann nach links
+Ziel: Mobilisation der HWS
+Tipps: Bewegung langsam ausführen. Ruhig weiteratmen
+Muskelgruppe: Nacken
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: PmtuzoPP7Es
+--
+VideoID: 410
+Name: Mobilisation der HWS Rotation 2 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Führen Sie ihr Kinn langsam von der rechten Schulter über das Brustbein zur linken Schulter
+Ziel: Mobilisation des Nackens
+Tipps: Bewegung langsam ausführen. Ruhig weiteratmen
+Muskelgruppe: Nacken
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: nG1J34xt6wg
+--
+VideoID: 411
+Name: Mobilisation der HWS 2 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls. Legen Sie Zeige- und Mittelfinger an das Kinn
+Ausfuehrung: Schieben Sie das Kinn nach hinten. Blicken Sie dabei geradeaus und halten den Oberkörper stabil. Endstellung kurz halten
+Ziel: Mobilisation des Nackens
+Tipps: Bewegung langsam ausführen. Ruhig weiteratmen
+Muskelgruppe: Nacken
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: 1oelgJfS_wI
+--

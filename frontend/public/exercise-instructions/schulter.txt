@@ -1,0 +1,461 @@
+VideoID: 1
+Name: Mobilisation Schultergürtel 1 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls.
+Ausführung: Strecken Sie abwechselnd den rechten und linken Arm bis in die Fingerspitzen, so hoch es geht.
+Ziel: Mobilisation des Schultergürtels
+Tipps: 
+Muskelgruppe: Schulter
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 2
+Name: Mobilisation Schultergürtel 2 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls. Die Arme hängen locker herab.
+Ausführung: Führen Sie die rechte Schulter hoch und gleichzeitig die linke herunter. Heben Sie anschließend beide Schultern an und lassen sie wieder fallen.
+Ziel: Mobilisation des Schultergürtels
+Tipps: 
+Muskelgruppe: Schulter
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 3
+Name: Mobilisation Schultergürtel 3 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls.
+Ausführung: Legen Sie die Hände auf die Schultern. Beschreiben Sie mit den Ellenbogen große Kreise vorwärts und rückwärts.
+Ziel: Mobilisation des Schultergürtels
+Tipps: 
+Muskelgruppe: Schulter
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 4
+Name: Mobilisation Schultergürtel 4 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls.
+Ausführung: Heben Sie die Arme seitlich und strecken Sie Ellbogen und Hände nach hinten. Schieben Sie dabei den Brustkorb nach vorne. Kurz die Endstellung halten. Arme wieder locker hängen lassen und wiederholen.
+Ziel: Mobilisation des Schultergürtels
+Tipps: Normal weiteratmen.
+Muskelgruppe: Schulter
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 5
+Name: Schultergürtel kräftigen 1 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls. Führen Sie das Theraband hinter dem Rücken und greifen beide Enden.
+Ausführung: Strecken Sie die Arme nach vorne, die Handinnenflächen zeigen zueinander. In der Endstellung sind die Ellbogehn auf Schulterhöhe. Langsam in die Ausgangsposition zurückkehren.
+Ziel: Kräftigung des Schultergürtels und des Triceps
+Tipps: Normal weiteratmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 6
+Name: Schultergürtel kräftigen 2 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls. Fixieren Sie die Mitte des Bandes mit einem Fuß und greifen Sie die beiden Enden.
+Ausführung: Ziehen Sie das Band mit gestreckten Armen bis auf Schulterhöhe. Kurz die Endstellung halten.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Beim ziehen ausatmen, beim zurückführen in die Ausgangslage wieder eintatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 7
+Name: Schultergürtel kräftigen 3 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls.
+Ausführung: Nehmen Sie das Theraband in beide Hände. Strecken sie den einen Arm nach vorn, ziehen Sie mit dem anderen Arm das Theraband nach hinten. Langsam in die Ausgangslage zurückkehren.
+Ziel: Kräftigung  des Schultergürtels
+Tipps: Normal weiteratmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: xxx
+--
+VideoID: 8
+Name: Schultergürtel kräftigen 4 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls. Umwickeln Sie ihre Hände mit dem Theraband. Die Handflächen bleiben geöffnet.
+Ausführung: 1. Finger und Handgelenk nach aussen führen 2. Handinnenflächen zeigen nach oben 3.Arme nach aussen führen, Ellbogen bleiben dabei am Körper fixiert 4.Arme seitlich komplett strecken. Langsam in die Ausgangsposition zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Normal weiteratmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 9
+Name: Schultergürtel kräftigen 5 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls. Greifen Sie beide Therabandenden und fixieren Sie die Mitte des Bandes mit ihren Füßen.
+Ausführung: Mit gestreckten Armen Theraband nach oben ziehen. Langsam in die Ausgangsposition zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Bei der Belastung aus- bei der Entlastung einatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 10
+Name: Schultergürtel kräftigen 6 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls.Halten Sie das eine Ende des Therabandes mit einem Arm an der Schulter fest.
+Ausführung: Ziehen Sie mit der anderen Hand das Theraband nach unten vom Körper weg. Langsam in die Ausgangslage zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Bei der Belastung ausatmen, bei der Entlastung einatmen. Folgen Sie mit Ihren Augen der Hand
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: xxx
+--
+VideoID: 11
+Name: Schultergürtel kräftigen 7 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls.Setzen Sie sich auf das eine Ende des Therabandes.
+Ausführung: Ziehen Sie mit der anderen Hand das Theraband nach oben und hinten. Langsam in die Ausgangslage zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Bei der Belastung ausatmen, bei der Entlastung einatmen. Folgen Sie mit Ihren Augen der Hand
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: xxx
+--
+VideoID: 12
+Name: Schultergürtel kräftigen 7 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls und fixieren Sie die Mitte des Therabandes mit den Füßen.
+Ausführung: Ziehen Sie mit den Händen das Theraband nach oben zum Kinn, die Ellbogen sind auf einer Höhe mit den Händen. Langsam in die Ausgangslage zurückkehren
+Ziel: Kräftigung des Schultergürtels
+Tipps: Bei der Belastung ausatmen, bei der Entlastung einatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 13
+Name: Schultergürtel kräftigen 7 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls.Fixieren Sie das Theraband in der Mitte mit einem Fuß.
+Ausführung: Ziehen Sie das Theraband nach oben über den Kopf, die Handinnenflächen zeigen nach vorne.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Bei der Belastung ausatmen, bei der Entlastung einatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 14
+Name: Schultergürtel kräftigen 7 - sitzend
+Vorbereitung: Mit beiden Händen an der Stuhlkante abstützen. Knie im 90° Winkel. Achten Sie darauf das der Stuhl nicht wegrutscht.
+Ausführung: Die Ellbogen beugen, das Gesäß sinkt unterhalb des Stuhls.
+Ziel: Kräftigung des Schultergürtels und des Triceps
+Tipps: Bei der Belastung ausatmen, bei der Entlastung einatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 15
+Name: Schultergürtel kräftigen 6 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls.Fixieren Sie das Theraband mittig mit den Füßen.
+Ausführung: Ziehen Sie mit beiden Händen das Theraband bis auf Hüfthöhe heran. 
+Ziel: Kräftigung des Schultergürtels
+Tipps: Bei der Belastung ausatmen, bei der Entlastung einatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 16
+Name: Schultergürtel kräftigen 7 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil ihres Stuhls.
+Ausführung: Verschränken Sie die Arme vor der Brust und ziehen Sie sie kräftig nach aussen.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Ruhig weiteratmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: false
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 17
+Name: Schultergürtel kräftigen 1 - stehend
+Vorbereitung: Führen Sie das Theraband hinterm Rücken und greifen Sie beide Enden, die Hände zeigen nach innen.
+Ausführung: Drücken Sie das Theraband nach vorne oben, bis die Ellbogen auf Schulterhöhe sind. Langsam in die Ausgangspostion zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 18
+Name: Schultergürtel kräftigen 2 - stehend
+Vorbereitung: Führen Sie das Theraband hinterm Rücken und greifen Sie beide Enden, die Hände zeigen nach unten.
+Ausführung: Drücken Sie das Theraband nach vorne oben, bis die Ellbogen auf Schulterhöhe sind. Langsam in die Ausgangspostion zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 19
+Name: Schultergürtel kräftigen 3 - stehend
+Vorbereitung: Führen Sie das Theraband hinterm Rücken auf Brusthöhe und greifen Sie beide Enden.
+Ausführung: Drücken Sie das Theraband nach vorne und überkreuzen Sie die Hände. Langsam in die Ausgangslage zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 20
+Name: Schultergürtel kräftigen 4 - stehend
+Vorbereitung: Fixieren Sie die Mitte des Therabands mit beiden Füßen und greifen die beiden Enden.
+Ausführung: Ziehen Sie das Theraband mit gestreckten Armen nach hinten. Langsam in die Ausganglage zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Nicht nach vorn lehnen. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 21
+Name: Schultergürtel kräftigen 5 - stehend
+Vorbereitung: Stellen Sie sich aufrecht und hüftbreit hin. Greifen Sie das Theraband mit beiden Händen. Die Ellbogen bleiben am Körper, die Unterarme zeigen parallel zum Boden.
+Ausführung: Ziehen Sie das Theraband nach außen, die Ellbogen bleibem am Körper.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 22
+Name: Schultergürtel kräftigen 6 - stehend
+Vorbereitung: Führen Sie das Theraband hinterm Rücken und greifen Sie beide Enden mit den Händen, die Ellbogen sind auf Rumpfhöhe.
+Ausführung: Drücken Sie das Theraband nach vorn. Langsam in die Ausganglage zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Nicht nach vorn lehnen. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 23
+Name: Schultergürtel kräftigen 7 - stehend
+Vorbereitung: Machen Sie einen kleinen Ausfallschritt nach vorn und fixieren ein Ende des Therabands mit dem Fuß. Neigen Sie den Oberkörper in der Hüfte nach vorne, der Rücken bleibt gerade. 
+Ausführung: Ziehen Sie das Theraband nach hinten und oben, indem Sie den Ellbogen strecken.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: xxx
+--
+VideoID: 24
+Name: Schultergürtel kräftigen 8 - stehend
+Vorbereitung: Machen Sie einen leichten Ausfallschritt nach vorn. Fixieren Sie die Mitte des Therabands mit dem hinteren Fuß und greifen Sie die beiden Enden.
+Ausführung: Ziehen Sie das Theraband mit gestreckten Armen nach oben über den Kopf. Die Daumen zeigen nach oben. Langsam in die Ausganglage zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 25
+Name: Schultergürtel kräftigen 9 - stehend
+Vorbereitung: Greifen Sie das Theraband schulterbreit an beiden Enden und strecken sie die Arme nach vorne weg.
+Ausführung: Ziehen Sie das Theraband langsam auseinander bis beie Arme eine Linie bilden. Langsam in die Ausgangsposition zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 26
+Name: Schultergürtel kräftigen 10 - stehend
+Vorbereitung: Machen Sie einen leichten Ausfallschritt nach vorn. Fixieren Sie die Mitte des Therabands mit dem voderen Fuß und greifen Sie die beiden Enden unter Spannung.
+Ausführung: Ziehen Sie die Schultern langsam nach oben. Kehren Sie langsam in die Ausganglage zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Ellbogen gestreckt lassen. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 27
+Name: Schultergürtel kräftigen 11 - stehend
+Vorbereitung: Fixieren Sie das Theraband mit beiden Füßen und greifen Sie die beiden Enden.
+Ausführung: Ziehen Sie die Schultern langsam nach oben und hinten. Langsam in die Ausgangsposition zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Ellbogen gestreckt lassen. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 28
+Name: Schultergürtel kräftigen 12 - stehend
+Vorbereitung: Fixieren Sie das Theraband mit beiden Füßen und greifen Sie die beiden Enden.
+Ausführung: Ziehen Sie das Theraband nach oben bis zum Kinn, die Ellbogen sind auf Höhe der Hände. Langsam in die Ausgangsposition zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 29
+Name: Schultergürtel kräftigen 13 - stehend
+Vorbereitung: Fixieren Sie ein Ende des Therabands mit beiden Füßen und greifen das andere.
+Ausführung: Ziehen Sie das Band mit gestrecktem Arm bis über den Kopf. Langsam in die Ausgangsposition zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Ellbogen gestreckt lassen. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: xxx
+--
+VideoID: 30
+Name: Schultergürtel kräftigen 14 - stehend
+Vorbereitung: Fixieren Sie ein Ende des Therabands mit beiden Füßen und greifen das andere.
+Ausführung: Ziehen Sie das Band mit gestrecktem Arm nach oben, bis der Arm parallel zum Boden ist. Langsam in die Ausgangsposition zurückkehren.
+Ziel: Kräftigung des Schultergürtels
+Tipps: Rücken gerade halten. Ellbogen gestreckt lassen. Bei der Belastung ein- bei Entlastung ausatmen.
+Muskelgruppe: Schulter
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: xxx
+--
+VideoID: 31
+Name: Schultergürtel Mobilisation 5 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil des Stuhls.
+Ausführung: Nehmen Sie die Schultern nach vorne, heben Sie die Schultern an und bewegen Sie sie nach hinten. Atmen Sie dabei ein. Dann Schultern fallen lassen und ausatmen.
+Ziel: Mobilisation des Schultergürtels
+Tipps: Achten Sie auf ihre Atmung 
+Muskelgruppe: Schulter
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 32
+Name: Schultergürtel Mobilisation 6 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil des Stuhls.
+Ausführung: Lassen Sie die Schultern nach vorne fallen und drehen Sie die Daumen nach innen, atmen Sie dabei aus. Dann nehmen Sie die Schultern nach hinten und drehen die Daumen dabei nach außen, einatmen.
+Ziel: Mobilisation des Schultergürtels und der Brustwirbelsäule
+Tipps: Achten Sie auf eine ihre Atmung 
+Muskelgruppe: Schulter
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx
+--
+VideoID: 33
+Name: Schultergürtel Mobilisation 7 - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil des Stuhls.
+Ausführung: Spreizen Sie die Arme seitlich vor der Körperlängsachse ab. Rotieren Sie die Arme nach innen und aussen, so dass die Daumen in beide Richtungen am Ende nach hinten zeigen.
+Ziel: Mobilisation des Schultergürtels
+Tipps: Achten Sie auf eine gleichmäßige Atmung 
+Muskelgruppe: Rücken
+Kategorie: Mobilisation
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: xxx

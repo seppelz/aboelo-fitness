@@ -1,0 +1,42 @@
+VideoID: 303
+Name: Kräftigung der Gesäßmuskulatur - stehend
+Vorbereitung: Legen Sie die Mitte des Therabandes um das Fußgelenk und fixieren Sie mit dem anderen Fuß das Theraband
+Ausfuehrung: Das Bein langsam nach hinten führen. Kurz in der Endposition halten und langsam zurückführen
+Ziel: Kräftigung der Gesäßmuskulatur
+Tipps: Beine gestreckt lassen, nicht nach vorne lehnen. Durch die Grundspannung des Therabandes in der Ausgansposition können Sie die Schwierigkeit variieren. Atmen Sie ruhig weiter und halten Sie die Oberkörperspannung
+Muskelgruppe: Po
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: GfJ8uRSIqOY
+--
+VideoID: 301
+Name: Kräftigung der Gesäßmuskulatur - stehend
+Vorbereitung: Legen Sie die Mitte des Therabandes um das Fußgelenk und fixieren Sie mit dem anderen Fuß das Theraband
+Ausfuehrung: Das Knie 90° anwinkeln und die Hacke langsam zum Gesäß führen. Spannung kurz halten und langsam in die Ausgangsposition zurückkehren
+Ziel: Kräftigung der Gesäßmuskulatur und der Oberschenkelrückseite
+Tipps: Beine gestreckt lassen, nicht nach vorne lehnen. Durch die Grundspannung des Therabandes in der Ausgansposition können Sie die Schwierigkeit variieren. Atmen Sie ruhig weiter und halten Sie die Oberkörperspannung
+Muskelgruppe: Po
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: CJbsxMR0u0I
+--
+VideoID: 302
+Name: Kräftigung der Gesäßmuskulatur - stehend
+Vorbereitung: Stellen Sie sich aufrecht hin
+Ausfuehrung: Einen großen Ausfallschritt nach vorne und die Knie beugen
+Ziel: Kräftigung der Gesäßmuskulatur
+Tipps: Das vordere Knie darf nicht die Fußspitze überschreiten. Je weiter der Ausfallschritt und je stärker die Beugung des Knies, desto intensiver die Übung
+Muskelgruppe: Po
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: i6r2KUMz_2E
+--

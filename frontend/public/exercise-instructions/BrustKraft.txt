@@ -1,0 +1,56 @@
+VideoID: 201
+Name: Kräftigung der Brustmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls. Fixieren Sie das Theraband mittig mit beiden Füßen und greifen mit den Händen die Enden
+Ausfuehrung: Führen Sie ihre Hände zur Schulter. Langsam in die Startposition zurückkehren
+Ziel: Kräftigung des Bizeps und Brustmuskels
+Tipps: Durch die Grundspannung des Therabandes in der Ausgansposition können Sie die Schwierigkeit variieren. Atmen Sie ruhig weiter und halten Sie die Oberkörperspannung
+Muskelgruppe: Brust
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: sG3qHG3S9XU
+--
+VideoID: 202
+Name: Kräftigung der Brustmuskulatur - stehend
+Vorbereitung: Fixieren Sie mit einem Fuß die Mitte des Therabandes und greifen Sie mit den Händen die beiden Enden
+Ausfuehrung: Beugen Sie Ihre Ellenbogen und führen Sie ihre Hände zur Schulter. Langsam in die Startposition zurückkehren
+Ziel: Kräftigung des Bizeps und Brustmuskels
+Tipps: Durch die Grundspannung des Therabandes in der Ausgansposition können Sie die Schwierigkeit variieren. Atmen Sie ruhig weiter und halten Sie die Oberkörperspannung
+Muskelgruppe: Brust
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: wInRtmnjvkU
+--
+VideoID: 204
+Name: Kräftigung der Brustmuskulatur - stehend
+Vorbereitung: Führen Sie das Theraband mittig um Ihren Rücken und greifen beide Seiten. Ellenbogen gebeugt
+Ausfuehrung: Führen Sie die Bandenden vor dem Körper zusammen, strecken Sie dazu die Arme
+Ziel: Kräftigung des Brustmuskels
+Tipps: Durch die Grundspannung des Therabandes in der Ausgansposition können Sie die Schwierigkeit variieren. Atmen Sie ruhig weiter und halten Sie die Oberkörperspannung
+Muskelgruppe: Brust
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: true
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: 9Y4uZM1XNOE
+--
+VideoID: 205
+Name: Kräftigung der Brustmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Pressen Sie Ihre Handinnenflächen gegeneinander 
+Ziel: Kräftigung des Brustmuskels
+Tipps: Atmen Sie ruhig weiter. Keine Pressatmung!
+Muskelgruppe: Brust
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: false
+IsEinseitig: false
+Übungsvideo: 9LZbj6mB1nQ
+--

@@ -1,0 +1,84 @@
+VideoID: 400
+Name: Kräftigung der Nackenmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls
+Ausfuehrung: Bei gerader Wirbelsäulenhaltung den Oberkörper 40 - 50° nach vorn neigen. Kopfbewegung langsam und ohne Schwung ausführen
+Ziel: Kräftigung des Nackens
+Tipps: Kein Schwung, ruhig weiteratmen
+Muskelgruppe: Nacken
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: ehzVgbSxV6s
+--
+VideoID: 402
+Name: Kräftigung der Nackenmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls. Eine Handfläche gegen die Stirn drücken
+Ausfuehrung: Gegen den Widerstand der Hand den Kopf nach vorn unten drücken. Kopf langsam Richtung Brustbein beugen
+Ziel: Kräftigung der Halsbeuger
+Tipps: Durch den Druck der Handfläche können Sie den Trainingswiderstand variieren. Spannung nicht ruckartig auf- oder abbauen
+Muskelgruppe: Nacken
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: LcyccaaB6BU
+--
+VideoID: 403
+Name: Kräftigung der Nackenmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls. Eine Hand seitlich an den Kopf oberhalb des Ohres anlegen
+Ausfuehrung: Neigen Sie ihren Kopf langsam gegen den Widerstand der Hand zur Seite
+Ziel: Kräftigung des Nackens
+Tipps: Durch den Druck der Hand können Sie den Trainingswiderstand variieren. Spannung nicht ruckartig auf- oder abbauen
+Muskelgruppe: Nacken
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: true
+Übungsvideo: bf3OFDNN-N0
+--
+VideoID: 405
+Name: Kräftigung der Nackenmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls. Verschränken Sie die Arme hinter dem Kopf
+Ausfuehrung: Drücken Sie langsam den Kopf gegen den Widerstand der Hände und halten Sie die Spannung
+Ziel: Kräftigung des Nackens
+Tipps: Durch den Druck der Hand können Sie den Trainingswiderstand variieren. Spannung nicht ruckartig auf- oder abbauen
+Muskelgruppe: Nacken
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: false
+IsEinseitig: false
+Übungsvideo: RnL0EmX0Zt8
+--
+VideoID: 406
+Name: Kräftigung der Nackenmuskulatur - sitzend
+Vorbereitung: Setzen Sie sich aufrecht auf den vorderen Teil Ihres Stuhls. Eine Hand seitlich an den Kopf oberhalb des Ohres anlegen
+Ausfuehrung: Drücken Sie den Kopf vorsichtig gegen den Widerstand der Hand. Halten Sie die Spannung
+Ziel: Kräftigung des Nackens
+Tipps: Durch den Druck der Hand können Sie den Trainingswiderstand variieren. Spannung nicht ruckartig auf- oder abbauen. Ruhig weiteratmen
+Muskelgruppe: Nacken
+Kategorie: Kraft
+IsSitzend: true
+IsTheraBand: false
+IsDynamisch: false
+IsEinseitig: true
+Übungsvideo: PWz3ZuNZixs
+--
+VideoID: 407
+Name: Kräftigung der Nackenmuskulatur - stehend
+Vorbereitung: Stellen Sie sich aufrecht schulterbreit hin, beugen sie die Knie leicht
+Ausfuehrung: Bei gerader Wirbelsäulenhaltung den Oberkörper 40° - 50° nach vorn neigen. Kopfbewegung langsam und ohne Schwung ausführen
+Ziel: Kräftigung des Nackens
+Tipps: Kein Schwung, ruhig weiteratmen
+Muskelgruppe: Nacken
+Kategorie: Kraft
+IsSitzend: false
+IsTheraBand: false
+IsDynamisch: true
+IsEinseitig: false
+Übungsvideo: ajlfnWNbJlY
+--
