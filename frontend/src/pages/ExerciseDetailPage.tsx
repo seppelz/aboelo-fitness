@@ -9,7 +9,8 @@ import {
   Alert, 
   Chip,
   Paper,
-  Divider
+  Divider,
+  Container
 } from '@mui/material';
 import { Grid } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
@@ -24,6 +25,9 @@ import { saveProgress } from '../services/progressService';
 import { AuthContext } from '../contexts/AuthContext';
 import ExerciseVideo from '../components/exercises/ExerciseVideo';
 import { Exercise } from '../types';
+import CelebrationModal from '../components/gamification/CelebrationModal';
+import MotivationalQuote from '../components/gamification/MotivationalQuote';
+import { ProgressResponse } from '../types';
 
 const ExerciseDetailPage: React.FC = () => {
   const { refreshUser } = useContext(AuthContext);
@@ -41,6 +45,9 @@ const ExerciseDetailPage: React.FC = () => {
   const [totalWatchDuration, setTotalWatchDuration] = useState<number>(0);
   const [isSaving, setIsSaving] = useState(false);
   const completionHandledRef = useRef(false);
+  const [celebrationModalOpen, setCelebrationModalOpen] = useState(false);
+  const [gamificationData, setGamificationData] = useState<any>(null);
+  const [pointsEarned, setPointsEarned] = useState(0);
   
   // Dauer formatieren - show seconds if under 1 minute  
   const formatDuration = (seconds?: number): string => {
@@ -148,18 +155,26 @@ const ExerciseDetailPage: React.FC = () => {
       }
       
       // Save progress to backend
-      const result = await saveProgress(
-        exercise._id,
-        true, // completed
-        false, // not aborted
-        finalWatchDuration
-      );
+      const result: ProgressResponse = await saveProgress({
+        exerciseId: exercise._id,
+        completed: true,
+        aborted: false,
+        watchDuration: finalWatchDuration
+      });
       
       console.log('Progress saved successfully:', result);
       setCompleted(true);
       
-      // Refresh user data to get updated points and level
-      if (refreshUser) {
+      // Show celebration modal with gamification data
+      if (result.gamification) {
+        setGamificationData(result.gamification);
+        setPointsEarned(result.pointsEarned);
+        setCelebrationModalOpen(true);
+      }
+
+      // Update user context with new points/level
+      if (result.pointsEarned > 0) {
+        // Refresh user context to get updated points/level
         await refreshUser();
       }
       
@@ -248,12 +263,12 @@ const ExerciseDetailPage: React.FC = () => {
       }
       
       // Save aborted progress to backend
-      await saveProgress(
-        exercise._id,
-        false, // not completed
-        true,  // aborted
-        finalWatchDuration
-      );
+      await saveProgress({
+        exerciseId: exercise._id,
+        completed: false,
+        aborted: true,
+        watchDuration: finalWatchDuration
+      });
       
       console.log('Aborted exercise progress saved');
       
@@ -522,7 +537,7 @@ const ExerciseDetailPage: React.FC = () => {
   }
 
   return (
-    <Box sx={{ maxWidth: '1400px', mx: 'auto', px: { xs: 1, sm: 2 }, mt: 0 }}>
+    <Box sx={{ minHeight: '100vh', backgroundColor: 'grey.50' }}>
       {/* Header mit Zurück-Button und Erfolgsanzeige - direkt unter der Navigationsleiste */}
       <Box sx={{ 
         mb: 1, 
@@ -679,6 +694,29 @@ const ExerciseDetailPage: React.FC = () => {
           </Paper>
         </Box>
       </Box>
+
+      {/* Daily motivational quote */}
+      {gamificationData?.motivationalQuote && (
+        <Container maxWidth="lg" sx={{ py: 2 }}>
+          <MotivationalQuote 
+            quote={gamificationData.motivationalQuote}
+            variant="inline"
+          />
+        </Container>
+      )}
+
+      {/* Celebration Modal */}
+      <CelebrationModal
+        open={celebrationModalOpen}
+        onClose={() => setCelebrationModalOpen(false)}
+        gamificationData={gamificationData || {
+          achievements: [],
+          streakInfo: null,
+          weeklyGoal: null,
+          motivationalQuote: ''
+        }}
+        pointsEarned={pointsEarned}
+      />
     </Box>
   );
 };

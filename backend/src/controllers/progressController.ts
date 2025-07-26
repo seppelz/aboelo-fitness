@@ -2,12 +2,21 @@ import { Request, Response } from 'express';
 import Progress from '../models/Progress';
 import User from '../models/User';
 import Exercise from '../models/Exercise';
+import { AchievementService } from '../services/achievementService';
 
 // Übungsfortschritt speichern
 export const saveProgress = async (req: Request, res: Response) => {
   try {
     const { exerciseId, completed, aborted, watchDuration } = req.body;
     const userId = (req as any).user._id;
+
+    console.log('saveProgress called with:', {
+      exerciseId,
+      completed,
+      aborted,
+      watchDuration,
+      userId: userId.toString()
+    });
 
     // Validate required fields
     if (!exerciseId) {
@@ -24,7 +33,7 @@ export const saveProgress = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Übung nicht gefunden' });
     }
 
-    // Check for duplicate progress on the same day
+    // Check for duplicate progress on the same day for completed exercises
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
@@ -37,11 +46,14 @@ export const saveProgress = async (req: Request, res: Response) => {
     });
     
     if (existingProgress && completed) {
+      console.log('Duplicate completed exercise found, preventing save');
       return res.status(400).json({ 
         message: 'Diese Übung wurde heute bereits abgeschlossen',
         alreadyCompleted: true 
       });
     }
+
+    console.log('No existing progress found, proceeding with save...');
 
     // Punkte berechnen
     let pointsEarned = 0;
@@ -58,6 +70,8 @@ export const saveProgress = async (req: Request, res: Response) => {
       pointsEarned = Math.floor((progressPercentage / 100) * 10);
     }
 
+    console.log(`Saving progress: exercise ${exerciseId}, completed: ${completed}, points: ${pointsEarned}`);
+
     // Fortschritt speichern
     const progress = await Progress.create({
       user: userId,
@@ -68,14 +82,21 @@ export const saveProgress = async (req: Request, res: Response) => {
       pointsEarned
     });
 
-    // Benutzerpunkte aktualisieren
-    if (pointsEarned > 0) {
+    console.log(`Progress saved successfully with ID: ${progress._id}`);
+
+    let gamificationData = {
+      achievements: [],
+      streakInfo: null,
+      weeklyGoal: null,
+      motivationalQuote: AchievementService.getDailyMotivationalQuote()
+    };
+
+    // Benutzerpunkte und Gamification aktualisieren (nur für abgeschlossene Übungen)
+    if (pointsEarned > 0 && completed) {
       const user = await User.findById(userId);
       if (user) {
-        // Only add points for completed exercises, not partial views
-        if (completed) {
-          user.points += pointsEarned;
-        }
+        // Points und Level aktualisieren
+        user.points += pointsEarned;
         
         // Level aktualisieren (alle 100 Punkte ein Level)
         const newLevel = Math.floor(user.points / 100) + 1;
@@ -83,29 +104,69 @@ export const saveProgress = async (req: Request, res: Response) => {
           user.level = newLevel;
         }
 
-        // Wenn Übung abgeschlossen ist, zur Liste der abgeschlossenen Übungen hinzufügen
-        if (completed && !user.completedExercises.some(id => id.toString() === (exercise._id as any).toString())) {
+        // Abgeschlossene Übung zur Liste hinzufügen
+        if (!user.completedExercises.some(id => id.toString() === (exercise._id as any).toString())) {
           user.completedExercises.push(exercise._id as any);
         }
 
-        // Update exercise frequency tracking when exercise is completed
-        if (completed) {
-          const exerciseFrequency = user.exerciseFrequency || new Map();
-          const exerciseId = (exercise._id as any).toString();
-          const currentFreq = exerciseFrequency.get(exerciseId) || 0;
-          exerciseFrequency.set(exerciseId, currentFreq + 1);
-          user.exerciseFrequency = exerciseFrequency;
+        // Exercise frequency tracking aktualisieren
+        const exerciseFrequency = user.exerciseFrequency || new Map();
+        const exerciseIdStr = (exercise._id as any).toString();
+        const currentFreq = exerciseFrequency.get(exerciseIdStr) || 0;
+        exerciseFrequency.set(exerciseIdStr, currentFreq + 1);
+        user.exerciseFrequency = exerciseFrequency;
+
+        // Monthly stats aktualisieren
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        if (user.monthlyStats.month !== currentMonth || user.monthlyStats.year !== currentYear) {
+          user.monthlyStats = {
+            exercisesCompleted: 1,
+            pointsEarned: pointsEarned,
+            month: currentMonth,
+            year: currentYear
+          };
+        } else {
+          user.monthlyStats.exercisesCompleted += 1;
+          user.monthlyStats.pointsEarned += pointsEarned;
         }
 
         await user.save();
+
+        // Update streak (nur für abgeschlossene Übungen)
+        const streakResult = await AchievementService.updateDailyStreak(user);
+        gamificationData.streakInfo = {
+          currentStreak: streakResult.newStreak,
+          longestStreak: user.longestStreak,
+          message: AchievementService.getStreakMessage(streakResult.newStreak, streakResult.streakBroken),
+          streakBroken: streakResult.streakBroken
+        };
+
+        // Update weekly goal
+        const weeklyGoalResult = await AchievementService.updateWeeklyGoal(user);
+        gamificationData.weeklyGoal = {
+          progress: weeklyGoalResult.progress,
+          target: weeklyGoalResult.target,
+          completed: weeklyGoalResult.goalCompleted,
+          message: weeklyGoalResult.goalCompleted ? 
+            "🎉 Wochenziel erreicht! Du bist fantastisch!" : 
+            `${weeklyGoalResult.progress}/${weeklyGoalResult.target} Übungen diese Woche`
+        };
+
+        // Check and unlock achievements
+        const achievements = await AchievementService.checkAndUnlockAchievements(userId);
+        gamificationData.achievements = achievements;
       }
     }
 
-    res.status(201).json({
+    res.json({
+      message: 'Fortschritt erfolgreich gespeichert',
       progress,
-      pointsEarned
+      pointsEarned,
+      gamification: gamificationData
     });
   } catch (error: any) {
+    console.error('Error saving progress:', error);
     res.status(500).json({ message: error.message });
   }
 };

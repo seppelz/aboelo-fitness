@@ -1,4 +1,13 @@
 // Benutzertypen
+export interface UserAchievement {
+  achievementId: string;
+  unlockedAt: string;
+  title: string;
+  description: string;
+  icon: string;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+}
+
 export interface User {
   _id: string;
   name: string;
@@ -6,13 +15,56 @@ export interface User {
   age?: number;
   level: number;
   points: number;
-  achievements: Achievement[];
+  achievements: UserAchievement[];
   dailyStreak: number;
-  totalExercisesCompleted: number;
+  longestStreak: number;
+  lastActivityDate?: string;
   completedExercises: string[];
   hasTheraband: boolean;
-  createdAt: string;
-  token?: string;
+  weeklyGoal: {
+    exercisesTarget: number;
+    currentProgress: number;
+    weekStartDate: string;
+  };
+  monthlyStats: {
+    exercisesCompleted: number;
+    pointsEarned: number;
+    month: number;
+    year: number;
+  };
+}
+
+export interface StreakInfo {
+  currentStreak: number;
+  longestStreak: number;
+  message: string;
+  streakBroken: boolean;
+}
+
+export interface WeeklyGoal {
+  progress: number;
+  target: number;
+  completed: boolean;
+  message: string;
+}
+
+export interface AchievementUnlocked {
+  achievement: UserAchievement;
+  isNew: boolean;
+}
+
+export interface GamificationData {
+  achievements: AchievementUnlocked[];
+  streakInfo: StreakInfo | null;
+  weeklyGoal: WeeklyGoal | null;
+  motivationalQuote: string;
+}
+
+export interface ProgressResponse {
+  message: string;
+  progress: Progress;
+  pointsEarned: number;
+  gamification: GamificationData;
 }
 
 // Übungstypen
@@ -69,6 +121,7 @@ export interface DailyProgress {
   progress: Progress[];
   muscleGroupsTrainedToday: MuscleGroup[];
   totalMuscleGroups: number;
+  totalExercisesCompleted: number;
 }
 
 export interface DailySummary {

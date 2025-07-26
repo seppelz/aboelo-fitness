@@ -1,5 +1,5 @@
 import api from './api';
-import type { Exercise } from '../types';
+import type { Exercise, ProgressResponse } from '../types';
 
 // Vereinfachte Typdefinitionen
 interface Progress {
@@ -70,19 +70,16 @@ interface ExerciseRecommendation {
   reason: string;
 }
 
+// Remove this interface as it's already defined in types.ts
+
 // Übungsfortschritt speichern
-export const saveProgress = async (
-  exerciseId: string, 
-  completed: boolean, 
-  aborted: boolean, 
-  watchDuration: number
-): Promise<{ progress: Progress, pointsEarned: number }> => {
-  const response = await api.post('/progress/save', {
-    exerciseId,
-    completed,
-    aborted,
-    watchDuration
-  });
+export const saveProgress = async (progressData: {
+  exerciseId: string;
+  completed: boolean;
+  aborted: boolean;
+  watchDuration: number;
+}): Promise<ProgressResponse> => {
+  const response = await api.post('/progress', progressData);
   return response.data;
 };
 

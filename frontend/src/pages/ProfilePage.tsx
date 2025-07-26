@@ -36,7 +36,7 @@ const ProfilePage: React.FC = () => {
   
   // Calculate estimated exercises from points for data consistency
   const estimatedExercises = user ? Math.floor((user.points || 0) / 10) : 0;
-  const actualExercises = user?.completedExercises?.length || user?.totalExercisesCompleted || 0;
+  const actualExercises = user?.completedExercises?.length || 0;
   
   // Use the higher value to show more accurate count until data is consistent
   const displayExercises = Math.max(estimatedExercises, actualExercises);
@@ -256,7 +256,7 @@ const ProfilePage: React.FC = () => {
                     />
                   )}
                   <Typography variant="body1" color="text.secondary">
-                    Mitglied seit {new Date(user.createdAt).toLocaleDateString('de-DE')}
+                    Aktiver Benutzer
                   </Typography>
                 </Box>
               </Box>

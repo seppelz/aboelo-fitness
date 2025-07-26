@@ -238,7 +238,12 @@ const ExerciseVideo: React.FC<ExerciseVideoProps> = ({ exercise, onExerciseCompl
   const submitProgress = async (completed: boolean, aborted: boolean) => {
     setIsSubmitting(true);
     try {
-      await saveProgress((exercise as any)._id, completed, aborted, watchDuration);
+      await saveProgress({
+        exerciseId: (exercise as any)._id,
+        completed,
+        aborted,
+        watchDuration
+      });
       
       if (completed) {
         onExerciseComplete();

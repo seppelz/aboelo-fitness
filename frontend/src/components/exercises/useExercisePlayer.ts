@@ -84,7 +84,12 @@ export const useExercisePlayer = (exercise: Exercise, onExerciseComplete: () => 
     const submit = async (completed: boolean, aborted: boolean) => {
       dispatch({ type: 'SUBMIT_START' });
       try {
-        await saveProgress(exercise._id, completed, aborted, state.watchDuration);
+        await saveProgress({
+          exerciseId: exercise._id,
+          completed,
+          aborted,
+          watchDuration: state.watchDuration
+        });
         dispatch({ type: 'SUBMIT_SUCCESS' });
         if (completed) {
           onExerciseComplete();

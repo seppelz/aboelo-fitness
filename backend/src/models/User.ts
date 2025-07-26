@@ -1,6 +1,16 @@
 import mongoose, { Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
+// Interface für User Achievement
+export interface IUserAchievement {
+  achievementId: string;
+  unlockedAt: Date;
+  title: string;
+  description: string;
+  icon: string;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+}
+
 // Interface für Benutzer
 export interface IUser extends Document {
   name: string;
@@ -9,11 +19,24 @@ export interface IUser extends Document {
   age?: number;
   level: number;
   points: number;
-  achievements: string[];
+  achievements: IUserAchievement[];
   dailyStreak: number;
+  longestStreak: number;
+  lastActivityDate?: Date;
   completedExercises: mongoose.Types.ObjectId[];
   exerciseFrequency: Map<string, number>; // Track how often each exercise was recommended/completed
   hasTheraband: boolean; // Whether user has theraband equipment available
+  weeklyGoal: {
+    exercisesTarget: number;
+    currentProgress: number;
+    weekStartDate: Date;
+  };
+  monthlyStats: {
+    exercisesCompleted: number;
+    pointsEarned: number;
+    month: number;
+    year: number;
+  };
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -48,13 +71,28 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    achievements: {
-      type: [String],
-      default: [],
-    },
+    achievements: [{
+      achievementId: { type: String, required: true },
+      unlockedAt: { type: Date, required: true },
+      title: { type: String, required: true },
+      description: { type: String, required: true },
+      icon: { type: String, required: true },
+      rarity: { 
+        type: String, 
+        enum: ['common', 'rare', 'epic', 'legendary'], 
+        required: true 
+      }
+    }],
     dailyStreak: {
       type: Number,
       default: 0,
+    },
+    longestStreak: {
+      type: Number,
+      default: 0,
+    },
+    lastActivityDate: {
+      type: Date,
     },
     completedExercises: [
       {
@@ -71,6 +109,17 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    weeklyGoal: {
+      exercisesTarget: { type: Number, default: 5 },
+      currentProgress: { type: Number, default: 0 },
+      weekStartDate: { type: Date, default: Date.now }
+    },
+    monthlyStats: {
+      exercisesCompleted: { type: Number, default: 0 },
+      pointsEarned: { type: Number, default: 0 },
+      month: { type: Number, default: () => new Date().getMonth() },
+      year: { type: Number, default: () => new Date().getFullYear() }
+    }
   },
   {
     timestamps: true,
@@ -96,3 +145,4 @@ userSchema.methods.comparePassword = async function(candidatePassword: string): 
 };
 
 export default mongoose.model<IUser>('User', userSchema);
+
