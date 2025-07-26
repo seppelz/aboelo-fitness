@@ -417,62 +417,6 @@ const ProgressPage: React.FC = () => {
                   </Card>
                 </Grid>
               )}
-              
-              <div className="muscle-groups-today">
-                <Typography variant="h6" gutterBottom>
-                  Trainierte Muskelgruppen
-                </Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
-                  {((dailyProgress as any).muscleGroupsTrainedToday || []).map((group: string, index: number) => (
-                    <Chip 
-                      key={index}
-                      label={`${group} ${getMuscleGroupIcon(group)}`}
-                      variant="outlined"
-                      sx={{ 
-                        fontSize: '1rem',
-                        padding: '15px 5px',
-                        height: 'auto'
-                      }}
-                    />
-                  ))}
-                  {(!(dailyProgress as any).muscleGroupsTrainedToday || (dailyProgress as any).muscleGroupsTrainedToday.length === 0) && (
-                    <Typography variant="body2" color="text.secondary">
-                      Heute wurden noch keine Muskelgruppen trainiert.
-                    </Typography>
-                  )}
-                </Box>
-              </div>
-              
-              <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
-                Trainierte Muskelgruppen diese Woche
-              </Typography>
-              
-              <Grid container spacing={2} sx={{ mb: 4 }}>
-                {weeklyProgress?.muscleGroupStats && weeklyProgress.muscleGroupStats.map((stat: { muscleGroup: string; count: number; percentage: number }, index: number) => (
-                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={stat.muscleGroup}>
-                    <Card sx={{ height: '100%' }}>
-                      <CardContent>
-                        <Typography variant="subtitle1" gutterBottom>
-                          {stat.muscleGroup} {getMuscleGroupIcon(stat.muscleGroup)}
-                        </Typography>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                          <Typography variant="body2" color="text.secondary">
-                            {stat.count}x trainiert
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {Math.round(stat.percentage)}%
-                          </Typography>
-                        </Box>
-                        <LinearProgress 
-                          variant="determinate" 
-                          value={stat.percentage} 
-                          sx={{ height: 6, borderRadius: 3 }}
-                        />
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
             </Box>
           ) : (
             <Alert severity="info">
@@ -565,6 +509,84 @@ const ProgressPage: React.FC = () => {
                   </Card>
                 </Grid>
               </Grid>
+              
+              <Divider sx={{ my: 3 }} />
+              
+              <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+                Tägliche Aktivität dieser Woche
+              </Typography>
+              
+              {weeklyProgress.dailyActivitySummary && weeklyProgress.dailyActivitySummary.length > 0 ? (
+                <Box sx={{ mb: 4 }}>
+                  {weeklyProgress.dailyActivitySummary.map((day: { dayOfWeek: number; exercisesCompleted: number }, index: number) => (
+                    <Box key={index} sx={{ mb: 2 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                        <Typography variant="body1" sx={{ fontWeight: day.exercisesCompleted > 0 ? 'bold' : 'normal' }}>
+                          {['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'][day.dayOfWeek]}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {day.exercisesCompleted} Übungen
+                        </Typography>
+                      </Box>
+                      <LinearProgress 
+                        variant="determinate" 
+                        value={Math.min(100, (day.exercisesCompleted / 8) * 100)} 
+                        sx={{ 
+                          height: 10, 
+                          borderRadius: 5,
+                          bgcolor: 'grey.200',
+                          '& .MuiLinearProgress-bar': {
+                            bgcolor: day.exercisesCompleted > 0 ? 'success.main' : 'grey.400'
+                          }
+                        }} 
+                      />
+                    </Box>
+                  ))}
+                </Box>
+              ) : (
+                <Alert severity="info">
+                  Keine täglichen Aktivitätsdaten verfügbar.
+                </Alert>
+              )}
+              
+              <Divider sx={{ my: 3 }} />
+              
+              <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+                Trainierte Muskelgruppen diese Woche
+              </Typography>
+              
+              {weeklyProgress.muscleGroupStats && weeklyProgress.muscleGroupStats.length > 0 ? (
+                <Grid container spacing={2} sx={{ mb: 4 }}>
+                  {weeklyProgress.muscleGroupStats.map((stat: { muscleGroup: string; count: number; percentage: number }, index: number) => (
+                    <Grid size={{ xs: 12, sm: 6, md: 4 }} key={stat.muscleGroup}>
+                      <Card sx={{ height: '100%' }}>
+                        <CardContent>
+                          <Typography variant="subtitle1" gutterBottom>
+                            {stat.muscleGroup} {getMuscleGroupIcon(stat.muscleGroup)}
+                          </Typography>
+                          <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                            <Typography variant="body2" color="text.secondary">
+                              {stat.count}x trainiert
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {Math.round(stat.percentage)}%
+                            </Typography>
+                          </Box>
+                          <LinearProgress 
+                            variant="determinate" 
+                            value={stat.percentage} 
+                            sx={{ height: 6, borderRadius: 3 }}
+                          />
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              ) : (
+                <Alert severity="info">
+                  Keine Muskelgruppen-Statistiken für diese Woche verfügbar.
+                </Alert>
+              )}
             </Box>
           ) : (
             <Alert severity="info">
@@ -578,7 +600,7 @@ const ProgressPage: React.FC = () => {
           {monthlyProgress ? (
             <Box>
               <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold' }}>
-                Übersicht für {new Date(2023, monthlyProgress.month - 1).toLocaleString('de-DE', { month: 'long' })} {monthlyProgress.year}
+                Übersicht für {new Date(monthlyProgress.year, monthlyProgress.month - 1).toLocaleString('de-DE', { month: 'long' })} {monthlyProgress.year}
               </Typography>
               
               <Grid container spacing={3} sx={{ mb: 4 }}>
@@ -632,26 +654,28 @@ const ProgressPage: React.FC = () => {
               </Typography>
               
               {monthlyProgress.activityByDate && monthlyProgress.activityByDate.length > 0 ? (
-                                  <Box sx={{ mb: 4 }}>
-                    {monthlyProgress.activityByDate.slice(0, 7).map((dayActivity: any, index: number) => (
-                    <Box key={index} sx={{ mb: 3 }}>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                        <Typography variant="body1">
-                          {new Date(dayActivity.date).toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'numeric' })}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {dayActivity.exercisesCompleted} Übungen
+                <Box sx={{ mb: 4 }}>
+                  {monthlyProgress.activityByDate.map((dayActivity: any, index: number) => (
+                    dayActivity.exercisesCompleted > 0 && (
+                      <Box key={index} sx={{ mb: 3 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                          <Typography variant="body1">
+                            {new Date(dayActivity.date).toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'numeric' })}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {dayActivity.exercisesCompleted} Übungen
+                          </Typography>
+                        </Box>
+                        <LinearProgress 
+                          variant="determinate" 
+                          value={Math.min(100, (dayActivity.exercisesCompleted / 5) * 100)} 
+                          sx={{ height: 10, borderRadius: 5 }}
+                        />
+                        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+                          {dayActivity.pointsEarned} Punkte
                         </Typography>
                       </Box>
-                      <LinearProgress 
-                        variant="determinate" 
-                        value={Math.min(100, (dayActivity.exercisesCompleted / 5) * 100)} 
-                        sx={{ height: 10, borderRadius: 5 }}
-                      />
-                      <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                        {dayActivity.pointsEarned} Punkte
-                      </Typography>
-                    </Box>
+                    )
                   ))}
                 </Box>
               ) : (

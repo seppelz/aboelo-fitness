@@ -134,8 +134,20 @@ export interface DailySummary {
 
 export interface WeeklyProgress {
   dailySummary: DailySummary[];
+  dailyActivitySummary: {
+    dayOfWeek: number;
+    exercisesCompleted: number;
+  }[];
+  muscleGroupStats: {
+    muscleGroup: string;
+    count: number;
+    percentage: number;
+  }[];
   totalExercisesCompleted: number;
   totalPointsEarned: number;
+  totalExercisesThisWeek: number;
+  totalPointsThisWeek: number;
+  daysWithActivityThisWeek: number;
 }
 
 export interface ExerciseRecommendation {

@@ -268,11 +268,42 @@ export const getWeeklyProgress = async (req: Request, res: Response) => {
         pointsEarned: dayProgress.reduce((sum, p) => sum + p.pointsEarned, 0)
       };
     });
+
+    // Daily activity summary für das Frontend
+    const dailyActivitySummary = dailySummary.map((day, index) => ({
+      dayOfWeek: index, // 0 = Sonntag, 1 = Montag, etc.
+      exercisesCompleted: day.exercisesCompleted
+    }));
+
+    // Muskelgruppen-Statistiken
+    const muscleGroupCounts = new Map<string, number>();
+    const totalCompletedExercises = progress.filter(p => p.completed).length;
+    
+    progress
+      .filter(p => p.completed)
+      .forEach(p => {
+        const muscleGroup = (p.exercise as any).muscleGroup;
+        muscleGroupCounts.set(muscleGroup, (muscleGroupCounts.get(muscleGroup) || 0) + 1);
+      });
+
+    const muscleGroupStats = Array.from(muscleGroupCounts.entries()).map(([muscleGroup, count]) => ({
+      muscleGroup,
+      count,
+      percentage: totalCompletedExercises > 0 ? (count / totalCompletedExercises) * 100 : 0
+    }));
+
+    // Aktive Tage zählen
+    const daysWithActivity = dailySummary.filter(day => day.exercisesCompleted > 0).length;
     
     res.json({
       dailySummary,
-      totalExercisesCompleted: progress.filter(p => p.completed).length,
-      totalPointsEarned: progress.reduce((sum, p) => sum + p.pointsEarned, 0)
+      dailyActivitySummary,
+      muscleGroupStats,
+      totalExercisesCompleted: totalCompletedExercises,
+      totalPointsEarned: progress.reduce((sum, p) => sum + p.pointsEarned, 0),
+      totalExercisesThisWeek: totalCompletedExercises,
+      totalPointsThisWeek: progress.reduce((sum, p) => sum + p.pointsEarned, 0),
+      daysWithActivityThisWeek: daysWithActivity
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
