@@ -12,6 +12,8 @@ export interface IUser extends Document {
   achievements: string[];
   dailyStreak: number;
   completedExercises: mongoose.Types.ObjectId[];
+  exerciseFrequency: Map<string, number>; // Track how often each exercise was recommended/completed
+  hasTheraband: boolean; // Whether user has theraband equipment available
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -60,6 +62,15 @@ const userSchema = new mongoose.Schema(
         ref: 'Exercise',
       },
     ],
+    exerciseFrequency: {
+      type: Map,
+      of: Number,
+      default: new Map(),
+    },
+    hasTheraband: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

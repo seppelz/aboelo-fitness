@@ -16,10 +16,13 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Container
+  Container,
+  FormControlLabel,
+  Switch
 } from '@mui/material';
 import { AuthContext } from '../contexts/AuthContext';
 import { updateProfile } from '../services/authService';
+import { resetUserProgress } from '../services/authService';
 import LockIcon from '@mui/icons-material/Lock';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
@@ -31,6 +34,13 @@ const ProfilePage: React.FC = () => {
   // Wir verwenden nur die Eigenschaften, die tatsächlich im Kontext verfügbar sind
   const { user } = useContext(AuthContext);
   
+  // Calculate estimated exercises from points for data consistency
+  const estimatedExercises = user ? Math.floor((user.points || 0) / 10) : 0;
+  const actualExercises = user?.completedExercises?.length || user?.totalExercisesCompleted || 0;
+  
+  // Use the higher value to show more accurate count until data is consistent
+  const displayExercises = Math.max(estimatedExercises, actualExercises);
+  
   // Zustandsvariablen für das Formular
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -38,12 +48,14 @@ const ProfilePage: React.FC = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [hasTheraband, setHasTheraband] = useState(user?.hasTheraband || false);
   
   // Zustandsvariablen für den Bearbeitungsmodus und Feedback
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [isResetting, setIsResetting] = useState(false);
   
   // Benutzerdaten in das Formular laden
   useEffect(() => {
@@ -51,6 +63,7 @@ const ProfilePage: React.FC = () => {
       setName(user.name);
       setEmail(user.email);
       setAge(user.age ? user.age.toString() : '');
+      setHasTheraband(user.hasTheraband || false);
     }
   }, [user]);
   
@@ -65,6 +78,7 @@ const ProfilePage: React.FC = () => {
       setName(user.name);
       setEmail(user.email);
       setAge(user.age ? user.age.toString() : '');
+      setHasTheraband(user.hasTheraband || false);
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -113,6 +127,7 @@ const ProfilePage: React.FC = () => {
       const updatedData = {
         name,
         age: age ? parseInt(age) : undefined,
+        hasTheraband,
         currentPassword: currentPassword || undefined,
         newPassword: newPassword || undefined
       };
@@ -139,6 +154,46 @@ const ProfilePage: React.FC = () => {
     }
   };
   
+  // Passwort ändern validieren
+  const validatePasswordChange = (): boolean => {
+    if (newPassword !== confirmPassword) {
+      setError('Die neuen Passwörter stimmen nicht überein');
+      return false;
+    }
+    if (newPassword.length < 6) {
+      setError('Das neue Passwort muss mindestens 6 Zeichen lang sein');
+      return false;
+    }
+    return true;
+  };
+
+  // Reset progress handler
+  const handleResetProgress = async () => {
+    if (!window.confirm('Sind Sie sicher, dass Sie Ihren gesamten Fortschritt zurücksetzen möchten? Diese Aktion kann nicht rückgängig gemacht werden.')) {
+      return;
+    }
+    
+    setIsResetting(true);
+    setError(null);
+    setSuccess(null);
+    
+    try {
+      const result = await resetUserProgress();
+      console.log('Progress reset successful:', result);
+      setSuccess('Fortschritt erfolgreich zurückgesetzt! Die Seite wird neu geladen...');
+      
+      // Refresh the page after a short delay
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } catch (error: any) {
+      console.error('Error resetting progress:', error);
+      setError('Fehler beim Zurücksetzen des Fortschritts: ' + (error.message || 'Unbekannter Fehler'));
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
   if (!user) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
@@ -250,6 +305,37 @@ const ProfilePage: React.FC = () => {
                   />
                 </Grid>
               </Grid>
+              
+              {/* Training Preferences */}
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', mt: 3 }}>
+                Training Einstellungen
+              </Typography>
+              
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={hasTheraband}
+                    onChange={(e) => setHasTheraband(e.target.checked)}
+                    disabled={!isEditing || isSubmitting}
+                    color="primary"
+                  />
+                }
+                label={
+                  <Box>
+                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                      Theraband verfügbar
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Aktivieren Sie diese Option, wenn Sie ein Theraband besitzen. Dies beeinflusst Ihre Übungsempfehlungen.
+                    </Typography>
+                  </Box>
+                }
+                sx={{ 
+                  alignItems: 'flex-start',
+                  mt: 1,
+                  mb: 2
+                }}
+              />
               
               {/* Passwort-Änderung (nur im Bearbeitungsmodus) */}
               {isEditing && (
@@ -386,10 +472,10 @@ const ProfilePage: React.FC = () => {
                   <ListItemText
                     primary={
                       <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                        Level {user.level}
+                        Level {user.level || 1}
                       </Typography>
                     }
-                    secondary={`${user.points} Punkte gesammelt`}
+                    secondary={`${user.points || 0} Punkte gesammelt`}
                   />
                 </ListItem>
                 
@@ -400,7 +486,7 @@ const ProfilePage: React.FC = () => {
                   <ListItemText
                     primary={
                       <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                        {user.dailyStreak} Tage in Folge
+                        {user.dailyStreak || 0} Tage in Folge
                       </Typography>
                     }
                     secondary="Tägliches Training"
@@ -414,7 +500,7 @@ const ProfilePage: React.FC = () => {
                   <ListItemText
                     primary={
                       <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                        {user.totalExercisesCompleted} Übungen
+                        {displayExercises} Übungen
                       </Typography>
                     }
                     secondary="Abgeschlossen"
@@ -462,6 +548,20 @@ const ProfilePage: React.FC = () => {
                 sx={{ mt: 2, fontSize: '1.1rem' }}
               >
                 Zum Fortschritt
+              </Button>
+              
+              <Button 
+                variant="outlined" 
+                color="error"
+                fullWidth
+                onClick={handleResetProgress}
+                disabled={isResetting}
+                sx={{ mt: 2, fontSize: '1.1rem' }}
+              >
+                {isResetting ? (
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
+                ) : null}
+                {isResetting ? 'Zurücksetzen...' : 'Fortschritt zurücksetzen'}
               </Button>
             </CardContent>
           </Card>

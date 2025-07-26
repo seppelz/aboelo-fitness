@@ -4,9 +4,13 @@ import User, { IUser } from '../models/User';
 
 // Funktion zum Erstellen eines JWT Tokens
 const generateToken = (id: string): string => {
-  return jwt.sign({ id }, String(process.env.JWT_SECRET || 'aboelo_fitness_secret'), {
+  return jwt.sign(
+    { id }, 
+    process.env.JWT_SECRET || 'aboelo_fitness_secret', 
+    {
     expiresIn: process.env.JWT_EXPIRE || '30d',
-  });
+    }
+  );
 };
 
 // @desc    Benutzer registrieren
@@ -50,7 +54,7 @@ export const register = async (req: Request, res: Response) => {
     });
 
     // Token generieren und senden
-    const token = generateToken(user._id);
+    const token = generateToken(user._id.toString());
     
     res.status(201).json({
       success: true,
@@ -109,7 +113,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Token generieren und senden
-    const token = generateToken(user._id);
+    const token = generateToken(user._id.toString());
     
     res.status(200).json({
       success: true,

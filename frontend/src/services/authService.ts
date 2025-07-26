@@ -27,10 +27,18 @@ export const logoutUser = (): void => {
   localStorage.removeItem('userData');
 };
 
-// Aktuellen Benutzer abrufen
+// Aktuellen Benutzer abrufen (aus localStorage)
 export const getCurrentUser = (): User | null => {
   const userData = localStorage.getItem('userData');
   return userData ? JSON.parse(userData) : null;
+};
+
+// Fresh user data from server abrufen
+export const fetchUserFromServer = async (): Promise<User> => {
+  const response = await api.get('/users/me');
+  // Update localStorage with fresh data
+  localStorage.setItem('userData', JSON.stringify(response.data));
+  return response.data;
 };
 
 // Benutzerprofil aktualisieren
@@ -50,4 +58,18 @@ export const updateProfile = async (userData: any): Promise<User> => {
 // Prüfen, ob der Benutzer angemeldet ist
 export const isAuthenticated = (): boolean => {
   return localStorage.getItem('userToken') !== null;
+};
+
+// Reset user progress data (for testing/cleaning)
+export const resetUserProgress = async (): Promise<any> => {
+  const response = await api.post('/users/reset-progress');
+  // Update localStorage with fresh reset data
+  if (response.data.user) {
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+      const resetUser = { ...currentUser, ...response.data.user };
+      localStorage.setItem('userData', JSON.stringify(resetUser));
+    }
+  }
+  return response.data;
 };

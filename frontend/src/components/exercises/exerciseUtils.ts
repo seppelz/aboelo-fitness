@@ -78,7 +78,8 @@ export const getThumbnailUrl = (exercise: Exercise): string => {
   if (videoId && VIDEO_ID_MAPPING[videoId]) {
     const cloudinaryId = VIDEO_ID_MAPPING[videoId];
     // Erzeugt die URL für das .jpg-Poster, das von Cloudinary generiert wird.
-    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,w_576,h_720/${cloudinaryId}.jpg`;
+    // c_pad mit Hintergrund statt c_fit um sicherzustellen, dass die ganze Person sichtbar ist
+    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,c_pad,b_auto,w_576,h_720/${cloudinaryId}.jpg`;
   }
   // Fallback auf eine explizit gesetzte Thumbnail-URL.
   if (exercise.thumbnailUrl) {
@@ -98,7 +99,8 @@ export const getVideoDetails = (exercise: Exercise): { type: 'video' | 'none', s
   // Prüfen, ob eine gültige Cloudinary-Video-ID vorhanden ist.
   if (videoId && VIDEO_ID_MAPPING[videoId]) {
     const cloudinaryId = VIDEO_ID_MAPPING[videoId];
-    const videoUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,f_mp4,w_576,h_720/${cloudinaryId}.mp4`;
+    // Use proper video dimensions and ensure full person is visible
+    const videoUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,c_pad,b_auto,w_640,h_480/${cloudinaryId}.mp4`;
     
     return {
       type: 'video',

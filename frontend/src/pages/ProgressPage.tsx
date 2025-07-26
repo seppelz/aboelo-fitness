@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { 
   Box, 
   Typography, 
@@ -24,6 +24,7 @@ import {
   getWeeklyProgress, 
   getMonthlyProgress 
 } from '../services/progressService';
+import { AuthContext } from '../contexts/AuthContext';
 
 // Importiere die Typen aus der zentralen types.ts
 import { MuscleGroup } from '../types';
@@ -122,6 +123,7 @@ const TabPanel = (props: TabPanelProps) => {
 };
 
 const ProgressPage: React.FC = () => {
+  const { user } = useContext(AuthContext);
   const theme = useTheme();
   const [tabValue, setTabValue] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -246,7 +248,7 @@ const ProgressPage: React.FC = () => {
           >
             <EmojiEventsIcon sx={{ fontSize: 40, mb: 1 }} />
             <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-              {dailyProgress?.totalPoints || 0}
+              {user?.points || 0}
             </Typography>
             <Typography variant="body1">Punkte gesamt</Typography>
           </Paper>
@@ -290,7 +292,7 @@ const ProgressPage: React.FC = () => {
           >
             <CalendarTodayIcon sx={{ fontSize: 40, mb: 1 }} />
             <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
-              {dailyProgress?.level || 1}
+              {user?.level || 1}
             </Typography>
             <Typography variant="body1">Aktuelles Level</Typography>
           </Paper>
@@ -363,23 +365,23 @@ const ProgressPage: React.FC = () => {
                 Heutige Übungen
               </Typography>
               
-              {dailyProgress.exercisesCompletedToday.length > 0 ? (
-                dailyProgress.exercisesCompletedToday.map((exercise: { title: string; muscleGroup: string; type: string; category: string; pointsEarned: number }, index: number) => (
+              {(dailyProgress as any).progress?.filter((p: any) => p.completed).length > 0 ? (
+                (dailyProgress as any).progress.filter((p: any) => p.completed).map((progressItem: any, index: number) => (
                   <Card key={index} sx={{ mb: 2, p: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <Box sx={{ mr: 2, fontSize: '1.5rem' }}>
-                        {getMuscleGroupIcon(exercise.muscleGroup)}
+                        {getMuscleGroupIcon(progressItem.exercise?.muscleGroup || 'Bauch')}
                       </Box>
                       <Box sx={{ flexGrow: 1 }}>
                         <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                          {exercise.title}
+                          {progressItem.exercise?.title || 'Übung'}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          {exercise.muscleGroup} • {exercise.type} • {exercise.category}
+                          {progressItem.exercise?.muscleGroup} • {progressItem.exercise?.type} • {progressItem.exercise?.category}
                         </Typography>
                       </Box>
                       <Typography variant="body2" color="text.secondary">
-                        +{exercise.pointsEarned} Punkte
+                        +{progressItem.pointsEarned || 0} Punkte
                       </Typography>
                     </Box>
                   </Card>
@@ -421,7 +423,7 @@ const ProgressPage: React.FC = () => {
                   Trainierte Muskelgruppen
                 </Typography>
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
-                  {dailyProgress.muscleGroupsTrainedToday && dailyProgress.muscleGroupsTrainedToday.map((group: string, index: number) => (
+                  {((dailyProgress as any).muscleGroupsTrainedToday || []).map((group: string, index: number) => (
                     <Chip 
                       key={index}
                       label={`${group} ${getMuscleGroupIcon(group)}`}
@@ -433,7 +435,7 @@ const ProgressPage: React.FC = () => {
                       }}
                     />
                   ))}
-                  {(!dailyProgress.muscleGroupsTrainedToday || dailyProgress.muscleGroupsTrainedToday.length === 0) && (
+                  {(!(dailyProgress as any).muscleGroupsTrainedToday || (dailyProgress as any).muscleGroupsTrainedToday.length === 0) && (
                     <Typography variant="body2" color="text.secondary">
                       Heute wurden noch keine Muskelgruppen trainiert.
                     </Typography>
@@ -629,25 +631,25 @@ const ProgressPage: React.FC = () => {
                 Wöchentliche Aktivität
               </Typography>
               
-              {monthlyProgress.activityByWeek && monthlyProgress.activityByWeek.length > 0 ? (
-                <Box sx={{ mb: 4 }}>
-                  {monthlyProgress.activityByWeek.map((week: { weekStart: string; exercisesCompleted: number; pointsEarned: number }, index: number) => (
+              {monthlyProgress.activityByDate && monthlyProgress.activityByDate.length > 0 ? (
+                                  <Box sx={{ mb: 4 }}>
+                    {monthlyProgress.activityByDate.slice(0, 7).map((dayActivity: any, index: number) => (
                     <Box key={index} sx={{ mb: 3 }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                         <Typography variant="body1">
-                          Woche {index + 1} ({new Date(week.weekStart).toLocaleDateString('de-DE', { day: 'numeric', month: 'numeric' })})
+                          {new Date(dayActivity.date).toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'numeric' })}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          {week.exercisesCompleted} Übungen
+                          {dayActivity.exercisesCompleted} Übungen
                         </Typography>
                       </Box>
                       <LinearProgress 
                         variant="determinate" 
-                        value={Math.min(100, (week.exercisesCompleted / 35) * 100)} 
+                        value={Math.min(100, (dayActivity.exercisesCompleted / 5) * 100)} 
                         sx={{ height: 10, borderRadius: 5 }}
                       />
                       <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
-                        {week.pointsEarned} Punkte
+                        {dayActivity.pointsEarned} Punkte
                       </Typography>
                     </Box>
                   ))}

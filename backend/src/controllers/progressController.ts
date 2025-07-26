@@ -9,10 +9,38 @@ export const saveProgress = async (req: Request, res: Response) => {
     const { exerciseId, completed, aborted, watchDuration } = req.body;
     const userId = (req as any).user._id;
 
+    // Validate required fields
+    if (!exerciseId) {
+      return res.status(400).json({ message: 'exerciseId ist erforderlich' });
+    }
+
+    if (completed === undefined || aborted === undefined) {
+      return res.status(400).json({ message: 'completed und aborted sind erforderlich' });
+    }
+
     // Übung überprüfen
     const exercise = await Exercise.findById(exerciseId);
     if (!exercise) {
       return res.status(404).json({ message: 'Übung nicht gefunden' });
+    }
+
+    // Check for duplicate progress on the same day
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    
+    const existingProgress = await Progress.findOne({
+      user: userId,
+      exercise: exerciseId,
+      completed: true,
+      date: { $gte: startOfDay, $lt: endOfDay }
+    });
+    
+    if (existingProgress && completed) {
+      return res.status(400).json({ 
+        message: 'Diese Übung wurde heute bereits abgeschlossen',
+        alreadyCompleted: true 
+      });
     }
 
     // Punkte berechnen
@@ -22,10 +50,11 @@ export const saveProgress = async (req: Request, res: Response) => {
       pointsEarned = 10;
       
       // Zusätzliche Punkte basierend auf der Schwierigkeit
-      pointsEarned += (exercise.difficulty - 1) * 5;
+      pointsEarned += ((exercise.difficulty || 1) - 1) * 5;
     } else if (!aborted) {
       // Teilpunkte für teilweise angesehene Übungen
-      const progressPercentage = Math.min(100, (watchDuration / exercise.duration) * 100);
+      const exerciseDuration = exercise.duration || 1;
+      const progressPercentage = Math.min(100, (watchDuration / exerciseDuration) * 100);
       pointsEarned = Math.floor((progressPercentage / 100) * 10);
     }
 
@@ -43,7 +72,10 @@ export const saveProgress = async (req: Request, res: Response) => {
     if (pointsEarned > 0) {
       const user = await User.findById(userId);
       if (user) {
-        user.points += pointsEarned;
+        // Only add points for completed exercises, not partial views
+        if (completed) {
+          user.points += pointsEarned;
+        }
         
         // Level aktualisieren (alle 100 Punkte ein Level)
         const newLevel = Math.floor(user.points / 100) + 1;
@@ -52,8 +84,17 @@ export const saveProgress = async (req: Request, res: Response) => {
         }
 
         // Wenn Übung abgeschlossen ist, zur Liste der abgeschlossenen Übungen hinzufügen
-        if (completed && !user.completedExercises.includes(exercise._id)) {
-          user.completedExercises.push(exercise._id);
+        if (completed && !user.completedExercises.some(id => id.toString() === (exercise._id as any).toString())) {
+          user.completedExercises.push(exercise._id as any);
+        }
+
+        // Update exercise frequency tracking when exercise is completed
+        if (completed) {
+          const exerciseFrequency = user.exerciseFrequency || new Map();
+          const exerciseId = (exercise._id as any).toString();
+          const currentFreq = exerciseFrequency.get(exerciseId) || 0;
+          exerciseFrequency.set(exerciseId, currentFreq + 1);
+          user.exerciseFrequency = exerciseFrequency;
         }
 
         await user.save();
@@ -105,10 +146,13 @@ export const getDailyProgress = async (req: Request, res: Response) => {
         .map(p => (p.exercise as any).muscleGroup)
     );
 
+
+
     res.json({
       progress,
       muscleGroupsTrainedToday: Array.from(muscleGroupsTrainedToday),
-      totalMuscleGroups: 8 // Bauch, Beine, Po, Schulter, Arme, Brust, Nacken und Rücken
+      totalMuscleGroups: 8, // Bauch, Beine, Po, Schulter, Arme, Brust, Nacken und Rücken
+      totalExercisesCompleted: progress.filter(p => p.completed).length
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -174,6 +218,76 @@ export const getWeeklyProgress = async (req: Request, res: Response) => {
   }
 };
 
+// Monatlichen Fortschritt eines Benutzers abrufen
+export const getMonthlyProgress = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user._id;
+    
+    // Zeitraum für den aktuellen Monat festlegen
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    const progress = await Progress.find({
+      user: userId,
+      date: { $gte: startOfMonth, $lt: endOfMonth }
+    }).populate('exercise', 'title muscleGroup type category');
+    
+    // Tägliche Aktivität für den Monat
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const activityByDate = Array(daysInMonth).fill(0).map((_, index) => {
+      const date = new Date(now.getFullYear(), now.getMonth(), index + 1);
+      const dayStart = new Date(date);
+      const dayEnd = new Date(date);
+      dayEnd.setDate(date.getDate() + 1);
+      
+      // Übungen für diesen Tag filtern
+      const dayProgress = progress.filter(
+        p => p.date >= dayStart && p.date < dayEnd
+      );
+      
+      // Trainierte Muskelgruppen an diesem Tag
+      const muscleGroups = new Set(
+        dayProgress
+          .filter(p => p.completed)
+          .map(p => (p.exercise as any).muscleGroup)
+      );
+      
+      return {
+        date: date.toISOString().split('T')[0],
+        exercisesCompleted: dayProgress.filter(p => p.completed).length,
+        pointsEarned: dayProgress.reduce((sum, p) => sum + p.pointsEarned, 0),
+        muscleGroupsTrained: Array.from(muscleGroups)
+      };
+    });
+
+    // Meisttrainierte Muskelgruppen
+    const muscleGroupCounts = new Map<string, number>();
+    progress
+      .filter(p => p.completed)
+      .forEach(p => {
+        const muscleGroup = (p.exercise as any).muscleGroup;
+        muscleGroupCounts.set(muscleGroup, (muscleGroupCounts.get(muscleGroup) || 0) + 1);
+      });
+
+    const mostTrainedMuscleGroups = Array.from(muscleGroupCounts.entries())
+      .map(([muscleGroup, count]) => ({ muscleGroup, count }))
+      .sort((a, b) => b.count - a.count);
+
+    res.json({
+      month: now.getMonth() + 1,
+      year: now.getFullYear(),
+      totalExercisesThisMonth: progress.filter(p => p.completed).length,
+      totalPointsThisMonth: progress.reduce((sum, p) => sum + p.pointsEarned, 0),
+      daysWithActivityThisMonth: activityByDate.filter(day => day.exercisesCompleted > 0).length,
+      activityByDate,
+      mostTrainedMuscleGroups
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Empfehlungen für Übungen basierend auf dem Fortschritt
 export const getRecommendedExercises = async (req: Request, res: Response) => {
   try {
@@ -199,22 +313,58 @@ export const getRecommendedExercises = async (req: Request, res: Response) => {
       todayProgress.map(p => (p.exercise as any).muscleGroup)
     );
 
-    // Alle Muskelgruppen
-    const allMuscleGroups = ['Bauch', 'Beine', 'Po', 'Schulter', 'Arme', 'Brust', 'Nacken', 'Rücken'];
+    // Alle Muskelgruppen (corrected - removed 'Arme' as it doesn't exist in Exercise model)
+    const allMuscleGroups = ['Bauch', 'Beine', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'];
     
     // Nicht trainierte Muskelgruppen finden
     const untrainedMuscleGroups = allMuscleGroups.filter(
       group => !trainedMuscleGroups.has(group)
     );
 
-    // Übungen für nicht trainierte Muskelgruppen empfehlen
-    const recommendedExercises = await Exercise.find({
-      muscleGroup: { $in: untrainedMuscleGroups }
-    }).limit(5);
+    // Smart exercise selection: one exercise per untrained muscle group, balanced by frequency
+    const recommendations = [];
+    const exerciseFrequency = user.exerciseFrequency || new Map();
+
+    for (const muscleGroup of untrainedMuscleGroups) {
+      // Get exercises for this muscle group, filtered by theraband preference
+      let exerciseQuery: any = { muscleGroup };
+      
+      // If user doesn't have theraband, only show exercises without theraband
+      if (!user.hasTheraband) {
+        exerciseQuery.usesTheraband = false;
+      }
+      // If user has theraband, show both with and without theraband exercises (no additional filter needed)
+      
+      const exercisesInGroup = await Exercise.find(exerciseQuery);
+      
+      if (exercisesInGroup.length > 0) {
+        // Sort by frequency (least recommended first) to balance exposure
+        const sortedExercises = exercisesInGroup.sort((a, b) => {
+          const freqA = exerciseFrequency.get((a._id as any).toString()) || 0;
+          const freqB = exerciseFrequency.get((b._id as any).toString()) || 0;
+          return freqA - freqB;
+        });
+        
+        // Pick the least recommended exercise from this muscle group
+        const selectedExercise = sortedExercises[0];
+        recommendations.push(selectedExercise);
+        
+        // Update frequency tracking for this recommendation
+        const exerciseId = (selectedExercise._id as any).toString();
+        const currentFreq = exerciseFrequency.get(exerciseId) || 0;
+        exerciseFrequency.set(exerciseId, currentFreq + 1);
+      }
+    }
+
+    // Update user's exercise frequency tracking
+    user.exerciseFrequency = exerciseFrequency;
+    await user.save();
 
     res.json({
       trainedToday: Array.from(trainedMuscleGroups),
-      recommendations: recommendedExercises
+      recommendations: recommendations,
+      muscleGroupsTrainedToday: Array.from(trainedMuscleGroups),
+      totalMuscleGroups: allMuscleGroups.length
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

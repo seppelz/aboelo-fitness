@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { User, LoginCredentials, RegisterData } from '../types';
-import { loginUser as apiLogin, registerUser as apiRegister, logoutUser, getCurrentUser } from '../services/authService';
+import { loginUser as apiLogin, registerUser as apiRegister, logoutUser, getCurrentUser, fetchUserFromServer } from '../services/authService';
 
 interface AuthContextType {
   user: User | null;
@@ -9,6 +9,7 @@ interface AuthContextType {
   login: (credentials: LoginCredentials) => Promise<User>;
   register: (userData: RegisterData) => Promise<User>;
   logout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -22,6 +23,9 @@ export const AuthContext = createContext<AuthContextType>({
     throw new Error('AuthContext not initialized');
   },
   logout: () => {
+    throw new Error('AuthContext not initialized');
+  },
+  refreshUser: async () => {
     throw new Error('AuthContext not initialized');
   },
 });
@@ -82,6 +86,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(null);
   };
 
+  // Refresh user data function - fetch fresh data from server
+  const refreshUser = async () => {
+    try {
+      const freshUserData = await fetchUserFromServer();
+      setUser(freshUserData);
+    } catch (error) {
+      console.error('Fehler beim Aktualisieren des Benutzers:', error);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -91,6 +105,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         login,
         register,
         logout,
+        refreshUser,
       }}
     >
       {children}

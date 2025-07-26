@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/User';
+import Progress from '../models/Progress';
 
 // JWT Token generieren
 const generateToken = (id: string) => {
@@ -38,6 +39,7 @@ export const registerUser = async (req: Request, res: Response) => {
         points: user.points,
         achievements: user.achievements,
         dailyStreak: user.dailyStreak,
+        hasTheraband: user.hasTheraband,
         token: generateToken(user._id),
       });
     } else {
@@ -67,7 +69,8 @@ export const loginUser = async (req: Request, res: Response) => {
         points: user.points,
         achievements: user.achievements,
         dailyStreak: user.dailyStreak,
-        token: generateToken(user._id),
+        hasTheraband: user.hasTheraband,
+        token: generateToken(user._id.toString()),
       });
     } else {
       res.status(401).json({ message: 'Ungültige E-Mail oder Passwort' });
@@ -110,6 +113,11 @@ export const updateUserProfile = async (req: Request, res: Response) => {
         user.password = req.body.password;
       }
 
+      // Update theraband preference
+      if (typeof req.body.hasTheraband === 'boolean') {
+        user.hasTheraband = req.body.hasTheraband;
+      }
+
       const updatedUser = await user.save();
 
       res.json({
@@ -121,6 +129,7 @@ export const updateUserProfile = async (req: Request, res: Response) => {
         points: updatedUser.points,
         achievements: updatedUser.achievements,
         dailyStreak: updatedUser.dailyStreak,
+        hasTheraband: updatedUser.hasTheraband,
         token: generateToken(updatedUser._id),
       });
     } else {
@@ -186,6 +195,47 @@ export const updateDailyStreak = async (req: Request, res: Response) => {
     
     res.json({
       dailyStreak: user.dailyStreak
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Reset user progress data (for testing/cleaning)
+export const resetUserProgress = async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user._id.toString();
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'Benutzer nicht gefunden' });
+    }
+
+    // Reset user profile data
+    user.points = 0;
+    user.level = 1;
+    user.completedExercises = [];
+    user.exerciseFrequency = new Map();
+    user.dailyStreak = 0;
+    user.achievements = [];
+
+    await user.save();
+
+    // ALSO DELETE ALL PROGRESS ENTRIES for this user
+    const deleteResult = await Progress.deleteMany({ user: userId });
+    
+    console.log(`Reset complete: Deleted ${deleteResult.deletedCount} progress entries for user ${userId}`);
+    
+    res.json({
+      message: 'Alle Fortschrittsdaten zurückgesetzt',
+      user: {
+        points: user.points,
+        level: user.level,
+        completedExercises: user.completedExercises,
+        dailyStreak: user.dailyStreak,
+        achievements: user.achievements
+      },
+      progressEntriesDeleted: deleteResult.deletedCount
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

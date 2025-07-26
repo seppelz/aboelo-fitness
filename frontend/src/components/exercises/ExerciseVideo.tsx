@@ -1,22 +1,28 @@
 import React from 'react';
-import { Box, Alert, Skeleton } from '@mui/material';
-
+import VideoPlayer from './VideoPlayer';
 import { Exercise } from '../../types';
 import { getVideoDetails } from './exerciseUtils';
-import { useExercisePlayer } from './useExercisePlayer';
-import { ExercisePreview } from './ExercisePreview';
-import { VideoPlayer } from './VideoPlayer';
+import { Box, Alert } from '@mui/material';
 
 interface ExerciseVideoProps {
   exercise: Exercise;
-  onExerciseComplete: () => void;
+  onVideoComplete?: () => void;
+  compact?: boolean;
   videoRef?: React.RefObject<HTMLVideoElement | null>;
+  onTimeUpdate?: () => void;
+  onPlay?: () => void;
+  onPause?: () => void;
 }
 
-const ExerciseVideo: React.FC<ExerciseVideoProps> = ({ exercise, onExerciseComplete, videoRef: externalVideoRef }) => {
-  const videoDetails = getVideoDetails(exercise);
-  const { state, videoRef: internalVideoRef, controls } = useExercisePlayer(exercise, onExerciseComplete);
-  const refToUse = externalVideoRef || internalVideoRef;
+const ExerciseVideo: React.FC<ExerciseVideoProps> = ({ exercise, onVideoComplete, compact = false, videoRef, onTimeUpdate, onPlay, onPause }) => {
+  // Memoize video details to prevent recalculation and re-renders
+  const videoDetails = React.useMemo(() => getVideoDetails(exercise), [exercise]);
+
+  const handleVideoComplete = () => {
+    if (onVideoComplete) {
+      onVideoComplete();
+    }
+  };
 
   // Fall 1: Kein Video verfügbar
   if (videoDetails.type === 'none') {
@@ -27,28 +33,17 @@ const ExerciseVideo: React.FC<ExerciseVideoProps> = ({ exercise, onExerciseCompl
     );
   }
 
-  // Fall 2: Video ist verfügbar. Wir rendern den VideoPlayer mit angepassten Kontrollen.
-  const adaptedControls = {
-    ...controls,
-    // Mapping von start zu play für die VideoPlayer Komponente
-    play: controls.start
-  };
-
   return (
-    // Kein extra Box-Container und Margins mehr, da diese bereits im VideoPlayer definiert sind
     <VideoPlayer
-      exercise={exercise}
-      videoUrl={videoDetails.source}
-      posterUrl={videoDetails.poster}
-      videoRef={refToUse}
-      progress={state.progress}
-      watchDuration={state.watchDuration}
-      videoDuration={state.videoDuration}
-      isFinished={state.isFinished}
-      isAborted={state.isAborted}
-      error={state.error}
-      controls={adaptedControls}
-      onBackToPreview={() => controls.pause()} // Zurück-Funktion
+      src={videoDetails.source}
+      poster={videoDetails.type === 'video' ? videoDetails.poster : ''}
+      onComplete={handleVideoComplete}
+      compact={compact}
+      ref={videoRef}
+      onTimeUpdate={onTimeUpdate}
+      onPlay={onPlay}
+      onPause={onPause}
+      autoplay={false} // Don't autoplay - wait for user to start
     />
   );
 };

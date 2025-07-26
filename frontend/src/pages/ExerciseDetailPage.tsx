@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getThumbnailUrl } from '../components/exercises/exerciseUtils';
+import { getThumbnailUrl, getVideoDetails } from '../components/exercises/exerciseUtils';
 import { 
   Box, 
   Typography, 
@@ -17,41 +17,57 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getExerciseById } from '../services/exerciseService';
+import { saveProgress } from '../services/progressService';
+import { AuthContext } from '../contexts/AuthContext';
 import ExerciseVideo from '../components/exercises/ExerciseVideo';
 import { Exercise } from '../types';
 
 const ExerciseDetailPage: React.FC = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const { refreshUser } = useContext(AuthContext);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [videoStarted, setVideoStarted] = useState(false);
+  const [isAborted, setIsAborted] = useState(false);
+  const [progress, setProgress] = useState(0);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [exercise, setExercise] = useState<Exercise | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [completed, setCompleted] = useState<boolean>(false);
+  const [completed, setCompleted] = useState(false);
+  const [watchStartTime, setWatchStartTime] = useState<number | null>(null);
+  const [totalWatchDuration, setTotalWatchDuration] = useState<number>(0);
+  const [isSaving, setIsSaving] = useState(false);
+  const completionHandledRef = useRef(false);
   
-  // Dauer formatieren
+  // Dauer formatieren - show seconds if under 1 minute  
   const formatDuration = (seconds?: number): string => {
-    if (!seconds || isNaN(seconds)) return 'Keine Angabe';
+    if (!seconds || seconds <= 0 || isNaN(seconds)) return 'Keine Angabe';
     const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes} Minuten ${remainingSeconds} Sekunden`;
-  };
-  
-  // Schwierigkeitsgrad-Text
-  const getDifficultyText = (difficulty: number): string => {
-    switch (difficulty) {
-      case 1: return 'Sehr leicht';
-      case 2: return 'Leicht';
-      case 3: return 'Mittel';
-      case 4: return 'Fortgeschritten';
-      case 5: return 'Herausfordernd';
-      default: return 'Unbekannt';
+    const remainingSeconds = Math.round(seconds % 60);
+    
+    if (minutes === 0) {
+      return `${remainingSeconds} Sek.`;
+    } else if (remainingSeconds === 0) {
+      return `${minutes} Min.`;
+    } else {
+      return `${minutes} Min. ${remainingSeconds} Sek.`;
     }
   };
+
+  // Kategorie-Text formatieren
+  const getCategoryText = (category: string): string => {
+    return category === 'Kraft' ? 'Kräftigend' : 'Mobilisierend';
+  };
   
+
+  
+  // Video-Element zum Vorberechnen der Dauer
+  const durationVideoRef = useRef<HTMLVideoElement>(null);
+  const [videoDuration, setVideoDuration] = useState<number | undefined>(undefined);
+
   // Übung vom Server laden
   useEffect(() => {
     const fetchExercise = async () => {
@@ -61,6 +77,39 @@ const ExerciseDetailPage: React.FC = () => {
         setLoading(true);
         const data = await getExerciseById(id);
         setExercise(data);
+        
+        // Video-Dauer vorberechnen
+        if (data) {
+          const videoElement = document.createElement('video');
+          const videoDetails = getVideoDetails(data);
+          if (videoDetails.type === 'video') {
+            videoElement.src = videoDetails.source;
+            videoElement.onloadedmetadata = () => {
+              console.log('Video metadata loaded, duration:', videoElement.duration);
+              if (videoElement.duration && videoElement.duration > 0) {
+                setVideoDuration(videoElement.duration);
+              }
+            };
+            videoElement.onerror = () => {
+              console.error('Fehler beim Laden des Videos für Dauer-Berechnung');
+            };
+            // Load the video to get metadata
+            videoElement.load();
+            
+            // Fallback timeout for metadata loading
+            const timeout = setTimeout(() => {
+              if (data.duration && data.duration > 0) {
+                console.log('Using fallback duration from exercise data:', data.duration);
+                setVideoDuration(data.duration);
+              }
+            }, 3000);
+            
+            return () => clearTimeout(timeout);
+          } else if (data.duration) {
+            // Fallback auf die Dauer aus den Metadaten
+            setVideoDuration(data.duration);
+          }
+        }
       } catch (error) {
         console.error('Fehler beim Laden der Übung:', error);
         setError('Die Übung konnte nicht geladen werden. Bitte versuchen Sie es später erneut.');
@@ -70,6 +119,13 @@ const ExerciseDetailPage: React.FC = () => {
     };
     
     fetchExercise();
+    
+    return () => {
+      // Cleanup
+      if (durationVideoRef.current) {
+        durationVideoRef.current.src = '';
+      }
+    };
   }, [id]);
   
   // Zurück zur Übungsliste
@@ -78,19 +134,167 @@ const ExerciseDetailPage: React.FC = () => {
   };
   
   // Übung als abgeschlossen markieren
-  const handleExerciseComplete = () => {
-    setCompleted(true);
-    setTimeout(() => {
-      navigate('/exercises');
-    }, 3000);
+  const handleExerciseComplete = async () => {
+    if (!exercise || isSaving || completed || completionHandledRef.current) return; // Prevent duplicate calls
+    completionHandledRef.current = true; // Mark as handled immediately
+    
+    setIsSaving(true);
+    
+    try {
+      // Calculate total watch duration
+      let finalWatchDuration = totalWatchDuration;
+      if (watchStartTime && videoRef.current) {
+        finalWatchDuration += (Date.now() - watchStartTime) / 1000;
+      }
+      
+      // Save progress to backend
+      const result = await saveProgress(
+        exercise._id,
+        true, // completed
+        false, // not aborted
+        finalWatchDuration
+      );
+      
+      console.log('Progress saved successfully:', result);
+      setCompleted(true);
+      
+      // Refresh user data to get updated points and level
+      if (refreshUser) {
+        await refreshUser();
+      }
+      
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
+      
+      // Show success message briefly before navigating
+      setTimeout(() => {
+        navigate('/exercises');
+      }, 3000);
+      
+    } catch (error: any) {
+      console.error('Error saving progress:', error);
+      
+      // Check if it's a duplicate exercise error
+      if (error.response?.status === 400 && error.response?.data?.alreadyCompleted) {
+        setError('Diese Übung haben Sie heute bereits abgeschlossen! Versuchen Sie eine andere Übung.');
+        setCompleted(true); // Show as completed since it was already done
+        
+        if (videoRef.current) {
+          videoRef.current.pause();
+        }
+        
+        // Navigate after showing message
+        setTimeout(() => {
+          navigate('/exercises');
+        }, 3000);
+      } else {
+        setError('Fehler beim Speichern des Fortschritts. Bitte versuchen Sie es erneut.');
+      }
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  // Übung starten
+  // Video starten und Übungsdetails ausblenden
   const handleStartExercise = () => {
+    console.log('Starting exercise...');
     setVideoStarted(true);
-    setTimeout(() => videoRef.current?.focus(), 200);
+    setWatchStartTime(Date.now()); // Start tracking watch time
+    completionHandledRef.current = false; // Reset completion flag for new exercise
+    
+    // Start the video manually when user clicks the button
+    setTimeout(() => {
+      if (videoRef.current) {
+        console.log('Attempting to play video...', videoRef.current.src);
+        console.log('Video readyState:', videoRef.current.readyState);
+        console.log('Video paused:', videoRef.current.paused);
+        
+        // Ensure video is loaded before playing
+        if (videoRef.current.readyState >= 2) { // HAVE_CURRENT_DATA
+          videoRef.current.play()
+            .then(() => {
+              console.log('Video play successful');
+            })
+            .catch(err => {
+              console.error('Error starting video:', err);
+            });
+        } else {
+          // Wait for video to be ready
+          const onCanPlay = () => {
+            console.log('Video ready, now playing...');
+            videoRef.current?.play()
+              .then(() => console.log('Delayed play successful'))
+              .catch(err => console.error('Delayed play error:', err));
+            videoRef.current?.removeEventListener('canplay', onCanPlay);
+          };
+          videoRef.current.addEventListener('canplay', onCanPlay);
+        }
+      }
+    }, 500); // Increased delay to ensure video element is fully ready
+  };
+  
+  // Handle exercise abort with progress saving
+  const handleAbortExercise = async () => {
+    if (!exercise || isSaving) return;
+    
+    setIsSaving(true);
+    
+    try {
+      // Calculate watch duration
+      let finalWatchDuration = totalWatchDuration;
+      if (watchStartTime) {
+        finalWatchDuration += (Date.now() - watchStartTime) / 1000;
+      }
+      
+      // Save aborted progress to backend
+      await saveProgress(
+        exercise._id,
+        false, // not completed
+        true,  // aborted
+        finalWatchDuration
+      );
+      
+      console.log('Aborted exercise progress saved');
+      
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
+      setIsAborted(true);
+      
+    } catch (error) {
+      console.error('Error saving abort progress:', error);
+      // Still show as aborted even if saving failed
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
+      setIsAborted(true);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
+  // Update video progress
+  const handleTimeUpdate = () => {
+    if (videoRef.current) {
+      const currentProgress = (videoRef.current.currentTime / videoRef.current.duration) * 100;
+      setProgress(currentProgress);
+    }
+  };
+  
+  // Handle video pause/play to track watch duration
+  const handleVideoPause = () => {
+    if (watchStartTime) {
+      const watchDuration = (Date.now() - watchStartTime) / 1000;
+      setTotalWatchDuration(prev => prev + watchDuration);
+      setWatchStartTime(null);
+    }
+  };
+  
+  const handleVideoPlay = () => {
+    setWatchStartTime(Date.now());
+  };
+  
   // Kompakte Übungsdetails rendern
   const renderExerciseDetails = () => {
     if (!exercise) return null;
@@ -106,6 +310,14 @@ const ExerciseDetailPage: React.FC = () => {
             Charakteristiken:
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 0.5 }}>
+            {/* Dauer anzeigen */}
+            <Chip
+              label={`Dauer: ${formatDuration(videoDuration && videoDuration > 0 ? videoDuration : exercise.duration)}`}
+              color="primary"
+              variant="outlined"
+              size="small"
+              sx={{ fontSize: '0.8rem', height: '24px' }}
+            />
             <Chip 
               label={`${exercise.isSitting ? 'Sitzend' : 'Stehend'}`}
               color="secondary"
@@ -114,7 +326,7 @@ const ExerciseDetailPage: React.FC = () => {
               sx={{ fontSize: '0.8rem', height: '24px' }} 
             />
             <Chip 
-              label={`${exercise.category === 'kräftigend' ? 'Kräftigend' : 'Mobilisierend'}`}
+              label={getCategoryText((exercise as any).category)}
               color="secondary"
               variant="outlined"
               size="small"
@@ -146,25 +358,14 @@ const ExerciseDetailPage: React.FC = () => {
               />
             )}
           </Box>
-        </Box>
-        
-        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 1.5 }}>
-          <Chip 
-            label={`Dauer: ${formatDuration(exercise.duration)}`}
-            size="small" 
-            sx={{ fontSize: '0.8rem', height: '24px' }} 
-          />
-          <Chip 
-            label={`Schwierigkeit: ${getDifficultyText(exercise.difficulty)}`} 
-            size="small"
-            sx={{ fontSize: '0.8rem', height: '24px' }} 
-          />
-          <Chip 
-            label={`Muskelgruppe: ${exercise.muscleGroup || 'Verschiedene'}`}
-            size="small"
-            sx={{ fontSize: '0.8rem', height: '24px' }} 
-          />
-        </Box>
+                    <Chip 
+              label={`Muskelgruppe: ${exercise.muscleGroup || 'Verschiedene'}`}
+              color="secondary"
+              variant="outlined"
+              size="small"
+              sx={{ fontSize: '0.8rem', height: '24px' }} 
+            />
+          </Box>
         
         {/* Ziel der Übung */}
         {exercise.goal && (
@@ -197,18 +398,19 @@ const ExerciseDetailPage: React.FC = () => {
         )}
 
         {/* Tipps */}
-        {exercise.tips && Array.isArray(exercise.tips) && exercise.tips.length > 0 && (
+        {exercise.tips && exercise.tips.trim() !== '' && (
           <Box sx={{ mb: 1.5 }}>
             <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', mb: 0.5 }}>
               Tipps:
             </Typography>
-            <Typography component="ul" sx={{ pl: 2, mt: 0 }}>
-              {exercise.tips.map((tip: string, index: number) => (
-                <Typography component="li" key={index} variant="body2" sx={{ mb: 0.5 }}>
-                  {tip}
+
+            <ul style={{ margin: 0, paddingLeft: '20px', listStyleType: 'disc' }}>
+              <li>
+                <Typography variant="body2" component="span" sx={{ display: 'block', mb: 0.5 }}>
+                  {exercise.tips}
                 </Typography>
-              ))}
-            </Typography>
+              </li>
+            </ul>
           </Box>
         )}
       </Box>
@@ -230,7 +432,8 @@ const ExerciseDetailPage: React.FC = () => {
           sx={{ 
             overflow: 'hidden',
             borderRadius: 2,
-            mb: 1.5 // Reduzierter Abstand
+            mb: 1.5, // Reduzierter Abstand
+            backgroundColor: 'white'
           }}
         >
           {/* Das Video wird als statisches Bild angezeigt */}
@@ -242,8 +445,9 @@ const ExerciseDetailPage: React.FC = () => {
               width: '100%', 
               height: 'auto',
               display: 'block',
-              objectFit: 'cover',
-              maxHeight: '320px' // Reduzierte Höhe
+              objectFit: 'contain', // Show full image without cropping
+              maxHeight: '320px', // Reduzierte Höhe
+              backgroundColor: 'white' // White background for seamless video effect
             }}
           />
         </Paper>
@@ -255,7 +459,7 @@ const ExerciseDetailPage: React.FC = () => {
             p: 2, // Weniger Padding 
             mb: 2, // Reduzierter Abstand
             borderRadius: 2,
-            backgroundColor: theme => theme.palette.background.default
+            backgroundColor: 'white'
           }}
         >
           <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
@@ -325,18 +529,59 @@ const ExerciseDetailPage: React.FC = () => {
         mt: 0.5,
         display: 'flex', 
         flexDirection: { xs: 'column', sm: 'row' }, 
+        flexWrap: 'wrap',
         alignItems: { xs: 'flex-start', sm: 'center' }, 
-        justifyContent: 'space-between' 
+        gap: 1
       }}>
+        {/* Zurück-Button */}
         <Button 
           startIcon={<ArrowBackIcon />} 
           onClick={handleBackToList}
           variant="outlined"
-          size="medium" // Kleinerer Button
-          sx={{ mb: { xs: 1, sm: 0 } }}
+          size="medium"
+          sx={{ mb: { xs: 1, sm: 0 }, mr: { sm: 1 } }}
         >
           Zurück zu allen Übungen
         </Button>
+        
+        {/* Video-Steuerelemente in der oberen Navigationsleiste - nur Abbrechen/Abschließen, Play/Pause im VideoPlayer */}
+        {videoStarted && !completed && (
+          <Box sx={{ 
+            display: 'flex', 
+            flexWrap: 'wrap',
+            gap: 1, 
+            alignItems: 'center',
+            ml: { xs: 0, sm: 1 }
+          }}>
+            {/* Abbrechen Button */}
+            <Button
+              variant="outlined" 
+              color="secondary" 
+              size="small"
+              onClick={handleAbortExercise} 
+              disabled={isAborted || isSaving}
+              startIcon={<CancelIcon />}
+              sx={{ fontSize: '0.85rem' }}
+            >
+              Abbrechen
+            </Button>
+            
+            {/* Abschließen Button (nur wenn fast fertig) */}
+            {progress >= 95 && progress < 100 && !isAborted && videoStarted && (
+              <Button 
+                variant="contained" 
+                color="success"
+                size="small" 
+                onClick={handleExerciseComplete}
+                disabled={isSaving}
+                startIcon={isSaving ? <CircularProgress size={16} /> : <CheckCircleIcon />}
+                sx={{ fontSize: '0.85rem', fontWeight: 'bold' }}
+              >
+                {isSaving ? 'Speichern...' : 'Abschließen'}
+              </Button>
+            )}
+          </Box>
+        )}
         
         {completed && (
           <Alert 
@@ -344,7 +589,17 @@ const ExerciseDetailPage: React.FC = () => {
             severity="success"
             sx={{ ml: { xs: 0, sm: 2 } }}
           >
-            Übung erfolgreich abgeschlossen!
+                              Übung erfolgreich abgeschlossen und gespeichert! +10 Punkte
+          </Alert>
+        )}
+        
+        {isAborted && (
+          <Alert 
+            icon={<CancelIcon fontSize="inherit" />}
+            severity="warning"
+            sx={{ ml: { xs: 0, sm: 2 } }}
+          >
+            Übung abgebrochen
           </Alert>
         )}
       </Box>
@@ -377,8 +632,9 @@ const ExerciseDetailPage: React.FC = () => {
           <Box sx={{ mb: 2 }}> {/* Reduzierter Abstand */}
             <ExerciseVideo
               exercise={exercise}
-              onExerciseComplete={handleExerciseComplete}
+              onVideoComplete={handleExerciseComplete}
               videoRef={videoRef}
+              onTimeUpdate={handleTimeUpdate}
             />
           </Box>
         )}
@@ -408,8 +664,9 @@ const ExerciseDetailPage: React.FC = () => {
           {videoStarted ? (
             <ExerciseVideo
               exercise={exercise}
-              onExerciseComplete={handleExerciseComplete}
+              onVideoComplete={handleExerciseComplete}
               videoRef={videoRef}
+              onTimeUpdate={handleTimeUpdate}
             />
           ) : (
             renderVideoPreview()

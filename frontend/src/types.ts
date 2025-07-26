@@ -9,6 +9,8 @@ export interface User {
   achievements: Achievement[];
   dailyStreak: number;
   totalExercisesCompleted: number;
+  completedExercises: string[];
+  hasTheraband: boolean;
   createdAt: string;
   token?: string;
 }
@@ -59,7 +61,7 @@ export interface Progress {
 // Enums für Übungen
 export type MuscleGroup = 'Bauch' | 'Beine' | 'Po' | 'Schulter' | 'Brust' | 'Nacken' | 'Rücken';
 export type ExerciseType = 'sitzend' | 'stehend';
-export type ExerciseCategory = 'mobilisierend' | 'kräftigend';
+export type ExerciseCategory = 'Mobilisation' | 'Kraft';
 export type Equipment = 'Theraband' | 'ohne';
 
 // Typen für Fortschrittsverfolgung

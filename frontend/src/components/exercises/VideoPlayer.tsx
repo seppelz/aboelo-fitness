@@ -1,96 +1,138 @@
-import React, { ReactElement, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
   Button,
   LinearProgress,
   Paper,
-  Alert,
   IconButton,
   useTheme,
   useMediaQuery,
   Stack
 } from '@mui/material';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
-import ReplayIcon from '@mui/icons-material/Replay';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import ScreenRotationIcon from '@mui/icons-material/ScreenRotation';
-import { Exercise } from '../../types';
-import { formatTime } from './exerciseUtils';
 
-// Hilfsfunktion zum Rendern von Inhalten (z.B. Anleitungen)
-const renderContent = (content: string | string[] | undefined): ReactElement | null => {
-  if (!content) return null;
-  const contentArray = Array.isArray(content) ? content : [content];
-  return (
-    <>
-      {contentArray.map((item, index) => (
-        <React.Fragment key={index}>
-          {item}
-          {index < contentArray.length - 1 && <br />}
-        </React.Fragment>
-      ))}
-    </>
-  );
+// Helper function to format time in MM:SS format
+const formatTime = (seconds: number): string => {
+  if (!seconds || isNaN(seconds) || seconds === Infinity) return '00:00';
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
 };
 
+
+
 interface VideoPlayerProps {
-  exercise: Exercise;
-  videoUrl: string;
-  posterUrl: string;
-  videoRef: React.RefObject<HTMLVideoElement | null>;
-  progress: number;
-  watchDuration: number;
-  videoDuration: number;
-  isFinished: boolean;
-  isAborted: boolean;
-  error: string | null;
-  controls: {
-    start: () => void;
-    pause: () => void;
-    abort: () => void;
-    reset: () => void;
-    handleTimeUpdate: () => void;
-    handleLoadedMetadata: () => void;
-    handleEnded: () => void;
-    handleError: () => void;
-  };
-  onBackToPreview: () => void;
+  src: string;
+  poster?: string;
+  compact?: boolean;
+  onComplete?: () => void;
+  onTimeUpdate?: () => void;
+  autoplay?: boolean;
+  onPlay?: () => void;
+  onPause?: () => void;
 }
 
-export const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
+const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props, ref) => {
   const { 
-    exercise, videoUrl, posterUrl, videoRef, progress, watchDuration, videoDuration, 
-    isFinished, isAborted, error, controls, onBackToPreview 
+    src, compact = false, onComplete, onTimeUpdate, autoplay = false, onPlay, onPause
   } = props;
+  
+  const videoRef = React.useRef<HTMLVideoElement>(null);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
   const isPortrait = useMediaQuery('(orientation: portrait)');
-  const [isPaused, setIsPaused] = useState(false);
-  
-  // Video abspielen/pausieren Funktionen
-  const handlePlayPause = () => {
-    if (!videoRef.current) return;
-    
-    if (videoRef.current.paused) {
-      videoRef.current.play();
-      setIsPaused(false);
-      controls.start(); // State aktualisieren
-    } else {
-      videoRef.current.pause();
-      setIsPaused(true);
-      controls.pause(); // State aktualisieren
-    }
-  };
+  const [isPaused, setIsPaused] = useState(true);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [progress, setProgress] = useState(0);
 
-  // Übung abschließen - erst ab 95% ermöglichen
-  const completeEnabled = progress >= 95 && !isFinished && !isAborted;
+  useEffect(() => {
+    // Simple setup - only run once when component mounts
+    if (videoRef.current) {
+      const video = videoRef.current;
+      
+      // Set up event listeners
+      const updateProgress = () => {
+        if (onTimeUpdate) onTimeUpdate();
+        const current = video.currentTime || 0;
+        const total = video.duration || 0;
+        setCurrentTime(current);
+        if (total > 0) {
+          setProgress((current / total) * 100);
+        }
+      };
+      
+      const handleEnded = () => {
+        if (onComplete) onComplete();
+      };
+      
+      const handleLoadedData = () => {
+        setIsPaused(video.paused);
+        // Check duration when data is loaded
+        const duration = video.duration;
+        if (duration && duration !== Infinity && !isNaN(duration)) {
+          console.log('Duration from loadeddata event:', Math.round(duration), 'seconds');
+        }
+      };
+      
+      video.addEventListener('timeupdate', updateProgress);
+      video.addEventListener('ended', handleEnded);
+      video.addEventListener('loadeddata', handleLoadedData);
+      
+      // Add additional event listeners for duration detection
+      video.addEventListener('loadedmetadata', () => {
+        const videoDuration = video.duration;
+        if (videoDuration && videoDuration !== Infinity && !isNaN(videoDuration)) {
+          console.log('Duration from loadedmetadata listener:', Math.round(videoDuration), 'seconds');
+          setDuration(videoDuration);
+        }
+      });
+      
+      video.addEventListener('durationchange', () => {
+        const videoDuration = video.duration;
+        if (videoDuration && videoDuration !== Infinity && !isNaN(videoDuration)) {
+          console.log('Duration changed to:', Math.round(videoDuration), 'seconds');
+          setDuration(videoDuration);
+        }
+      });
+      
+      // Load the video once
+      video.load();
+      
+      // Cleanup function
+      return () => {
+          video.removeEventListener('timeupdate', updateProgress);
+          video.removeEventListener('ended', handleEnded);
+          video.removeEventListener('loadeddata', handleLoadedData);
+          // Note: loadedmetadata and durationchange listeners will be cleaned up automatically
+        };
+    }
+  }, []); // Empty dependency array - only run once
+  
+  // Handle autoplay in a separate effect
+  useEffect(() => {
+    if (autoplay && videoRef.current) {
+      const timer = setTimeout(() => {
+        if (videoRef.current) {
+          console.log('VideoPlayer: Attempting autoplay');
+          videoRef.current.play()
+            .then(() => console.log('VideoPlayer: Autoplay successful'))
+            .catch(err => console.error('VideoPlayer: Autoplay failed:', err));
+        }
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [autoplay]);
+
+  // Pass the ref to parent component via forwardRef
+  React.useImperativeHandle(ref, () => videoRef.current as HTMLVideoElement);
 
   return (
     <Box sx={{
@@ -105,9 +147,12 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
         sx={{ 
           overflow: 'hidden', 
           borderRadius: 2, 
-          backgroundColor: 'black',
+            backgroundColor: 'white',
           position: 'relative',
-          maxHeight: isMobile ? '40vh' : '50vh' // Begrenzte Höhe für den Container
+            aspectRatio: '4/3',  // Standard video aspect ratio
+          width: '100%',
+          height: 'auto',
+            minHeight: compact ? '300px' : '400px'
         }}
       >
         {/* Das Video-Element */}
@@ -116,96 +161,120 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
             width: '100%',
             height: '100%',
             display: 'flex',
-            justifyContent: 'center', 
-            backgroundColor: 'black'
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'white'
           }}
         >
           <video
             ref={videoRef}
-            src={videoUrl}
-            poster={posterUrl}
-            width="auto"
-            height="auto"
-            autoPlay
+            src={src}
             playsInline
-            controls={false} /* Keine nativen Browser-Steuerelemente */
             tabIndex={0}
-            autoFocus
+            preload="metadata"
             aria-label="Übungsvideo"
-            onTimeUpdate={controls.handleTimeUpdate}
-            onLoadedMetadata={controls.handleLoadedMetadata}
-            onEnded={controls.handleEnded}
-            onError={controls.handleError}
+            onTimeUpdate={onTimeUpdate}
+            onEnded={() => {
+              if (onComplete) onComplete();
+            }}
+            onPlay={() => {
+              console.log('Video started playing');
+              setIsPaused(false);
+              if (onPlay) onPlay();
+            }}
+            onPause={() => {
+              console.log('Video paused');
+              setIsPaused(true);
+              if (onPause) onPause();
+            }}
+            onError={(e) => {
+              console.error('Video error:', e);
+              console.error('Video source:', src);
+            }}
+            onLoadStart={() => {
+              // console.log('Video loading started:', src);
+            }}
+            onCanPlay={() => {
+              console.log('Video can play - ready to start');
+            }}
+            onLoadedMetadata={() => {
+              const duration = videoRef.current?.duration;
+              console.log('Video metadata loaded, duration:', duration);
+              if (duration && duration !== Infinity && !isNaN(duration)) {
+                console.log('Valid duration detected:', Math.round(duration), 'seconds');
+              } else {
+                console.log('Duration not ready yet, will wait for durationchange event');
+              }
+            }}
+            onDurationChange={() => {
+              const duration = videoRef.current?.duration;
+              if (duration && duration !== Infinity && !isNaN(duration)) {
+                console.log('Duration updated via durationchange:', Math.round(duration), 'seconds');
+              }
+            }}
             style={{ 
-              aspectRatio: '576/720',
-              objectFit: 'cover',
-              height: isMobile ? '35vh' : '45vh', /* Feste Höhe statt maxHeight */
-              maxWidth: '100%',
-              margin: '0 auto' /* Zentrieren des Videos */
+              width: '100%', 
+              height: '100%',
+              objectFit: 'contain',  // Show full video content, pad if needed
+              maxHeight: '100%',
+              display: 'block'
             }}
           />
         </Box>
 
-        {/* Overlay mit Play/Pause-Button */}
-        <Box 
-          sx={{ 
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            opacity: isPaused ? 1 : 0,
-            transition: 'opacity 0.3s',
-            '&:hover': {
-              opacity: 1,
-              cursor: 'pointer',
-              backgroundColor: 'rgba(0,0,0,0.3)'
-            }
-          }}
-          onClick={handlePlayPause}
-        >
-          <IconButton 
-            size="large"
+        {isPortrait && !isMobile && (
+          <Box 
             sx={{ 
-              backgroundColor: 'rgba(255,255,255,0.2)', 
-              '&:hover': { backgroundColor: 'rgba(255,255,255,0.4)' },
-              p: 3
+              position: 'absolute', 
+              top: 10, 
+              right: 10, 
+              backgroundColor: 'rgba(0,0,0,0.5)', 
+              color: 'white',
+              p: 1,
+              borderRadius: 1,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1
             }}
+            role="alert"
           >
-            {isPaused ? 
-              <PlayArrowIcon sx={{ fontSize: '4rem', color: 'white' }} /> : 
-              <PauseIcon sx={{ fontSize: '4rem', color: 'white' }} />}
-          </IconButton>
-        </Box>
-
-        {isMobile && isPortrait && (
-          <Alert severity="info" icon={<ScreenRotationIcon />} sx={{ borderRadius: 0, m: 1, position: 'absolute', top: 0, left: 0, right: 0, zIndex: 1 }}>
-            Für die beste Ansicht, drehe bitte dein Gerät ins Querformat.
-          </Alert>
+            <ScreenRotationIcon />
+            <Typography variant="caption">
+              Drehen Sie Ihr Gerät für eine bessere Ansicht
+            </Typography>
+          </Box>
         )}
 
-        <IconButton 
-          onClick={onBackToPreview} 
-          sx={{ 
-            position: 'absolute', 
-            top: 16, 
-            left: 16, 
-            color: 'white', 
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            '&:hover': { backgroundColor: 'rgba(0,0,0,0.7)' }
-          }}
-          aria-label="Zurück zur Übersicht"
-        >
-          <ArrowBackIcon />
-        </IconButton>
+        {/* Minimale Steuerelemente für kompaktes Layout */}
+        {compact && (
+          <Box sx={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            p: 1,
+            backgroundColor: 'white'
+          }}>
+            <IconButton 
+              color="primary" 
+              onClick={() => {
+                if (videoRef.current) {
+                  if (videoRef.current.paused) {
+                    videoRef.current.play()
+                      .catch(err => console.error('Play error:', err));
+                  } else {
+                    videoRef.current.pause();
+                  }
+                }
+              }}
+            >
+              {isPaused ? <PlayArrowIcon /> : <PauseIcon />}
+            </IconButton>
+          </Box>
+        )}
       </Paper>
 
       {/* Fortschrittsanzeige und Steuerelemente */}
       <Paper elevation={2} sx={{ mt: 1.5, p: { xs: 1.5, sm: 2 }, borderRadius: 2 }}>
-        {/* Fortschrittsanzeige */}
+        {/* Fortschrittsbalken */}
         <Box sx={{ mb: 3 }}>
           <Typography 
             variant="subtitle1" 
@@ -218,22 +287,25 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
           >
             Übungsfortschritt
           </Typography>
-          
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+          <Box sx={{ mt: 2, px: { xs: 1, sm: 2 } }}>
             <LinearProgress 
               variant="determinate" 
               value={progress} 
               sx={{ 
-                flexGrow: 1, 
-                height: 12, 
-                borderRadius: 6, 
-                backgroundColor: '#e0e0e0', 
-                '& .MuiLinearProgress-bar': { backgroundColor: theme.palette.primary.main }
+                height: 10, 
+                borderRadius: 4,
+                backgroundColor: '#e0e0e0',
+                '& .MuiLinearProgress-bar': {
+                  backgroundColor: theme.palette.primary.main,
+                  borderRadius: 4
+                }
               }}
-              aria-label="Fortschritt Video"
+              role="progressbar"
+              aria-valuenow={Math.round(progress)}
+              aria-valuemin={0}
+              aria-valuemax={100}
             />
           </Box>
-          
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
               {Math.round(progress)}%
@@ -245,57 +317,18 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
                 fontSize: isMobile ? '0.9rem' : '1.1rem'
               }}
             >
-              {formatTime(watchDuration)} / {formatTime(videoDuration)}
+              {`${formatTime(currentTime)} / ${formatTime(duration)}`}
             </Typography>
           </Box>
         </Box>
 
-        {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
-
-        {/* Status-Anzeigen */}
-        {isFinished ? (
-          <Alert 
-            severity="success" 
-            icon={<CheckCircleIcon fontSize="large" />} 
-            sx={{ 
-              mb: 3, 
-              fontSize: isMobile ? '1.1rem' : '1.3rem', 
-              fontWeight: 'bold', 
-              border: '2px solid #388e3c', 
-              borderRadius: 2, 
-              backgroundColor: '#e8f5e9' 
-            }}
-            role="status"
-            aria-live="polite"
-          >
-            Super! Übung abgeschlossen.
-          </Alert>
-        ) : isAborted ? (
-          <Alert 
-            severity="warning" 
-            icon={<CancelIcon fontSize="large" />} 
-            sx={{ 
-              mb: 3, 
-              fontSize: isMobile ? '1.1rem' : '1.3rem', 
-              fontWeight: 'bold', 
-              border: '2px solid #ffa726', 
-              borderRadius: 2, 
-              backgroundColor: '#fff8e1' 
-            }}
-            role="status"
-            aria-live="assertive"
-          >
-            Übung wurde abgebrochen.
-          </Alert>
-        ) : null}
-
-        {/* Steuerelemente */}
+        {/* Steuerelemente - Play/Pause Button */}
         <Stack 
           direction={{ xs: 'column', sm: 'row' }}
-          spacing={2}
+          spacing={1}
           justifyContent="center"
           alignItems="center"
-          sx={{ mt: 2 }}
+          sx={{ mt: 2, width: '100%', maxWidth: '100%', overflow: 'hidden' }}
         >
           {/* Play/Pause Button */}
           <Button
@@ -303,83 +336,41 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = (props) => {
             color="primary"
             size="large"
             startIcon={isPaused ? <PlayArrowIcon /> : <PauseIcon />}
-            onClick={handlePlayPause}
-            disabled={isFinished || isAborted}
+            onClick={() => {
+              if (videoRef.current) {
+                console.log('Play/Pause clicked, video paused:', videoRef.current.paused);
+                console.log('Video src:', videoRef.current.src);
+                console.log('Video readyState:', videoRef.current.readyState);
+                
+                if (videoRef.current.paused) {
+                  videoRef.current.play()
+                    .then(() => {
+                      console.log('Play button: Video started successfully');
+                    })
+                    .catch(err => {
+                      console.error('Play button: Play error:', err);
+                    });
+                } else {
+                  videoRef.current.pause();
+                  console.log('Video paused by user');
+                }
+              }
+            }}
             sx={{ 
-              fontSize: '1.2rem',
-              py: 1.5,
-              px: 4,
+              fontSize: { xs: '1rem', sm: '1.1rem' },
+              py: 1,
+              px: { xs: 2, sm: 3 },
               width: { xs: '100%', sm: 'auto' },
-              minWidth: { sm: '180px' }
+              minWidth: { sm: '160px' },
+              maxWidth: { sm: '200px' }
             }}
           >
             {isPaused ? 'Fortsetzen' : 'Pausieren'}
           </Button>
-
-          {/* Abbrechen Button */}
-          <Button 
-            variant="outlined" 
-            color="secondary" 
-            size="large"
-            onClick={controls.abort} 
-            disabled={isFinished || isAborted}
-            sx={{ 
-              fontSize: '1.1rem',
-              py: 1.5,
-              px: 4,
-              width: { xs: '100%', sm: 'auto' },
-              minWidth: { sm: '180px' }
-            }}
-          >
-            Übung abbrechen
-          </Button>
-          
-          {/* Übung abschließen Button */}
-          <Button 
-            variant="contained" 
-            color="success"
-            size="large" 
-            onClick={controls.handleEnded} 
-            disabled={!completeEnabled}
-            sx={{ 
-              fontSize: '1.3rem',
-              fontWeight: 'bold',
-              py: 1.8,
-              px: 4,
-              width: { xs: '100%', sm: 'auto' },
-              minWidth: { sm: '200px' },
-              backgroundColor: completeEnabled ? '#4caf50' : undefined
-            }}
-          >
-            Übung abschließen
-            {!completeEnabled && progress < 95 && !isFinished && !isAborted && (
-              <Typography variant="caption" sx={{ display: 'block', mt: 0.5 }}>
-                (ab 95% verfügbar)
-              </Typography>
-            )}
-          </Button>
-          
-          {/* Wiederholen Button */}
-          {(isFinished || isAborted) && (
-            <Button 
-              variant="outlined" 
-              color="info" 
-              size="large"
-              startIcon={<ReplayIcon />}
-              onClick={controls.reset} 
-              sx={{ 
-                fontSize: '1.1rem',
-                py: 1.5,
-                px: 4,
-                width: { xs: '100%', sm: 'auto' },
-                minWidth: { sm: '180px' }
-              }}
-            >
-              Nochmal
-            </Button>
-          )}
         </Stack>
       </Paper>
     </Box>
   );
-};
+});
+
+export default VideoPlayer;

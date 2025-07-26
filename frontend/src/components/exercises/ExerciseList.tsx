@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { 
   Box, 
   Card, 
@@ -25,6 +25,7 @@ import { useNavigate } from 'react-router-dom';
 import { getAllExercises } from '../../services/exerciseService';
 import { Exercise, MuscleGroup, ExerciseType, ExerciseCategory, Equipment } from '../../types';
 import { getThumbnailUrl } from './exerciseUtils';
+import { AuthContext } from '../../contexts/AuthContext';
 
 // Schwierigkeitsgrad-Text
 const getDifficultyText = (difficulty: number): string => {
@@ -44,15 +45,29 @@ const getDifficultyText = (difficulty: number): string => {
   }
 };
 
-// Dauer formatieren
+// Dauer formatieren - show seconds if under 1 minute
 const formatDuration = (seconds?: number): string => {
-  if (!seconds) return 'Keine Angabe';
+  if (!seconds || seconds <= 0) return 'Keine Angabe';
   const minutes = Math.floor(seconds / 60);
-  return `${minutes} ${minutes === 1 ? 'Minute' : 'Minuten'}`;
+  const remainingSeconds = Math.round(seconds % 60);
+  
+  if (minutes === 0) {
+    return `${remainingSeconds} Sek.`;
+  } else if (remainingSeconds === 0) {
+    return `${minutes} Min.`;
+  } else {
+    return `${minutes} Min. ${remainingSeconds} Sek.`;
+  }
+};
+
+// Kategorie-Text formatieren
+const getCategoryText = (category: string): string => {
+  return category === 'Kraft' ? 'Kräftigend' : 'Mobilisierend';
 };
 
 const ExerciseList: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [filteredExercises, setFilteredExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
@@ -142,6 +157,13 @@ const ExerciseList: React.FC = () => {
   useEffect(() => {
     let result = exercises;
     
+    // Apply user's theraband preference if user doesn't have theraband
+    // This will filter out theraband exercises for users without theraband
+    // Users with theraband can see all exercises (with and without theraband)
+    if (user && !user.hasTheraband) {
+      result = result.filter(exercise => !(exercise as any).usesTheraband);
+    }
+    
     if (muscleGroup !== 'all') {
       result = result.filter(exercise => exercise.muscleGroup === muscleGroup);
     }
@@ -182,7 +204,7 @@ const ExerciseList: React.FC = () => {
     }
     
     setFilteredExercises(result);
-  }, [exercises, muscleGroup, category, isSitting, usesTheraband, isDynamic, isUnilateral, type, equipment]);
+  }, [exercises, muscleGroup, category, isSitting, usesTheraband, isDynamic, isUnilateral, type, equipment, user]);
   
 
   // Laden oder Fehler anzeigen
@@ -265,8 +287,8 @@ const ExerciseList: React.FC = () => {
                 onChange={(e: SelectChangeEvent<string>) => setCategory(e.target.value as ExerciseCategory | 'all')}
               >
                 <MenuItem value="all">Alle Kategorien</MenuItem>
-                <MenuItem value="mobilisierend">Mobilisierend</MenuItem>
-                <MenuItem value="kräftigend">Kräftigend</MenuItem>
+                <MenuItem value="Mobilisation">Mobilisierend</MenuItem>
+                <MenuItem value="Kraft">Kräftigend</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -427,7 +449,7 @@ const ExerciseList: React.FC = () => {
                   }
                 }}
               >
-                <Box onClick={() => navigateToDetail((exercise as any)._id)} sx={{ cursor: 'pointer' }}>
+                <Box onClick={() => navigateToDetail(exercise.videoId)} sx={{ cursor: 'pointer' }}>
                   <CardMedia
                     component="img"
                     height="180"
@@ -442,37 +464,47 @@ const ExerciseList: React.FC = () => {
                       {exercise.name}
                     </Typography>
                     
-                    <Box sx={{ mb: 1 }}>
+                    <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                       <Chip 
                         label={exercise.muscleGroup} 
                         color="primary" 
                         size="small" 
-                        sx={{ mr: 1, mb: 1 }}
+                        sx={{ fontSize: '0.8rem', height: '24px' }}
                       />
                       <Chip 
-                        label={(exercise as any).category} 
+                        label={getCategoryText((exercise as any).category)} 
                         color="secondary" 
                         size="small" 
-                        sx={{ mr: 1, mb: 1 }}
+                        sx={{ fontSize: '0.8rem', height: '24px' }}
+                      />
+                      <Chip 
+                        label={`${(exercise as any).isSitting ? 'Sitzend' : 'Stehend'}`}
+                        color="secondary"
+                        variant="outlined"
+                        size="small" 
+                        sx={{ fontSize: '0.8rem', height: '24px' }}
+                      />
+                      <Chip 
+                        label={`${(exercise as any).usesTheraband ? 'Mit Theraband' : 'Ohne Theraband'}`}
+                        color="secondary"
+                        variant="outlined"
+                        size="small" 
+                        sx={{ fontSize: '0.8rem', height: '24px' }}
+                      />
+                      <Chip 
+                        label={`Dauer: ${formatDuration(exercise.duration)}`}
+                        color="primary"
+                        variant="outlined"
+                        size="small" 
+                        sx={{ fontSize: '0.8rem', height: '24px' }}
                       />
                     </Box>
                     
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                       {exercise.description && exercise.description.length > 100 
                         ? exercise.description.substring(0, 100) + '...' 
                         : exercise.description}
                     </Typography>
-                    
-                    <Box sx={{ borderTop: '1px solid #e0e0e0', my: 1 }} />
-                    
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-                      <Typography variant="body2">
-                        Dauer: {formatDuration(exercise.duration)}
-                      </Typography>
-                      <Typography variant="body2">
-                        Schwierigkeit: {getDifficultyText(exercise.difficulty)}
-                      </Typography>
-                    </Box>
                   </CardContent>
                 </Box>
               </Card>

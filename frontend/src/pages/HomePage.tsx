@@ -11,7 +11,8 @@ import {
   CardActionArea,
   Divider,
   Paper,
-  Avatar
+  Avatar,
+  Chip
 } from '@mui/material';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -20,19 +21,29 @@ import { AuthContext } from '../contexts/AuthContext';
 import { getDailyProgress } from '../services/progressService';
 import { getRecommendedExercises } from '../services/progressService';
 import { Exercise, MuscleGroup, DailyProgress } from '../types';
+import { getThumbnailUrl } from '../components/exercises/exerciseUtils';
 
-// Dauer-Text formatieren
-const formatDuration = (seconds: number): string => {
+// Dauer formatieren - show seconds if under 1 minute  
+const formatDuration = (seconds?: number): string => {
+  if (!seconds || seconds <= 0) return 'Keine Angabe';
   const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return `${minutes} Min ${remainingSeconds} Sek`;
+  const remainingSeconds = Math.round(seconds % 60);
+  
+  if (minutes === 0) {
+    return `${remainingSeconds} Sek.`;
+  } else if (remainingSeconds === 0) {
+    return `${minutes} Min.`;
+  } else {
+    return `${minutes} Min. ${remainingSeconds} Sek.`;
+  }
 };
 
-// YouTube Thumbnail URL erstellen
-const getYouTubeThumbnail = (videoUrl: string): string => {
-  const videoId = videoUrl.split('v=')[1]?.split('&')[0];
-  return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : '';
+// Kategorie-Text formatieren
+const getCategoryText = (category: string): string => {
+  return category === 'Kraft' ? 'Kräftigend' : 'Mobilisierend';
 };
+
+
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -250,18 +261,18 @@ const HomePage: React.FC = () => {
                   <Grid size={{ xs: 12, sm: 6, md: 4 }} key={(exercise as any)._id}>
                     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                       <CardActionArea 
-                        onClick={() => navigate(`/exercises/${(exercise as any)._id}`)}
+                        onClick={() => navigate(`/exercises/${exercise.videoId}`)}
                         sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}
                       >
                         <Box sx={{ position: 'relative' }}>
                           <Box 
                             component="img"
-                            src={exercise.thumbnailUrl || getYouTubeThumbnail(exercise.youtubeVideoId)}
+                            src={getThumbnailUrl(exercise)}
                             alt={exercise.name}
                             sx={{ 
                               width: '100%',
                               height: 180,
-                              objectFit: 'cover'
+                              objectFit: 'contain'
                             }}
                           />
                           <Box 
@@ -283,28 +294,48 @@ const HomePage: React.FC = () => {
                             </Box>
                             <Typography variant="body2">{exercise.muscleGroup}</Typography>
                           </Box>
-                          <Box 
-                            sx={{ 
-                              position: 'absolute',
-                              bottom: 10,
-                              right: 10,
-                              bgcolor: 'rgba(0, 0, 0, 0.6)',
-                              color: 'white',
-                              py: 0.5,
-                              px: 1,
-                              borderRadius: 1
-                            }}
-                          >
-                            <Typography variant="body2">{exercise.duration ? formatDuration(exercise.duration) : ''}</Typography>
-                          </Box>
+
                         </Box>
                         <CardContent sx={{ flexGrow: 1 }}>
                           <Typography variant="h6" sx={{ mb: 1, fontWeight: 'bold' }}>
                             {exercise.name}
                           </Typography>
-                          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                            {(exercise as any).type} • {(exercise as any).category}
-                          </Typography>
+                          
+                          <Box sx={{ mb: 1, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            <Chip 
+                              label={exercise.muscleGroup} 
+                              color="primary" 
+                              size="small" 
+                              sx={{ fontSize: '0.8rem', height: '24px' }}
+                            />
+                            <Chip 
+                              label={getCategoryText((exercise as any).category)} 
+                              color="secondary" 
+                              size="small" 
+                              sx={{ fontSize: '0.8rem', height: '24px' }}
+                            />
+                            <Chip 
+                              label={`${(exercise as any).isSitting ? 'Sitzend' : 'Stehend'}`}
+                              color="secondary"
+                              variant="outlined"
+                              size="small" 
+                              sx={{ fontSize: '0.8rem', height: '24px' }}
+                            />
+                            <Chip 
+                              label={`${(exercise as any).usesTheraband ? 'Mit Theraband' : 'Ohne Theraband'}`}
+                              color="secondary"
+                              variant="outlined"
+                              size="small" 
+                              sx={{ fontSize: '0.8rem', height: '24px' }}
+                            />
+                            <Chip 
+                              label={`Dauer: ${formatDuration(exercise.duration)}`}
+                              color="primary"
+                              variant="outlined"
+                              size="small" 
+                              sx={{ fontSize: '0.8rem', height: '24px' }}
+                            />
+                          </Box>
                         </CardContent>
                       </CardActionArea>
                     </Card>
