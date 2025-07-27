@@ -145,6 +145,7 @@ const ProgressPage: React.FC = () => {
         
         // Da es Unterschiede zwischen den Interface-Definitionen und den API-Rückgabedaten gibt,
         // verwenden wir einen sicheren Typumwandlungsansatz
+        console.log('Weekly progress data received:', weeklyData);
         setDailyProgress(dailyData as unknown as DailyProgress);
         setWeeklyProgress(weeklyData as unknown as WeeklyProgress);
         setMonthlyProgress(monthlyData as unknown as MonthlyProgress);

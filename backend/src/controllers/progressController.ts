@@ -225,20 +225,25 @@ export const getWeeklyProgress = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user._id;
     
-    // Zeitraum für die letzte Woche festlegen
+    // Zeitraum für die aktuelle Woche festlegen
     const now = new Date();
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - now.getDay());
     startOfWeek.setHours(0, 0, 0, 0);
     
-    const endOfWeek = new Date(now);
+    const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 7);
     endOfWeek.setHours(0, 0, 0, 0);
+
+    console.log('getWeeklyProgress: Week range:', startOfWeek.toISOString(), 'to', endOfWeek.toISOString());
 
     const progress = await Progress.find({
       user: userId,
       date: { $gte: startOfWeek, $lt: endOfWeek }
     }).populate('exercise', 'title muscleGroup type category');
+
+    console.log('getWeeklyProgress: Found', progress.length, 'progress entries for this week');
+    console.log('getWeeklyProgress: Completed exercises:', progress.filter(p => p.completed).length);
     
     // Tägliche Zusammenfassung erstellen
     const dailySummary = Array(7).fill(0).map((_, index) => {
