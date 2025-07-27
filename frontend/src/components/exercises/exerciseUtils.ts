@@ -105,15 +105,8 @@ export const getThumbnailUrl = (exercise: Exercise): string => {
   };
   
   const color = muscleGroupColors[muscleGroup] || muscleGroupColors['Allgemein'];
-  // Create a data URL for a simple colored rectangle with text
-  return `data:image/svg+xml;base64,${btoa(`
-    <svg width="576" height="720" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100%" height="100%" fill="${color}"/>
-      <text x="50%" y="45%" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" fill="white" font-weight="bold">${muscleGroup}</text>
-      <text x="50%" y="55%" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="white">🏃‍♂️</text>
-      <text x="50%" y="65%" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="white">Übung</text>
-    </svg>
-  `)}`;
+  // Create a data URL for a simple colored rectangle with text (no emojis to avoid btoa encoding issues)
+  return `data:image/svg+xml;base64,${btoa(`<svg width="576" height="720" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="${color}"/><text x="50%" y="40%" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" fill="white" font-weight="bold">${muscleGroup}</text><text x="50%" y="55%" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" fill="white">Training</text><text x="50%" y="70%" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="white">Video wird geladen...</text></svg>`)}`;
 };
 
 /**
