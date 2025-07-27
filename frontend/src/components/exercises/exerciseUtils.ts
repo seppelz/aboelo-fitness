@@ -75,18 +75,45 @@ export const VIDEO_ID_MAPPING: Record<string, string> = {
  */
 export const getThumbnailUrl = (exercise: Exercise): string => {
   const videoId = (exercise as any).videoId || '';
+  
+  // Debug logging to see what videoIds we're getting
+  console.log('getThumbnailUrl - exercise:', exercise.name, 'videoId:', videoId);
+  
   if (videoId && VIDEO_ID_MAPPING[videoId]) {
     const cloudinaryId = VIDEO_ID_MAPPING[videoId];
     // Erzeugt die URL für das .jpg-Poster, das von Cloudinary generiert wird.
     // c_pad mit Hintergrund statt c_fit um sicherzustellen, dass die ganze Person sichtbar ist
     return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,c_pad,b_auto,w_576,h_720/${cloudinaryId}.jpg`;
   }
-  // Fallback auf eine explizit gesetzte Thumbnail-URL.
-  if (exercise.thumbnailUrl) {
+  
+  // Fallback auf eine explizit gesetzte Thumbnail-URL, aber nur wenn es nicht von YouTube ist.
+  if (exercise.thumbnailUrl && !exercise.thumbnailUrl.includes('youtube') && !exercise.thumbnailUrl.includes('ytimg')) {
     return exercise.thumbnailUrl;
   }
-  // Finaler Fallback auf ein lokales Platzhalterbild.
-  return '/placeholder.jpg';
+  
+  // Create a muscle group specific placeholder using a simple colored rectangle with icon
+  const muscleGroup = (exercise as any).muscleGroup || 'Allgemein';
+  const muscleGroupColors: Record<string, string> = {
+    'Bauch': '#ff6b6b',
+    'Beine': '#4ecdc4', 
+    'Po': '#45b7d1',
+    'Schulter': '#96ceb4',
+    'Brust': '#fcea2b',
+    'Nacken': '#ff9ff3',
+    'Rücken': '#54a0ff',
+    'Allgemein': '#778ca3'
+  };
+  
+  const color = muscleGroupColors[muscleGroup] || muscleGroupColors['Allgemein'];
+  // Create a data URL for a simple colored rectangle with text
+  return `data:image/svg+xml;base64,${btoa(`
+    <svg width="576" height="720" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100%" height="100%" fill="${color}"/>
+      <text x="50%" y="45%" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" fill="white" font-weight="bold">${muscleGroup}</text>
+      <text x="50%" y="55%" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="white">🏃‍♂️</text>
+      <text x="50%" y="65%" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="white">Übung</text>
+    </svg>
+  `)}`;
 };
 
 /**
