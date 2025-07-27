@@ -76,9 +76,6 @@ export const VIDEO_ID_MAPPING: Record<string, string> = {
 export const getThumbnailUrl = (exercise: Exercise): string => {
   const videoId = (exercise as any).videoId || '';
   
-  // Debug logging to see what videoIds we're getting
-  console.log('getThumbnailUrl - exercise:', exercise.name, 'videoId:', videoId);
-  
   if (videoId && VIDEO_ID_MAPPING[videoId]) {
     const cloudinaryId = VIDEO_ID_MAPPING[videoId];
     // Erzeugt die URL für das .jpg-Poster, das von Cloudinary generiert wird.

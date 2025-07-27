@@ -9,7 +9,7 @@ export const getAllExercises = async (): Promise<Exercise[]> => {
 
 // Übung nach ID abrufen
 export const getExerciseById = async (id: string): Promise<Exercise> => {
-  const response = await api.get(`/exercises/video/${id}`);
+  const response = await api.get(`/exercises/id/${id}`);
   return response.data;
 };
 
