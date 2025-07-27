@@ -79,7 +79,7 @@ export const saveProgress = async (progressData: {
   aborted: boolean;
   watchDuration: number;
 }): Promise<ProgressResponse> => {
-  const response = await api.post('/progress', progressData);
+  const response = await api.post('/progress/save', progressData);
   return response.data;
 };
 

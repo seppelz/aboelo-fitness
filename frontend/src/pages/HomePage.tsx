@@ -466,7 +466,7 @@ const HomePage: React.FC = () => {
                     boxShadow: 6
                   }
                 }}
-                onClick={() => navigate(`/exercise/${exercise.videoId}`)}
+                onClick={() => navigate(`/exercises/${(exercise as any)._id}`)}
               >
                 <CardMedia
                   component="img"
