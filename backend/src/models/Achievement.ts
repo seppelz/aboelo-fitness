@@ -185,5 +185,63 @@ export const ACHIEVEMENTS = [
     category: 'weekly',
     requirements: { type: 'perfect_week' },
     rarity: 'legendary',
+  },
+  // Daily Muscle Group Achievements
+  {
+    id: 'daily_all_muscle_groups',
+    title: 'Täglicher Allrounder',
+    description: 'Alle Muskelgruppen an einem Tag trainiert',
+    icon: '🔥',
+    category: 'daily',
+    requirements: { 
+      type: 'daily_muscle_groups', 
+      muscleGroups: ['Bauch', 'Beine', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'] 
+    },
+    rarity: 'legendary',
+  },
+  {
+    id: 'daily_5_muscle_groups',
+    title: 'Vielseitiger Trainer',
+    description: '5 verschiedene Muskelgruppen an einem Tag trainiert',
+    icon: '⭐',
+    category: 'daily',
+    requirements: { type: 'daily_muscle_groups', value: 5 },
+    rarity: 'epic',
+  },
+  {
+    id: 'daily_3_muscle_groups',
+    title: 'Ausgewogener Tag',
+    description: '3 verschiedene Muskelgruppen an einem Tag trainiert',
+    icon: '🎯',
+    category: 'daily',
+    requirements: { type: 'daily_muscle_groups', value: 3 },
+    rarity: 'rare',
+  },
+  {
+    id: 'muscle_specialist_bauch',
+    title: 'Bauch-Spezialist',
+    description: '5 Bauch-Übungen an einem Tag abgeschlossen',
+    icon: '💪',
+    category: 'specialist',
+    requirements: { type: 'muscle_specialist', muscleGroup: 'Bauch', value: 5 },
+    rarity: 'rare',
+  },
+  {
+    id: 'muscle_specialist_ruecken',
+    title: 'Rücken-Spezialist',
+    description: '5 Rücken-Übungen an einem Tag abgeschlossen',
+    icon: '🔄',
+    category: 'specialist',
+    requirements: { type: 'muscle_specialist', muscleGroup: 'Rücken', value: 5 },
+    rarity: 'rare',
+  },
+  {
+    id: 'consistency_champion',
+    title: 'Beständigkeits-Champion',
+    description: '7 Tage in Folge mindestens 3 Muskelgruppen trainiert',
+    icon: '👑',
+    category: 'consistency',
+    requirements: { type: 'consistency_muscle_groups', days: 7, minMuscleGroups: 3 },
+    rarity: 'legendary',
   }
 ]; 

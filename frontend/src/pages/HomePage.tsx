@@ -395,24 +395,49 @@ const HomePage: React.FC = () => {
                         <strong>Trainierte Muskelgruppen:</strong> {dailyProgress.muscleGroupsTrainedToday?.length || 0} von {dailyProgress.totalMuscleGroups}
                       </Typography>
                       
-                      {dailyProgress.muscleGroupsTrainedToday && dailyProgress.muscleGroupsTrainedToday.length > 0 && (
-                        <Box sx={{ mt: 2 }}>
-                          <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                            Trainierte Bereiche:
-                          </Typography>
-                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                            {dailyProgress.muscleGroupsTrainedToday.map((group: MuscleGroup) => (
+                      {/* Daily Muscle Group Challenge Progress */}
+                      <Box sx={{ mt: 2, mb: 2 }}>
+                        <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
+                          🎯 Tägliche Muskelgruppen-Challenge
+                        </Typography>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: 1 }}>
+                          {['Bauch', 'Beine', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'].map((group: string) => {
+                            const isTrained = dailyProgress.muscleGroupsTrainedToday?.includes(group as MuscleGroup);
+                            return (
                               <Chip 
                                 key={group}
-                                label={`${getMuscleGroupIcon(group)} ${group}`}
+                                label={`${getMuscleGroupIcon(group as MuscleGroup)} ${group}`}
                                 size="small"
-                                color="primary"
-                                variant="outlined"
+                                color={isTrained ? "success" : "default"}
+                                variant={isTrained ? "filled" : "outlined"}
+                                sx={{ 
+                                  opacity: isTrained ? 1 : 0.6,
+                                  fontWeight: isTrained ? 'bold' : 'normal'
+                                }}
                               />
-                            ))}
-                          </Box>
+                            );
+                          })}
                         </Box>
-                      )}
+                        <LinearProgress 
+                          variant="determinate" 
+                          value={(dailyProgress.muscleGroupsTrainedToday?.length || 0) / 7 * 100}
+                          sx={{ 
+                            mt: 2, 
+                            height: 8, 
+                            borderRadius: 4,
+                            backgroundColor: 'rgba(0,0,0,0.1)',
+                            '& .MuiLinearProgress-bar': {
+                              backgroundColor: dailyProgress.muscleGroupsTrainedToday?.length === 7 ? '#4caf50' : '#2196f3'
+                            }
+                          }}
+                        />
+                        <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                          {dailyProgress.muscleGroupsTrainedToday?.length === 7 
+                            ? "🏆 Fantastisch! Alle Muskelgruppen trainiert!" 
+                            : `Noch ${7 - (dailyProgress.muscleGroupsTrainedToday?.length || 0)} Muskelgruppen für die tägliche Challenge!`
+                          }
+                        </Typography>
+                      </Box>
                     </Box>
                   ) : (
                     <Box sx={{ textAlign: 'center', py: 2 }}>

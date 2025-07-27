@@ -75,6 +75,15 @@ export class AchievementService {
       case 'perfect_week':
         return await this.checkPerfectWeek(user);
 
+      case 'daily_muscle_groups':
+        return await this.checkDailyMuscleGroups(user, requirements);
+
+      case 'muscle_specialist':
+        return await this.checkMuscleSpecialist(user, requirements);
+
+      case 'consistency_muscle_groups':
+        return await this.checkConsistencyMuscleGroups(user, requirements);
+
       default:
         return false;
     }
@@ -120,6 +129,101 @@ export class AchievementService {
 
     // Check if user exercised for 7 consecutive days with at least 1 exercise per day
     return dailyProgress.length >= 7 && dailyProgress.every(day => day.count >= 1);
+  }
+
+  // Check daily muscle groups trained
+  private static async checkDailyMuscleGroups(user: IUser, requirements: any): Promise<boolean> {
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+    const todayProgress = await Progress.find({
+      user: user._id,
+      completed: true,
+      date: { $gte: startOfDay, $lt: endOfDay }
+    }).populate('exercise', 'muscleGroup');
+
+    const trainedGroups = [...new Set(
+      todayProgress.map(p => (p.exercise as any).muscleGroup)
+    )];
+
+    // Check if specific muscle groups were trained
+    if (requirements.muscleGroups) {
+      return requirements.muscleGroups.every((group: string) => trainedGroups.includes(group));
+    }
+
+    // Check if minimum number of different muscle groups were trained
+    if (requirements.value) {
+      return trainedGroups.length >= requirements.value;
+    }
+
+    return false;
+  }
+
+  // Check muscle group specialist achievement
+  private static async checkMuscleSpecialist(user: IUser, requirements: any): Promise<boolean> {
+    const today = new Date();
+    const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
+
+    const todayProgress = await Progress.find({
+      user: user._id,
+      completed: true,
+      date: { $gte: startOfDay, $lt: endOfDay }
+    }).populate('exercise', 'muscleGroup');
+
+    const targetGroupCount = todayProgress.filter(p => 
+      (p.exercise as any).muscleGroup === requirements.muscleGroup
+    ).length;
+
+    return targetGroupCount >= requirements.value;
+  }
+
+  // Check consistency muscle group achievement
+  private static async checkConsistencyMuscleGroups(user: IUser, requirements: any): Promise<boolean> {
+    const { days, minMuscleGroups } = requirements;
+    const daysAgo = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+
+    // Get daily muscle group counts for the last 'days' days
+    const dailyStats = await Progress.aggregate([
+      {
+        $match: {
+          user: user._id,
+          completed: true,
+          date: { $gte: daysAgo }
+        }
+      },
+      {
+        $lookup: {
+          from: 'exercises',
+          localField: 'exercise',
+          foreignField: '_id',
+          as: 'exerciseData'
+        }
+      },
+      {
+        $unwind: '$exerciseData'
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$date' },
+            month: { $month: '$date' },
+            day: { $dayOfMonth: '$date' }
+          },
+          muscleGroups: { $addToSet: '$exerciseData.muscleGroup' }
+        }
+      },
+      {
+        $addFields: {
+          muscleGroupCount: { $size: '$muscleGroups' }
+        }
+      }
+    ]);
+
+    // Check if we have stats for all required days and each day meets minimum muscle groups
+    return dailyStats.length >= days && 
+           dailyStats.every(day => day.muscleGroupCount >= minMuscleGroups);
   }
 
   // Update daily streak for user

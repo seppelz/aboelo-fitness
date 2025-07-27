@@ -135,9 +135,9 @@ const ExerciseDetailPage: React.FC = () => {
     };
   }, [id]);
   
-  // Zurück zur Übungsliste
+  // Zurück zur Startseite
   const handleBackToList = () => {
-    navigate('/exercises');
+    navigate('/');
   };
   
   // Übung als abgeschlossen markieren
@@ -182,9 +182,9 @@ const ExerciseDetailPage: React.FC = () => {
         videoRef.current.pause();
       }
       
-      // Show success message briefly before navigating
+      // Show success message briefly before navigating back to homepage
       setTimeout(() => {
-        navigate('/exercises');
+        navigate('/');
       }, 3000);
       
     } catch (error: any) {
@@ -199,9 +199,9 @@ const ExerciseDetailPage: React.FC = () => {
           videoRef.current.pause();
         }
         
-        // Navigate after showing message
+        // Navigate back to homepage after showing message
         setTimeout(() => {
-          navigate('/exercises');
+          navigate('/');
         }, 3000);
       } else {
         setError('Fehler beim Speichern des Fortschritts. Bitte versuchen Sie es erneut.');
