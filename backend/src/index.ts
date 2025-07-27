@@ -5,6 +5,7 @@ import cors from 'cors';
 import userRoutes from './routes/userRoutes';
 import exerciseRoutes from './routes/exerciseRoutes';
 import progressRoutes from './routes/progressRoutes';
+import analyticsRoutes from './routes/analyticsRoutes';
 
 // Umgebungsvariablen laden
 dotenv.config();
@@ -21,6 +22,7 @@ app.use(express.json());
 app.use('/api/users', userRoutes);
 app.use('/api/exercises', exerciseRoutes);
 app.use('/api/progress', progressRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Basisroute für API-Test
 app.get('/', (req: Request, res: Response) => {
