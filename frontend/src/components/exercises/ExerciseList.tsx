@@ -449,7 +449,7 @@ const ExerciseList: React.FC = () => {
                   }
                 }}
               >
-                <Box onClick={() => navigateToDetail(exercise.videoId)} sx={{ cursor: 'pointer' }}>
+                <Box onClick={() => navigateToDetail((exercise as any)._id)} sx={{ cursor: 'pointer' }}>
                   <CardMedia
                     component="img"
                     height="180"

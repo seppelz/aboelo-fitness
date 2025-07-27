@@ -15,7 +15,7 @@ export const getExerciseById = async (id: string): Promise<Exercise> => {
 
 // Übung nach Video-ID abrufen
 export const getExerciseByVideoId = async (videoId: string): Promise<Exercise> => {
-  const response = await api.get(`/exercises/video-id/${videoId}`);
+  const response = await api.get(`/exercises/video/${videoId}`);
   return response.data;
 };
 
