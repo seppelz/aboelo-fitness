@@ -12,7 +12,9 @@ import {
   Chip,
   Container,
   LinearProgress,
-  CardMedia
+  CardMedia,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -22,7 +24,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import { getDailyProgress } from '../services/progressService';
 import { getRecommendedExercises } from '../services/progressService';
 import { Exercise, MuscleGroup, DailyProgress } from '../types';
-import { getThumbnailUrl } from '../components/exercises/exerciseUtils';
+import { getThumbnailUrl, preloadThumbnails } from '../components/exercises/exerciseUtils';
 import StreakDisplay from '../components/gamification/StreakDisplay';
 import MotivationalQuote from '../components/gamification/MotivationalQuote';
 
@@ -69,6 +71,9 @@ const getMotivationalQuote = (): string => {
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useContext(AuthContext);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   const [recommendedExercises, setRecommendedExercises] = useState<Exercise[]>([]);
   const [dailyProgress, setDailyProgress] = useState<DailyProgress | null>(null);
   const [loading, setLoading] = useState(true);
@@ -79,24 +84,46 @@ const HomePage: React.FC = () => {
       if (isAuthenticated) {
         try {
           setLoading(true);
-          // Empfehlungen und Fortschritt laden
-          // API-Antworten mit expliziter Typumwandlung, um Typ-Inkompatibilitäten zu beheben
-          const recommendationsData = await getRecommendedExercises();
-          const dailyProgressData = await getDailyProgress();
           
-          // Typumwandlung für RecommendedExercises
+          // Parallel API calls for better performance
+          const [recommendationsData, dailyProgressData] = await Promise.all([
+            getRecommendedExercises(),
+            getDailyProgress()
+          ]);
+          
+          // Process recommendations
           const exercises = (recommendationsData as any).recommendations || [];
           setRecommendedExercises(exercises as Exercise[]);
           
-          // Typumwandlung für DailyProgress
-          // Wir gehen davon aus, dass die API-Antwort die erwarteten Felder enthält
+          // Preload thumbnails for better UX (especially for seniors)
+          if (exercises.length > 0) {
+            preloadThumbnails(exercises.slice(0, 6));
+          }
+          
+          // Process daily progress
           setDailyProgress(dailyProgressData as unknown as DailyProgress);
+          
         } catch (error) {
           console.error('Fehler beim Laden der Daten:', error);
+          // Senior-friendly error handling - don't break the UI
+          setRecommendedExercises([]);
+          setDailyProgress(null);
         } finally {
           setLoading(false);
         }
       } else {
+        // For non-authenticated users, show some sample exercises
+        try {
+          const recommendationsData = await getRecommendedExercises();
+          const exercises = (recommendationsData as any).recommendations || [];
+          setRecommendedExercises(exercises.slice(0, 3)); // Show fewer for guests
+          
+          if (exercises.length > 0) {
+            preloadThumbnails(exercises.slice(0, 3));
+          }
+        } catch (error) {
+          console.error('Fehler beim Laden der Übungen:', error);
+        }
         setLoading(false);
       }
     };
@@ -111,7 +138,6 @@ const HomePage: React.FC = () => {
       'Beine': '🦵',
       'Po': '🍑',
       'Schulter': '💪',
-      
       'Brust': '💪',
       'Nacken': '🧠',
       'Rücken': '🔄'
@@ -296,22 +322,48 @@ const HomePage: React.FC = () => {
   );
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Hero Section */}
+    <Container 
+      maxWidth="lg" 
+      sx={{ 
+        py: { xs: 2, sm: 4 },
+        px: { xs: 1, sm: 3 }
+      }}
+    >
+      {/* Hero Section - Senior Optimized */}
       <Paper
         sx={{
           background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
           color: 'white',
-          p: 4,
-          mb: 4,
-          borderRadius: 3
+          p: { xs: 3, sm: 4 },
+          mb: { xs: 3, sm: 4 },
+          borderRadius: 3,
+          boxShadow: 3
         }}
       >
         <Box sx={{ textAlign: 'center' }}>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', mb: 2 }}>
+          <Typography 
+            variant={isMobile ? "h5" : "h4"} 
+            component="h1" 
+            sx={{ 
+              fontWeight: 'bold', 
+              mb: 2,
+              fontSize: { xs: '1.75rem', sm: '2.125rem' },
+              lineHeight: 1.3
+            }}
+          >
             Willkommen bei aboelo-fitness
           </Typography>
-          <Typography variant="h6" sx={{ mb: 3, opacity: 0.9 }}>
+          <Typography 
+            variant={isMobile ? "body1" : "h6"} 
+            sx={{ 
+              mb: 3, 
+              opacity: 0.95,
+              fontSize: { xs: '1.1rem', sm: '1.25rem' },
+              lineHeight: 1.4,
+              maxWidth: 500,
+              mx: 'auto'
+            }}
+          >
             Ihr tägliches Fitness-Programm für mehr Beweglichkeit und Kraft
           </Typography>
         </Box>
@@ -362,8 +414,16 @@ const HomePage: React.FC = () => {
                   <Button 
                     variant="outlined" 
                     onClick={() => navigate('/profile')}
-                    sx={{ mt: 2, fontSize: '1.1rem' }}
+                    sx={{ 
+                      mt: 2, 
+                      fontSize: { xs: '1.2rem', sm: '1.1rem' },
+                      py: { xs: 1.5, sm: 1 },
+                      fontWeight: 'bold',
+                      borderWidth: 2,
+                      '&:hover': { borderWidth: 2 }
+                    }}
                     fullWidth
+                    size={isMobile ? "large" : "medium"}
                   >
                     Zum Profil
                   </Button>
@@ -383,8 +443,26 @@ const HomePage: React.FC = () => {
                   </Box>
                   
                   {loading ? (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                      <CircularProgress />
+                    <Box sx={{ 
+                      display: 'flex', 
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center', 
+                      py: 4,
+                      gap: 2
+                    }}>
+                      <CircularProgress 
+                        size={isMobile ? 48 : 40}
+                        thickness={4}
+                        sx={{ color: 'primary.main' }}
+                      />
+                      <Typography 
+                        variant="body1" 
+                        color="text.secondary"
+                        sx={{ fontSize: { xs: '1.1rem', sm: '1rem' } }}
+                      >
+                        Lade Ihren Fortschritt...
+                      </Typography>
                     </Box>
                   ) : dailyProgress ? (
                     <Box>
@@ -449,7 +527,16 @@ const HomePage: React.FC = () => {
                         onClick={() => navigate('/exercises')}
                         startIcon={<FitnessCenterIcon />}
                         size="large"
-                        sx={{ fontSize: '1.1rem' }}
+                        sx={{ 
+                          fontSize: { xs: '1.3rem', sm: '1.1rem' },
+                          py: { xs: 2, sm: 1.5 },
+                          px: { xs: 4, sm: 3 },
+                          fontWeight: 'bold',
+                          borderRadius: 3,
+                          minHeight: { xs: 56, sm: 48 },
+                          boxShadow: 3,
+                          '&:hover': { boxShadow: 6 }
+                        }}
                       >
                         Übungen entdecken
                       </Button>
@@ -470,56 +557,142 @@ const HomePage: React.FC = () => {
 
       {/* Empfohlene Übungen */}
       <Box sx={{ mb: 5 }}>
-        <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 3, textAlign: 'center' }}>
-          {isAuthenticated ? 'Empfohlene Übungen für Sie' : 'Unsere Übungen'}
+        <Typography 
+          variant={isMobile ? "h6" : "h5"} 
+          sx={{ 
+            fontWeight: 'bold', 
+            mb: { xs: 2, sm: 3 }, 
+            textAlign: 'center',
+            fontSize: { xs: '1.5rem', sm: '1.75rem' },
+            color: 'primary.main',
+            lineHeight: 1.3
+          }}
+        >
+          {isAuthenticated ? '🎯 Empfohlene Übungen für Sie' : '🏃‍♂️ Unsere Übungen'}
         </Typography>
         
         {loading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-            <CircularProgress />
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center', 
+            py: 6,
+            gap: 3
+          }}>
+            <CircularProgress 
+              size={isMobile ? 56 : 48}
+              thickness={4}
+              sx={{ color: 'primary.main' }}
+            />
+            <Typography 
+              variant={isMobile ? "h6" : "body1"} 
+              color="text.secondary"
+              sx={{ 
+                fontSize: { xs: '1.2rem', sm: '1rem' },
+                textAlign: 'center',
+                fontWeight: 500
+              }}
+            >
+              Lade passende Übungen für Sie...
+            </Typography>
           </Box>
         ) : recommendedExercises.length > 0 ? (
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3 }}>
+          <Box sx={{ 
+            display: 'grid', 
+            gridTemplateColumns: { 
+              xs: '1fr', 
+              sm: 'repeat(2, 1fr)', 
+              md: 'repeat(2, 1fr)',
+              lg: 'repeat(3, 1fr)' 
+            }, 
+            gap: { xs: 2, sm: 3 },
+            px: { xs: 1, sm: 0 }
+          }}>
             {recommendedExercises.slice(0, 6).map((exercise) => (
               <Card 
                 key={(exercise as any)._id}
                 sx={{ 
                   cursor: 'pointer',
-                  transition: 'transform 0.2s',
+                  transition: 'all 0.3s ease',
+                  border: isMobile ? '2px solid transparent' : '1px solid transparent',
+                  borderRadius: 3,
+                  minHeight: isMobile ? 300 : 280,
                   '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 6
+                    transform: isMobile ? 'scale(1.02)' : 'translateY(-4px)',
+                    boxShadow: isMobile ? 8 : 6,
+                    borderColor: theme.palette.primary.main
+                  },
+                  '&:active': {
+                    transform: 'scale(0.98)',
+                    transition: 'transform 0.1s'
                   }
                 }}
                 onClick={() => navigate(`/exercises/${(exercise as any)._id}`)}
               >
                 <CardMedia
                   component="img"
-                  height="180"
+                  height={isMobile ? "140" : "180"}
                   image={getThumbnailUrl(exercise)}
                   alt={exercise.name}
-                  sx={{ objectFit: 'contain' }}
+                  sx={{ 
+                    objectFit: 'contain',
+                    borderRadius: '12px 12px 0 0'
+                  }}
                 />
-                <CardContent>
-                  <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1 }}>
+                <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+                  <Typography 
+                    variant={isMobile ? "h6" : "h6"} 
+                    sx={{ 
+                      fontWeight: 'bold', 
+                      mb: 2,
+                      fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                      lineHeight: 1.3,
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical',
+                      overflow: 'hidden'
+                    }}
+                  >
                     {exercise.name}
                   </Typography>
-                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                  <Box sx={{ 
+                    display: 'flex', 
+                    flexDirection: isMobile ? 'column' : 'row',
+                    alignItems: isMobile ? 'stretch' : 'center', 
+                    gap: 1,
+                    mb: 2 
+                  }}>
                     <Chip 
                       label={`${getMuscleGroupIcon(exercise.muscleGroup)} ${exercise.muscleGroup}`}
-                      size="small"
+                      size={isMobile ? "medium" : "small"}
                       color="primary"
                       variant="outlined"
-                      sx={{ mr: 1 }}
+                      sx={{ 
+                        fontWeight: 'bold',
+                        fontSize: { xs: '0.9rem', sm: '0.75rem' },
+                        height: { xs: 36, sm: 32 }
+                      }}
                     />
                     <Chip 
                       label={formatDuration(exercise.duration)}
-                      size="small"
+                      size={isMobile ? "medium" : "small"}
                       color="secondary"
                       variant="outlined"
+                      sx={{ 
+                        fontSize: { xs: '0.9rem', sm: '0.75rem' },
+                        height: { xs: 36, sm: 32 }
+                      }}
                     />
                   </Box>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography 
+                    variant="body2" 
+                    color="text.secondary"
+                    sx={{ 
+                      fontSize: { xs: '1rem', sm: '0.875rem' },
+                      fontWeight: 500
+                    }}
+                  >
                     {exercise.equipment?.includes('Theraband') ? '🎯 Mit Theraband' : '🏃‍♂️ Ohne Geräte'}
                   </Typography>
                 </CardContent>
@@ -539,7 +712,20 @@ const HomePage: React.FC = () => {
             variant="outlined" 
             onClick={() => navigate('/exercises')}
             size="large"
-            sx={{ fontSize: '1.1rem' }}
+            sx={{ 
+              fontSize: { xs: '1.2rem', sm: '1.1rem' },
+              py: { xs: 1.5, sm: 1 },
+              px: { xs: 4, sm: 3 },
+              fontWeight: 'bold',
+              borderWidth: 2,
+              borderRadius: 3,
+              minHeight: { xs: 48, sm: 42 },
+              '&:hover': { 
+                borderWidth: 2,
+                transform: 'translateY(-1px)',
+                boxShadow: 4
+              }
+            }}
           >
             Alle Übungen anzeigen
           </Button>

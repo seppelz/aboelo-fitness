@@ -41,7 +41,7 @@ const achievementSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ['milestone', 'streak', 'completion', 'special', 'weekly'],
+      enum: ['milestone', 'streak', 'completion', 'special', 'weekly', 'daily', 'specialist', 'consistency'],
       required: true,
     },
     pointsRequired: {

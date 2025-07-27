@@ -1,7 +1,10 @@
 import { Exercise } from '../../types';
 
 // Cloudinary Konfiguration
-export const CLOUDINARY_CLOUD_NAME = 'dtihzud16';
+const CLOUDINARY_CLOUD_NAME = 'dgmpgmo8y';
+
+// Add caching for thumbnails
+const thumbnailCache = new Map<string, string>();
 
 // Mapping von einfachen IDs zu vollständigen Dateinamen
 export const VIDEO_ID_MAPPING: Record<string, string> = {
@@ -76,34 +79,46 @@ export const VIDEO_ID_MAPPING: Record<string, string> = {
 export const getThumbnailUrl = (exercise: Exercise): string => {
   const videoId = (exercise as any).videoId || '';
   
+  // Check cache first
+  const cacheKey = `${videoId}_${exercise.name}`;
+  if (thumbnailCache.has(cacheKey)) {
+    return thumbnailCache.get(cacheKey)!;
+  }
+  
+  let thumbnailUrl: string;
+  
   if (videoId && VIDEO_ID_MAPPING[videoId]) {
     const cloudinaryId = VIDEO_ID_MAPPING[videoId];
-    // Erzeugt die URL für das .jpg-Poster, das von Cloudinary generiert wird.
-    // c_pad mit Hintergrund statt c_fit um sicherzustellen, dass die ganze Person sichtbar ist
-    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,c_pad,b_auto,w_576,h_720/${cloudinaryId}.jpg`;
+    // Optimized Cloudinary URL with senior-friendly sizing and quality
+    thumbnailUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/f_auto,q_auto:good,w_400,h_300,c_fill,g_center/${cloudinaryId}.jpg`;
+  } else {
+    // Fallback - block YouTube URLs and create branded placeholder
+    if (exercise.thumbnailUrl && !exercise.thumbnailUrl.includes('youtube') && !exercise.thumbnailUrl.includes('ytimg')) {
+      thumbnailUrl = exercise.thumbnailUrl;
+    } else {
+      // Generate color-coded placeholder
+      const muscleGroup = (exercise as any).muscleGroup || 'Allgemein';
+      const muscleGroupColors: Record<string, string> = {
+        'Bauch': '#ff6b6b', 'Beine': '#4ecdc4', 'Po': '#45b7d1', 'Schulter': '#96ceb4',
+        'Brust': '#fcea2b', 'Nacken': '#ff9ff3', 'Rücken': '#54a0ff', 'Allgemein': '#778ca3'
+      };
+      const color = muscleGroupColors[muscleGroup] || muscleGroupColors['Allgemein'];
+      
+      // Optimized SVG for better performance and readability
+      thumbnailUrl = `data:image/svg+xml;base64,${btoa(`
+        <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100%" height="100%" fill="${color}"/>
+          <text x="50%" y="35%" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" fill="white" font-weight="bold">${muscleGroup}</text>
+          <text x="50%" y="55%" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="white">Training</text>
+          <text x="50%" y="75%" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white">Wird geladen...</text>
+        </svg>
+      `)}`;
+    }
   }
   
-  // Fallback auf eine explizit gesetzte Thumbnail-URL, aber nur wenn es nicht von YouTube ist.
-  if (exercise.thumbnailUrl && !exercise.thumbnailUrl.includes('youtube') && !exercise.thumbnailUrl.includes('ytimg')) {
-    return exercise.thumbnailUrl;
-  }
-  
-  // Create a muscle group specific placeholder using a simple colored rectangle with icon
-  const muscleGroup = (exercise as any).muscleGroup || 'Allgemein';
-  const muscleGroupColors: Record<string, string> = {
-    'Bauch': '#ff6b6b',
-    'Beine': '#4ecdc4', 
-    'Po': '#45b7d1',
-    'Schulter': '#96ceb4',
-    'Brust': '#fcea2b',
-    'Nacken': '#ff9ff3',
-    'Rücken': '#54a0ff',
-    'Allgemein': '#778ca3'
-  };
-  
-  const color = muscleGroupColors[muscleGroup] || muscleGroupColors['Allgemein'];
-  // Create a data URL for a simple colored rectangle with text (no emojis to avoid btoa encoding issues)
-  return `data:image/svg+xml;base64,${btoa(`<svg width="576" height="720" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="${color}"/><text x="50%" y="40%" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" fill="white" font-weight="bold">${muscleGroup}</text><text x="50%" y="55%" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" fill="white">Training</text><text x="50%" y="70%" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="white">Video wird geladen...</text></svg>`)}`;
+  // Cache the result
+  thumbnailCache.set(cacheKey, thumbnailUrl);
+  return thumbnailUrl;
 };
 
 /**
@@ -161,4 +176,18 @@ export const calculateArraySimilarity = (arr1: any[], arr2: any[]): number => {
   const intersection = arr1.filter(item => set2.has(item));
 
   return (intersection.length / arr1.length) * 100;
+};
+
+// Preload thumbnails for better performance
+export const preloadThumbnails = (exercises: Exercise[]) => {
+  exercises.forEach(exercise => {
+    const img = new Image();
+    img.src = getThumbnailUrl(exercise);
+    // Preload images silently
+  });
+};
+
+// Clear cache when needed
+export const clearThumbnailCache = () => {
+  thumbnailCache.clear();
 };
