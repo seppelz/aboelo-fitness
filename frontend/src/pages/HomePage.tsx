@@ -73,7 +73,6 @@ const HomePage: React.FC = () => {
   const { user, isAuthenticated } = useContext(AuthContext);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   const [recommendedExercises, setRecommendedExercises] = useState<Exercise[]>([]);
   const [dailyProgress, setDailyProgress] = useState<DailyProgress | null>(null);
   const [loading, setLoading] = useState(true);

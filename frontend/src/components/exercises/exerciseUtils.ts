@@ -1,7 +1,7 @@
 import { Exercise } from '../../types';
 
 // Cloudinary Konfiguration
-const CLOUDINARY_CLOUD_NAME = 'dgmpgmo8y';
+const CLOUDINARY_CLOUD_NAME = 'dtihzud16';
 
 // Add caching for thumbnails
 const thumbnailCache = new Map<string, string>();
@@ -89,8 +89,9 @@ export const getThumbnailUrl = (exercise: Exercise): string => {
   
   if (videoId && VIDEO_ID_MAPPING[videoId]) {
     const cloudinaryId = VIDEO_ID_MAPPING[videoId];
-    // Optimized Cloudinary URL with senior-friendly sizing and quality
-    thumbnailUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/f_auto,q_auto:good,w_400,h_300,c_fill,g_center/${cloudinaryId}.jpg`;
+    // Erzeugt die URL für das .jpg-Poster, das von Cloudinary generiert wird.
+    // c_pad mit Hintergrund statt c_fit um sicherzustellen, dass die ganze Person sichtbar ist
+    thumbnailUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,c_pad,b_auto,w_576,h_720/${cloudinaryId}.jpg`;
   } else {
     // Fallback - block YouTube URLs and create branded placeholder
     if (exercise.thumbnailUrl && !exercise.thumbnailUrl.includes('youtube') && !exercise.thumbnailUrl.includes('ytimg')) {
@@ -104,15 +105,8 @@ export const getThumbnailUrl = (exercise: Exercise): string => {
       };
       const color = muscleGroupColors[muscleGroup] || muscleGroupColors['Allgemein'];
       
-      // Optimized SVG for better performance and readability
-      thumbnailUrl = `data:image/svg+xml;base64,${btoa(`
-        <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
-          <rect width="100%" height="100%" fill="${color}"/>
-          <text x="50%" y="35%" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" fill="white" font-weight="bold">${muscleGroup}</text>
-          <text x="50%" y="55%" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="white">Training</text>
-          <text x="50%" y="75%" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white">Wird geladen...</text>
-        </svg>
-      `)}`;
+      // Create a data URL for a simple colored rectangle with text (no emojis to avoid btoa encoding issues)
+      thumbnailUrl = `data:image/svg+xml;base64,${btoa(`<svg width="576" height="720" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="${color}"/><text x="50%" y="40%" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" fill="white" font-weight="bold">${muscleGroup}</text><text x="50%" y="55%" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" fill="white">Training</text><text x="50%" y="70%" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="white">Video wird geladen...</text></svg>`)}`;
     }
   }
   
