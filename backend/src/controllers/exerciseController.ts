@@ -51,9 +51,29 @@ export const getExerciseByVideoId = async (req: Request, res: Response) => {
 // Alle Übungen abrufen
 export const getAllExercises = async (req: Request, res: Response) => {
   try {
+    console.log('🔍 [DEBUG] getAllExercises: Suche nach allen Übungen in der Datenbank...');
+    
     const exercises = await Exercise.find({});
+    
+    console.log(`✅ [DEBUG] getAllExercises: ${exercises.length} Übungen gefunden`);
+    
+    // Debug-Informationen für die ersten 3 Übungen
+    if (exercises.length > 0) {
+      console.log('📋 [DEBUG] Erste 3 Übungen:');
+      exercises.slice(0, 3).forEach((exercise, index) => {
+        console.log(`  ${index + 1}. ${exercise.title} (ID: ${exercise._id})`);
+        console.log(`     VideoID: ${exercise.videoId || 'N/A'}`);
+        console.log(`     Muskelgruppe: ${exercise.muscleGroup}`);
+        console.log(`     Kategorie: ${exercise.category}`);
+        console.log(`     Dauer: ${exercise.duration}s`);
+      });
+    } else {
+      console.log('⚠️ [DEBUG] Keine Übungen in der Datenbank gefunden!');
+    }
+    
     res.json(exercises);
   } catch (error: any) {
+    console.error('❌ [DEBUG] getAllExercises Fehler:', error);
     res.status(500).json({ message: error.message });
   }
 };

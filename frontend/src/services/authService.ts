@@ -6,9 +6,9 @@ export const loginUser = async (credentials: LoginCredentials): Promise<User> =>
   const response = await api.post('/users/login', credentials);
   if (response.data && response.data.token) {
     localStorage.setItem('userToken', response.data.token);
-    localStorage.setItem('userData', JSON.stringify(response.data));
+    localStorage.setItem('userData', JSON.stringify(response.data.user));
   }
-  return response.data;
+  return response.data.user;
 };
 
 // Benutzer registrieren
@@ -16,9 +16,9 @@ export const registerUser = async (userData: RegisterData): Promise<User> => {
   const response = await api.post('/users/register', userData);
   if (response.data && response.data.token) {
     localStorage.setItem('userToken', response.data.token);
-    localStorage.setItem('userData', JSON.stringify(response.data));
+    localStorage.setItem('userData', JSON.stringify(response.data.user));
   }
-  return response.data;
+  return response.data.user;
 };
 
 // Benutzer ausloggen
@@ -37,8 +37,9 @@ export const getCurrentUser = (): User | null => {
 export const fetchUserFromServer = async (): Promise<User> => {
   const response = await api.get('/users/me');
   // Update localStorage with fresh data
-  localStorage.setItem('userData', JSON.stringify(response.data));
-  return response.data;
+  const userData = response.data.user || response.data;
+  localStorage.setItem('userData', JSON.stringify(userData));
+  return userData;
 };
 
 // Benutzerprofil aktualisieren

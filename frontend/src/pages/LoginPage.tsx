@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -10,7 +10,7 @@ import {
   Link as MuiLink,
   Grid
 } from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 // Kein direkter Import von authService nötig, da wir login aus dem AuthContext verwenden
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -18,12 +18,21 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 const LoginPage: React.FC = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   
   // Formular-Zustände
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sessionExpired, setSessionExpired] = useState(false);
+  
+  // Check if redirected due to expired session
+  useEffect(() => {
+    if (searchParams.get('expired') === 'true') {
+      setSessionExpired(true);
+    }
+  }, [searchParams]);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +70,12 @@ const LoginPage: React.FC = () => {
               Willkommen zurück bei aboelo-fitness!
             </Typography>
           </Box>
+          
+          {sessionExpired && (
+            <Alert severity="warning" sx={{ mb: 3 }} onClose={() => setSessionExpired(false)}>
+              Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.
+            </Alert>
+          )}
           
           {error && (
             <Alert severity="error" sx={{ mb: 3 }}>

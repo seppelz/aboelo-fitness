@@ -8,17 +8,17 @@ const fontSizes = {
   extraLarge: 24,
 };
 
-// Verfügbare Kontraststufen
+// Verfügbare Kontraststufen mit Dark Green Theme
 const contrastLevels = {
   normal: {
-    primary: '#1976d2',
-    secondary: '#f50057',
+    primary: '#2d7d7d',      // Dark teal/green
+    secondary: '#ff8a65',    // Warm coral/orange
     background: '#ffffff',
     text: '#333333',
   },
   high: {
-    primary: '#0d47a1',
-    secondary: '#c51162',
+    primary: '#1f5f5f',      // Darker green for high contrast
+    secondary: '#f4511e',    // Darker coral for high contrast
     background: '#ffffff',
     text: '#000000',
   },

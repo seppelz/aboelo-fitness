@@ -11,7 +11,6 @@ const Layout: React.FC = () => {
     <Box sx={{ 
       display: 'flex',
       flexDirection: 'column',
-      minHeight: '100vh',
       bgcolor: '#f5f5f5'
     }}>
       <Navigation />

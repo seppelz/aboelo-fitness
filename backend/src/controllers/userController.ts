@@ -13,12 +13,31 @@ const generateToken = (id: string) => {
 // Benutzer registrieren
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, age } = req.body;
+    const { name, email, password, age, acceptTerms, passwordConfirmation } = req.body;
 
-    // Prüfen, ob Benutzer bereits existiert
+    // Überprüfen, ob die E-Mail bereits verwendet wird
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(400).json({ message: 'Benutzer existiert bereits' });
+      return res.status(400).json({
+        success: false,
+        message: 'Diese E-Mail-Adresse wird bereits verwendet',
+      });
+    }
+
+    // Überprüfen, ob Passwörter übereinstimmen
+    if (passwordConfirmation && password !== passwordConfirmation) {
+      return res.status(400).json({
+        success: false,
+        message: 'Die Passwörter stimmen nicht überein',
+      });
+    }
+
+    // Überprüfen, ob die Nutzungsbedingungen akzeptiert wurden
+    if (acceptTerms !== undefined && !acceptTerms) {
+      return res.status(400).json({
+        success: false,
+        message: 'Bitte akzeptieren Sie die Nutzungsbedingungen',
+      });
     }
 
     // Neuen Benutzer erstellen
@@ -30,23 +49,34 @@ export const registerUser = async (req: Request, res: Response) => {
     });
 
     if (user) {
+      const token = generateToken(user._id.toString());
+      
       res.status(201).json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        age: user.age,
-        level: user.level,
-        points: user.points,
-        achievements: user.achievements,
-        dailyStreak: user.dailyStreak,
-        hasTheraband: user.hasTheraband,
-        token: generateToken(user._id),
+        success: true,
+        token,
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          age: user.age,
+          level: user.level,
+          points: user.points,
+          achievements: user.achievements,
+          dailyStreak: user.dailyStreak,
+          hasTheraband: user.hasTheraband,
+        },
       });
     } else {
-      res.status(400).json({ message: 'Ungültige Benutzerdaten' });
+      res.status(400).json({ 
+        success: false,
+        message: 'Ungültige Benutzerdaten' 
+      });
     }
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      success: false,
+      message: error.message 
+    });
   }
 };
 
@@ -55,28 +85,47 @@ export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
+    // Überprüfen, ob E-Mail und Passwort eingegeben wurden
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Bitte geben Sie E-Mail und Passwort ein',
+      });
+    }
+
     // Benutzer in der Datenbank suchen
     const user = await User.findOne({ email });
 
     // Prüfen, ob Benutzer existiert und das Passwort korrekt ist
     if (user && (await user.comparePassword(password))) {
-      res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        age: user.age,
-        level: user.level,
-        points: user.points,
-        achievements: user.achievements,
-        dailyStreak: user.dailyStreak,
-        hasTheraband: user.hasTheraband,
-        token: generateToken(user._id.toString()),
+      const token = generateToken(user._id.toString());
+      
+      res.status(200).json({
+        success: true,
+        token,
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          age: user.age,
+          level: user.level,
+          points: user.points,
+          achievements: user.achievements,
+          dailyStreak: user.dailyStreak,
+          hasTheraband: user.hasTheraband,
+        },
       });
     } else {
-      res.status(401).json({ message: 'Ungültige E-Mail oder Passwort' });
+      res.status(401).json({ 
+        success: false,
+        message: 'Ungültige E-Mail oder Passwort' 
+      });
     }
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      success: false,
+      message: error.message 
+    });
   }
 };
 
@@ -87,12 +136,31 @@ export const getUserProfile = async (req: Request, res: Response) => {
     const user = await User.findById((req as any).user._id).select('-password');
 
     if (user) {
-      res.json(user);
+      res.json({
+        success: true,
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          age: user.age,
+          level: user.level,
+          points: user.points,
+          achievements: user.achievements,
+          dailyStreak: user.dailyStreak,
+          hasTheraband: user.hasTheraband,
+        },
+      });
     } else {
-      res.status(404).json({ message: 'Benutzer nicht gefunden' });
+      res.status(404).json({ 
+        success: false,
+        message: 'Benutzer nicht gefunden' 
+      });
     }
   } catch (error: any) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      success: false,
+      message: error.message 
+    });
   }
 };
 

@@ -3,8 +3,32 @@ import { Exercise, MuscleGroup, ExerciseType, ExerciseCategory, Equipment } from
 
 // Alle Übungen abrufen
 export const getAllExercises = async (): Promise<Exercise[]> => {
-  const response = await api.get('/exercises');
-  return response.data;
+  console.log('🔍 [DEBUG] getAllExercises: Starte API-Aufruf...');
+  
+  try {
+    const response = await api.get('/exercises');
+    console.log(`✅ [DEBUG] getAllExercises: ${response.data.length} Übungen vom Server erhalten`);
+    
+    // Debug-Informationen für die ersten 3 Übungen
+    if (response.data.length > 0) {
+      console.log('📋 [DEBUG] Erste 3 Übungen vom Server:');
+      response.data.slice(0, 3).forEach((exercise: Exercise, index: number) => {
+        console.log(`  ${index + 1}. ${exercise.name} (ID: ${exercise._id})`);
+        console.log(`     VideoID: ${exercise.videoId || 'N/A'}`);
+        console.log(`     Muskelgruppe: ${exercise.muscleGroup}`);
+        console.log(`     Dauer: ${exercise.duration}s`);
+        console.log(`     Equipment: ${exercise.equipment || 'N/A'}`);
+        console.log(`     Video URL: ${exercise.videoUrl || 'N/A'}`);
+      });
+    } else {
+      console.log('⚠️ [DEBUG] Keine Übungen vom Server erhalten!');
+    }
+    
+    return response.data;
+  } catch (error) {
+    console.error('❌ [DEBUG] getAllExercises Fehler:', error);
+    throw error;
+  }
 };
 
 // Übung nach ID abrufen

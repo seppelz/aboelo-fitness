@@ -20,9 +20,17 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import StarIcon from '@mui/icons-material/Star';
+import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
+import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import PersonIcon from '@mui/icons-material/Person';
+import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import { AuthContext } from '../contexts/AuthContext';
 import { getDailyProgress } from '../services/progressService';
 import { getRecommendedExercises } from '../services/progressService';
+import { getAllExercises } from '../services/exerciseService';
 import { Exercise, MuscleGroup, DailyProgress } from '../types';
 import { getThumbnailUrl, preloadThumbnails } from '../components/exercises/exerciseUtils';
 import StreakDisplay from '../components/gamification/StreakDisplay';
@@ -46,21 +54,21 @@ const formatDuration = (seconds?: number): string => {
 // Kategorie-Text formatieren
 const getMotivationalQuote = (): string => {
   const quotes = [
-    "Jeder Schritt zählt! 💪",
-    "Du schaffst das! 🌟",
-    "Bleib dran und glaub an dich! 🔥",
-    "Heute ist ein neuer Tag für neue Erfolge! ⚡",
-    "Deine Gesundheit ist das wertvollste Gut! 💎",
-    "Kleine Schritte führen zu großen Veränderungen! 🚀",
-    "Du bist stärker als du denkst! 💪",
-    "Jede Übung bringt dich deinem Ziel näher! 🎯",
-    "Disziplin heute, Stolz morgen! 👑",
-    "Dein Körper dankt dir für jede Bewegung! 🌈",
-    "Fortschritt ist besser als Perfektion! ✨",
-    "Du investierst in deine beste Version! 🌟",
-    "Glaube an den Prozess! 🔥",
-    "Motivation bringt dich zum Start, Gewohnheit zum Ziel! ⚡",
-    "Heute ist der perfekte Tag zum Trainieren! 💎"
+    "Jeder Schritt zählt!",
+    "Du schaffst das!",
+    "Bleib dran und glaub an dich!",
+    "Heute ist ein neuer Tag für neue Erfolge!",
+    "Deine Gesundheit ist das wertvollste Gut!",
+    "Kleine Schritte führen zu großen Veränderungen!",
+    "Du bist stärker als du denkst!",
+    "Jede Übung bringt dich deinem Ziel näher!",
+    "Disziplin heute, Stolz morgen!",
+    "Dein Körper dankt dir für jede Bewegung!",
+    "Fortschritt ist besser als Perfektion!",
+    "Du investierst in deine beste Version!",
+    "Glaube an den Prozess!",
+    "Motivation bringt dich zum Start, Gewohnheit zum Ziel!",
+    "Heute ist der perfekte Tag zum Trainieren!"
   ];
 
   const today = new Date();
@@ -113,15 +121,23 @@ const HomePage: React.FC = () => {
       } else {
         // For non-authenticated users, show some sample exercises
         try {
-          const recommendationsData = await getRecommendedExercises();
-          const exercises = (recommendationsData as any).recommendations || [];
-          setRecommendedExercises(exercises.slice(0, 3)); // Show fewer for guests
+          console.log('🔍 [DEBUG] HomePage: Lade Übungen für nicht-authentifizierte Benutzer...');
+          const allExercises = await getAllExercises();
+          console.log(`✅ [DEBUG] HomePage: ${allExercises.length} Übungen geladen`);
           
-          if (exercises.length > 0) {
-            preloadThumbnails(exercises.slice(0, 3));
+          // Show a random selection of exercises for guests
+          const shuffled = allExercises.sort(() => 0.5 - Math.random());
+          const selectedExercises = shuffled.slice(0, 3);
+          console.log(`🎯 [DEBUG] HomePage: ${selectedExercises.length} Übungen für Anzeige ausgewählt`);
+          
+          setRecommendedExercises(selectedExercises);
+          
+          if (allExercises.length > 0) {
+            console.log('🖼️ [DEBUG] HomePage: Starte Thumbnail-Preloading...');
+            preloadThumbnails(selectedExercises);
           }
         } catch (error) {
-          console.error('Fehler beim Laden der Übungen:', error);
+          console.error('❌ [DEBUG] HomePage: Fehler beim Laden der Übungen:', error);
         }
         setLoading(false);
       }
@@ -131,18 +147,20 @@ const HomePage: React.FC = () => {
   }, [isAuthenticated]);
   
   // Muskelgruppen-Icons zuordnen
-  const getMuscleGroupIcon = (muscleGroup: MuscleGroup): string => {
-    const icons: Record<MuscleGroup, string> = {
-      'Bauch': '💪',
-      'Beine': '🦵',
-      'Po': '🍑',
-      'Schulter': '💪',
-      'Brust': '💪',
-      'Nacken': '🧠',
-      'Rücken': '🔄'
+  const getMuscleGroupIcon = (muscleGroup: MuscleGroup): React.ReactElement => {
+    const iconStyle = { fontSize: '2rem', color: 'primary.main' };
+    
+    const icons: Record<MuscleGroup, React.ReactElement> = {
+      'Bauch': <SelfImprovementIcon sx={iconStyle} />,
+      'Beine': <DirectionsRunIcon sx={iconStyle} />,
+      'Po': <DirectionsWalkIcon sx={iconStyle} />,
+      'Schulter': <AccessibilityNewIcon sx={iconStyle} />,
+      'Brust': <FavoriteBorderIcon sx={iconStyle} />,
+      'Nacken': <PersonIcon sx={iconStyle} />,
+      'Rücken': <AccessibilityIcon sx={iconStyle} />
     };
     
-    return icons[muscleGroup] || '💪';
+    return icons[muscleGroup] || <FitnessCenterIcon sx={iconStyle} />;
   };
 
   const renderGamificationSection = () => (
@@ -331,7 +349,7 @@ const HomePage: React.FC = () => {
       {/* Hero Section - Senior Optimized */}
       <Paper
         sx={{
-          background: 'linear-gradient(135deg, #1976d2 0%, #42a5f5 100%)',
+          background: 'linear-gradient(135deg, #2d7d7d 0%, #3fa3a3 100%)',
           color: 'white',
           p: { xs: 3, sm: 4 },
           mb: { xs: 3, sm: 4 },
@@ -475,7 +493,7 @@ const HomePage: React.FC = () => {
                       {/* Daily Muscle Group Challenge Progress */}
                       <Box sx={{ mt: 2, mb: 2 }}>
                         <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 'bold' }}>
-                          🎯 Tägliche Muskelgruppen-Challenge
+                          Tägliche Muskelgruppen-Challenge
                         </Typography>
                         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: 1 }}>
                           {['Bauch', 'Beine', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'].map((group: string) => {
@@ -483,7 +501,8 @@ const HomePage: React.FC = () => {
                             return (
                               <Chip 
                                 key={group}
-                                label={`${getMuscleGroupIcon(group as MuscleGroup)} ${group}`}
+                                icon={getMuscleGroupIcon(group as MuscleGroup)}
+                                label={group}
                                 size="small"
                                 color={isTrained ? "success" : "default"}
                                 variant={isTrained ? "filled" : "outlined"}
@@ -510,7 +529,7 @@ const HomePage: React.FC = () => {
                         />
                         <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
                           {dailyProgress.muscleGroupsTrainedToday?.length === 7 
-                            ? "🏆 Fantastisch! Alle Muskelgruppen trainiert!" 
+                            ? "Fantastisch! Alle Muskelgruppen trainiert!" 
                             : `Noch ${7 - (dailyProgress.muscleGroupsTrainedToday?.length || 0)} Muskelgruppen für die tägliche Challenge!`
                           }
                         </Typography>
@@ -567,7 +586,7 @@ const HomePage: React.FC = () => {
             lineHeight: 1.3
           }}
         >
-          {isAuthenticated ? '🎯 Empfohlene Übungen für Sie' : '🏃‍♂️ Unsere Übungen'}
+          {isAuthenticated ? 'Empfohlene Übungen für Sie' : 'Unsere Übungen'}
         </Typography>
         
         {loading ? (
@@ -663,7 +682,8 @@ const HomePage: React.FC = () => {
                     mb: 2 
                   }}>
                     <Chip 
-                      label={`${getMuscleGroupIcon(exercise.muscleGroup)} ${exercise.muscleGroup}`}
+                      icon={getMuscleGroupIcon(exercise.muscleGroup)}
+                      label={exercise.muscleGroup}
                       size={isMobile ? "medium" : "small"}
                       color="primary"
                       variant="outlined"
@@ -692,7 +712,7 @@ const HomePage: React.FC = () => {
                       fontWeight: 500
                     }}
                   >
-                    {exercise.equipment?.includes('Theraband') ? '🎯 Mit Theraband' : '🏃‍♂️ Ohne Geräte'}
+                    {exercise.equipment?.includes('Theraband') ? 'Mit Theraband' : 'Ohne Geräte'}
                   </Typography>
                 </CardContent>
               </Card>

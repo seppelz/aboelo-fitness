@@ -125,7 +125,7 @@ const StreakDisplay: React.FC<StreakDisplayProps> = ({
         {streakInfo.longestStreak > streakInfo.currentStreak && (
           <Box sx={{ mt: 2, p: 1, backgroundColor: theme.palette.background.default, borderRadius: 1 }}>
             <Typography variant="caption" color="textSecondary">
-              Persönlicher Rekord: {streakInfo.longestStreak} Tage 🏆
+              Persönlicher Rekord: {streakInfo.longestStreak} Tage
             </Typography>
           </Box>
         )}

@@ -140,7 +140,7 @@ const healthImpactSchema = new Schema<IHealthImpact>({
 // Indexes for better query performance
 sessionMetricsSchema.index({ userId: 1, startTime: -1 });
 dailyEngagementSchema.index({ userId: 1, date: -1 });
-retentionMetricsSchema.index({ userId: 1 });
+// retentionMetricsSchema already has unique index on userId, no need for additional index
 healthImpactSchema.index({ userId: 1, date: -1 });
 
 // Models

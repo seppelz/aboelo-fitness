@@ -12,11 +12,12 @@ dotenv.config();
 // MongoDB-Verbindung herstellen
 const connectDB = async () => {
   try {
-    const mongoUri = process.env.MONGO_URI || 'mongodb+srv://sebastiansoecker:WSdj83HqSmKrv04B@cluster0.slnc9kk.mongodb.net/aboelo-fitness?retryWrites=true&w=majority';
-    console.log(`Verbindung zu MongoDB wird hergestellt: ${mongoUri}`);
+    const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb+srv://sebastiansoecker:WSdj83HqSmKrv04B@cluster0.slnc9kk.mongodb.net/aboelo-fitness?retryWrites=true&w=majority';
+    console.log(`Verbindung zu MongoDB wird hergestellt...`);
     
     const conn = await mongoose.connect(mongoUri);
     console.log(`MongoDB verbunden: ${conn.connection.host}`);
+    console.log(`Datenbank: ${conn.connection.name}`);
     return true;
   } catch (error: any) {
     console.error(`MongoDB-Verbindungsfehler: ${error.message}`);
@@ -139,8 +140,8 @@ const importExercises = async () => {
     // Mit MongoDB verbinden
     await connectDB();
     
-    // Absoluten Pfad zu den Übungsanleitungen erstellen
-    const instructionsDir = path.join('/home/sebastian/Downloads/aboelo-fitness/frontend/public/exercise-instructions');
+    // Relativen Pfad zu den Übungsanleitungen erstellen (funktioniert auf Windows und Linux)
+    const instructionsDir = path.join(__dirname, '..', '..', '..', 'frontend', 'public', 'exercise-instructions');
     console.log(`Suche Übungsdateien in: ${instructionsDir}`);
     
     const files = fs.readdirSync(instructionsDir).filter(file => file.endsWith('.txt'));

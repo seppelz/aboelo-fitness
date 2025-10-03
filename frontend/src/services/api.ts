@@ -23,4 +23,25 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Interceptor für 401 Unauthorized Fehler (abgelaufene Tokens)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token ist abgelaufen oder ungültig
+      console.log('🔒 Token abgelaufen oder ungültig - Benutzer wird abgemeldet');
+      
+      // Lokale Daten löschen
+      localStorage.removeItem('userToken');
+      localStorage.removeItem('user');
+      
+      // Zur Login-Seite umleiten, wenn nicht schon dort
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login?expired=true';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default api;

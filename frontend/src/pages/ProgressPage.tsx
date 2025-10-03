@@ -19,6 +19,13 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
+import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import PersonIcon from '@mui/icons-material/Person';
+import AccessibilityIcon from '@mui/icons-material/Accessibility';
 import { 
   getDailyProgress, 
   getWeeklyProgress, 
@@ -167,18 +174,18 @@ const ProgressPage: React.FC = () => {
   };
   
   // Hilfsfunktion für Muskelgruppen-Icons
-  const getMuscleGroupIcon = (group: string): string => {
-    // Hier könnten komplexere Icon-Mappings implementiert werden
+  const getMuscleGroupIcon = (group: string): React.ReactElement => {
+    const iconStyle = { fontSize: '1.5rem', color: 'primary.main' };
+    
     switch (group) {
-      case 'Bauch': return '💪';
-      case 'Beine': return '🦵';
-      case 'Po': return '🍑';
-      case 'Schulter': return '💪';
-      
-      case 'Brust': return '💪';
-      case 'Nacken': return '👤';
-      case 'Rücken': return '👕';
-      default: return '🏋️';
+      case 'Bauch': return <SelfImprovementIcon sx={iconStyle} />;
+      case 'Beine': return <DirectionsRunIcon sx={iconStyle} />;
+      case 'Po': return <DirectionsWalkIcon sx={iconStyle} />;
+      case 'Schulter': return <AccessibilityNewIcon sx={iconStyle} />;
+      case 'Brust': return <FavoriteBorderIcon sx={iconStyle} />;
+      case 'Nacken': return <PersonIcon sx={iconStyle} />;
+      case 'Rücken': return <AccessibilityIcon sx={iconStyle} />;
+      default: return <FitnessCenterIcon sx={iconStyle} />;
     }
   };
   

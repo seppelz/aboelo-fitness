@@ -32,11 +32,44 @@ app.get('/', (req: Request, res: Response) => {
 // MongoDB-Verbindung
 const connectDB = async () => {
   try {
-    const mongoURI = process.env.MONGO_URI || 'mongodb+srv://sebastiansoecker:WSdj83HqSmKrv04B@cluster0.slnc9kk.mongodb.net/aboelo-fitness?retryWrites=true&w=majority';
+    console.log('🔌 [DEBUG] Verbinde mit MongoDB...');
+    
+    const mongoURI = process.env.MONGODB_URI || process.env.MONGO_URI;
+    if (!mongoURI) {
+      throw new Error('MONGODB_URI or MONGO_URI environment variable is not set');
+    }
+    
+    console.log('📡 [DEBUG] MongoDB URI gefunden:', mongoURI.substring(0, 50) + '...');
+    
     await mongoose.connect(mongoURI);
-    console.log('MongoDB-Verbindung hergestellt');
+    console.log('✅ [DEBUG] MongoDB-Verbindung erfolgreich hergestellt');
+    
+    // Teste die Verbindung durch Abfrage der Collections
+    if (mongoose.connection.db) {
+      const collections = await mongoose.connection.db.listCollections().toArray();
+      console.log('📚 [DEBUG] Verfügbare Collections:', collections.map(c => c.name));
+      
+      // Teste die Exercise Collection
+      try {
+        const exerciseCount = await mongoose.connection.db.collection('exercises').countDocuments();
+        console.log(`💪 [DEBUG] Anzahl Übungen in der Datenbank: ${exerciseCount}`);
+      } catch (error) {
+        console.log('⚠️ [DEBUG] Exercise Collection nicht gefunden oder leer');
+      }
+      
+      // Teste die User Collection
+      try {
+        const userCount = await mongoose.connection.db.collection('users').countDocuments();
+        console.log(`👥 [DEBUG] Anzahl Benutzer in der Datenbank: ${userCount}`);
+      } catch (error) {
+        console.log('⚠️ [DEBUG] User Collection nicht gefunden oder leer');
+      }
+    } else {
+      console.log('⚠️ [DEBUG] Datenbankverbindung nicht verfügbar für Tests');
+    }
+    
   } catch (error) {
-    console.error('MongoDB-Verbindungsfehler:', error);
+    console.error('❌ [DEBUG] MongoDB-Verbindungsfehler:', error);
     process.exit(1);
   }
 };

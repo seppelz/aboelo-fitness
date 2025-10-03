@@ -32,7 +32,7 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 const ProfilePage: React.FC = () => {
   // In AuthContext ist setUser nicht Teil der öffentlichen Schnittstelle
   // Wir verwenden nur die Eigenschaften, die tatsächlich im Kontext verfügbar sind
-  const { user } = useContext(AuthContext);
+  const { user, refreshUser } = useContext(AuthContext);
   
   // Calculate estimated exercises from points for data consistency
   const estimatedExercises = user ? Math.floor((user.points || 0) / 10) : 0;
@@ -135,12 +135,12 @@ const ProfilePage: React.FC = () => {
       // updateProfile aktualisiert bereits den Benutzer im localStorage
       await updateProfile(updatedData);
       
+      // WICHTIG: AuthContext mit frischen Daten vom Server aktualisieren
+      await refreshUser();
+      
       // Erfolgsbenachrichtigung anzeigen und Bearbeitungsmodus deaktivieren
       setSuccess('Profil erfolgreich aktualisiert.');
       setIsEditing(false);
-      
-      // Optional: Seite neu laden, um aktualisierte Daten aus dem localStorage zu holen
-      // window.location.reload();
       
       // Passwortfelder zurücksetzen
       setCurrentPassword('');
