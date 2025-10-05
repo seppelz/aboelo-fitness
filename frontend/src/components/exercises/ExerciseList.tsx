@@ -4,7 +4,6 @@ import {
   Card, 
   CardContent,
   CardMedia, 
-  CardActions,
   Button,
   Grid,
   Typography,
@@ -13,37 +12,23 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  TextField,
   Alert,
   CircularProgress,
   SelectChangeEvent,
-  Divider as MuiDivider
+  Container,
+  Paper,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import TuneIcon from '@mui/icons-material/Tune';
 import { useNavigate } from 'react-router-dom';
 import { getAllExercises } from '../../services/exerciseService';
 import { Exercise, MuscleGroup, ExerciseType, ExerciseCategory, Equipment } from '../../types';
 import { getThumbnailUrl } from './exerciseUtils';
 import { AuthContext } from '../../contexts/AuthContext';
 
-// Schwierigkeitsgrad-Text
-const getDifficultyText = (difficulty: number): string => {
-  switch (difficulty) {
-    case 1:
-      return 'Sehr leicht';
-    case 2:
-      return 'Leicht';
-    case 3:
-      return 'Mittel';
-    case 4:
-      return 'Schwer';
-    case 5:
-      return 'Sehr schwer';
-    default:
-      return 'Mittel';
-  }
-};
+
 
 // Dauer formatieren - show seconds if under 1 minute
 const formatDuration = (seconds?: number): string => {
@@ -68,18 +53,16 @@ const getCategoryText = (category: string): string => {
 const ExerciseList: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [filteredExercises, setFilteredExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // Suchbegriff
-  const [searchTerm, setSearchTerm] = useState('');
-  
   // Filter-Zustände
   const [muscleGroup, setMuscleGroup] = useState<MuscleGroup | 'all'>('all');
   const [category, setCategory] = useState<ExerciseCategory | 'all'>('all');
-  const [difficulty, setDifficulty] = useState<number | 'all'>('all');
   
   // Boolean Filter mit String-Repräsentation für die UI
   const [isSitting, setIsSitting] = useState<boolean | 'all'>('all');
@@ -98,10 +81,8 @@ const ExerciseList: React.FC = () => {
   
   // Zurücksetzen aller Filter
   const resetFilters = () => {
-    setSearchTerm('');
     setMuscleGroup('all');
     setCategory('all');
-    setDifficulty('all');
     setIsSitting('all');
     setUsesTheraband('all');
     setIsDynamic('all');
@@ -207,48 +188,134 @@ const ExerciseList: React.FC = () => {
   }, [exercises, muscleGroup, category, isSitting, usesTheraband, isDynamic, isUnilateral, type, equipment, user]);
   
 
-  // Laden oder Fehler anzeigen
+  // Laden oder Fehler anzeigen - Senior-friendly mit Beschreibung
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <CircularProgress size={60} />
-      </Box>
+      <Container maxWidth="lg">
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: 'column',
+          alignItems: 'center', 
+          justifyContent: 'center',
+          minHeight: '60vh',
+          gap: 3
+        }}>
+          <CircularProgress size={isMobile ? 60 : 80} thickness={4} />
+          <Typography 
+            variant={isMobile ? "h6" : "h5"} 
+            color="primary" 
+            sx={{ 
+              fontWeight: 'bold',
+              fontSize: { xs: '1.25rem', sm: '1.5rem' }
+            }}
+          >
+            Übungen werden geladen...
+          </Typography>
+          <Typography 
+            variant="body1" 
+            color="text.secondary"
+            sx={{ fontSize: { xs: '1rem', sm: '1.1rem' } }}
+          >
+            Einen Moment bitte
+          </Typography>
+        </Box>
+      </Container>
     );
   }
   
   if (error) {
     return (
-      <Box sx={{ p: 3 }}>
-        <Alert severity="error" sx={{ mt: 4 }}>
-          {error}
-        </Alert>
-      </Box>
+      <Container maxWidth="lg">
+        <Box sx={{ py: { xs: 2, sm: 4 }, px: { xs: 1, sm: 3 } }}>
+          <Alert 
+            severity="error" 
+            sx={{ 
+              mt: 4, 
+              fontSize: { xs: '1rem', sm: '1.1rem' },
+              '& .MuiAlert-message': {
+                fontSize: 'inherit'
+              }
+            }}
+          >
+            {error}
+          </Alert>
+          <Box sx={{ textAlign: 'center', mt: 4 }}>
+            <Button 
+              variant="contained" 
+              onClick={() => window.location.reload()}
+              sx={{ 
+                fontSize: { xs: '1rem', sm: '1.1rem' },
+                minHeight: 48,
+                px: 4
+              }}
+            >
+              Seite neu laden
+            </Button>
+          </Box>
+        </Box>
+      </Container>
     );
   }
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Übungsübersicht
-      </Typography>
+    <Container 
+      maxWidth="lg" 
+      sx={{ 
+        py: { xs: 2, sm: 4 },
+        px: { xs: 1, sm: 3 }
+      }}
+    >
+      {/* Header Section - Senior-friendly Typography */}
+      <Box sx={{ mb: 4 }}>
+        <Typography 
+          variant={isMobile ? "h5" : "h4"} 
+          component="h1" 
+          gutterBottom
+          sx={{ 
+            fontWeight: 'bold',
+            fontSize: { xs: '1.75rem', sm: '2.125rem' },
+            mb: 2
+          }}
+        >
+          Alle Übungen
+        </Typography>
+        
+        <Typography 
+          variant="body1" 
+          paragraph
+          sx={{ 
+            fontSize: { xs: '1.05rem', sm: '1.15rem' },
+            lineHeight: 1.6,
+            color: 'text.secondary'
+          }}
+        >
+          Wähle aus <strong>{exercises.length} Übungen</strong> für verschiedene Muskelgruppen. 
+          Nutze die Filter, um die passenden Übungen zu finden.
+        </Typography>
+      </Box>
       
-      <Typography variant="body1" paragraph>
-        Wähle aus {exercises.length} Übungen für verschiedene Muskelgruppen. 
-        Nutze die Filter, um die passenden Übungen zu finden.
-      </Typography>
-      
-      {/* Filter-Menü */}
-      <Box 
+      {/* Filter-Menü - Senior-friendly Design */}
+      <Paper 
+        elevation={2}
         sx={{ 
           mb: 4, 
-          p: 3, 
-          borderRadius: 2, 
-          bgcolor: '#f8f9fa',
-          border: '1px solid #e0e0e0',
-          display: 'flex',
-          flexDirection: 'column'
+          p: { xs: 2, sm: 3 }, 
+          borderRadius: 2,
+          bgcolor: 'background.paper'
         }}
       >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+          <FilterListIcon color="primary" sx={{ fontSize: '1.75rem' }} />
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              fontWeight: 'bold',
+              fontSize: { xs: '1.15rem', sm: '1.25rem' }
+            }}
+          >
+            Filter anwenden
+          </Typography>
+        </Box>
         
         <Grid container spacing={2}>
           {/* Muskelgruppen-Filter */}
@@ -264,7 +331,6 @@ const ExerciseList: React.FC = () => {
               >
                 <MenuItem value="all">Alle Muskelgruppen</MenuItem>
                 <MenuItem value="Bauch">Bauch</MenuItem>
-                <MenuItem value="Beine">Beine</MenuItem>
                 <MenuItem value="Po">Po</MenuItem>
                 <MenuItem value="Schulter">Schulter</MenuItem>
                 
@@ -294,7 +360,19 @@ const ExerciseList: React.FC = () => {
           </Grid>
         </Grid>
         
-        <Typography variant="subtitle1" sx={{ mt: 2, mb: 1 }}>Erweiterte Filter</Typography>
+        {/* Advanced Filters Section */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 4, mb: 2 }}>
+          <TuneIcon color="action" sx={{ fontSize: '1.5rem' }} />
+          <Typography 
+            variant="subtitle1" 
+            sx={{ 
+              fontWeight: 600,
+              fontSize: { xs: '1.05rem', sm: '1.1rem' }
+            }}
+          >
+            Erweiterte Filter
+          </Typography>
+        </Box>
         
         <Grid container spacing={2}>
           {/* Position (sitzend/stehend) */}
@@ -404,115 +482,218 @@ const ExerciseList: React.FC = () => {
           </Grid>
         </Grid>
         
-        <Button 
-          variant="outlined" 
-          color="secondary" 
-          onClick={resetFilters}
-          sx={{ mt: 2, alignSelf: 'flex-end' }}
-        >
-          Filter zurücksetzen
-        </Button>
-      </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+          <Button 
+            variant="outlined" 
+            color="secondary" 
+            onClick={resetFilters}
+            size="large"
+            sx={{ 
+              minHeight: 48,
+              px: 3,
+              fontSize: { xs: '0.95rem', sm: '1rem' },
+              fontWeight: 600
+            }}
+          >
+            Alle Filter zurücksetzen
+          </Button>
+        </Box>
+      </Paper>
       
-      {/* Ergebniszähler */}
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h6">
-          {filteredExercises.length} Übungen gefunden
+      {/* Ergebniszähler - Senior-friendly */}
+      <Paper 
+        elevation={1}
+        sx={{ 
+          mb: 3, 
+          p: 2,
+          bgcolor: 'primary.light',
+          color: 'primary.contrastText',
+          borderRadius: 2
+        }}
+      >
+        <Typography 
+          variant="h6"
+          sx={{ 
+            fontWeight: 'bold',
+            fontSize: { xs: '1.1rem', sm: '1.25rem' },
+            textAlign: 'center'
+          }}
+        >
+          {filteredExercises.length} {filteredExercises.length === 1 ? 'Übung' : 'Übungen'} gefunden
         </Typography>
-      </Box>
+      </Paper>
       
       {/* Übungsliste */}
       {filteredExercises.length === 0 ? (
-        <Box sx={{ textAlign: 'center', py: 4 }}>
-          <Typography variant="h6">
-            Keine Übungen gefunden, die den Filterkriterien entsprechen.
+        <Paper 
+          elevation={2}
+          sx={{ 
+            textAlign: 'center', 
+            py: { xs: 6, sm: 8 },
+            px: 3,
+            bgcolor: 'background.paper',
+            borderRadius: 2
+          }}
+        >
+          <Typography 
+            variant="h5" 
+            gutterBottom
+            sx={{ 
+              fontWeight: 600,
+              fontSize: { xs: '1.3rem', sm: '1.5rem' },
+              mb: 2
+            }}
+          >
+            Keine passenden Übungen gefunden
+          </Typography>
+          <Typography 
+            variant="body1" 
+            color="text.secondary"
+            sx={{ 
+              mb: 4,
+              fontSize: { xs: '1rem', sm: '1.1rem' }
+            }}
+          >
+            Versuche es mit anderen Filtereinstellungen oder setze alle Filter zurück.
           </Typography>
           <Button 
             variant="contained" 
             onClick={resetFilters}
-            sx={{ mt: 2, fontSize: '1.1rem' }}
+            size="large"
+            sx={{ 
+              minHeight: 56,
+              px: 4,
+              fontSize: { xs: '1rem', sm: '1.1rem' },
+              fontWeight: 600
+            }}
           >
-            Filter zurücksetzen
+            Alle Filter zurücksetzen
           </Button>
-        </Box>
+        </Paper>
       ) : (
-        <Grid container spacing={3}>
+        <Grid container spacing={{ xs: 2, sm: 3 }}>
           {filteredExercises.map(exercise => (
-            <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6', md: 'span 4' } }} key={(exercise as any)._id}>
+            <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6', md: 'span 6', lg: 'span 4' } }} key={(exercise as any)._id}>
               <Card 
                 sx={{ 
                   height: '100%',
                   display: 'flex',
                   flexDirection: 'column',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
                   '&:hover': {
-                    boxShadow: 6
+                    boxShadow: 8,
+                    transform: 'translateY(-4px)'
+                  },
+                  '&:active': {
+                    transform: 'translateY(-2px)'
                   }
                 }}
+                onClick={() => navigateToDetail((exercise as any)._id)}
               >
-                <Box onClick={() => navigateToDetail((exercise as any)._id)} sx={{ cursor: 'pointer' }}>
-                  <CardMedia
-                    component="img"
-                    height="180"
-                    image={getThumbnailUrl(exercise)}
-                    alt={exercise.name}
+                <CardMedia
+                  component="img"
+                  height={isMobile ? "160" : "200"}
+                  image={getThumbnailUrl(exercise)}
+                  alt={exercise.name}
+                  sx={{ 
+                    objectFit: 'contain',
+                    bgcolor: '#f5f5f5'
+                  }}
+                />
+                <CardContent sx={{ flexGrow: 1, p: { xs: 2, sm: 2.5 } }}>
+                  {/* Title - Senior-friendly size */}
+                  <Typography 
+                    variant="h6" 
+                    component="div" 
+                    gutterBottom 
                     sx={{ 
-                      objectFit: 'contain' // Stellt sicher, dass das gesamte Bild sichtbar ist und sein Seitenverhältnis beibehält
+                      fontWeight: 'bold',
+                      fontSize: { xs: '1.15rem', sm: '1.25rem' },
+                      lineHeight: 1.3,
+                      mb: 2
                     }}
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="h6" component="div" gutterBottom sx={{ fontWeight: 'bold' }}>
-                      {exercise.name}
-                    </Typography>
-                    
-                    <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                      <Chip 
-                        label={exercise.muscleGroup} 
-                        color="primary" 
-                        size="small" 
-                        sx={{ fontSize: '0.8rem', height: '24px' }}
-                      />
-                      <Chip 
-                        label={getCategoryText((exercise as any).category)} 
-                        color="secondary" 
-                        size="small" 
-                        sx={{ fontSize: '0.8rem', height: '24px' }}
-                      />
-                      <Chip 
-                        label={`${(exercise as any).isSitting ? 'Sitzend' : 'Stehend'}`}
-                        color="secondary"
-                        variant="outlined"
-                        size="small" 
-                        sx={{ fontSize: '0.8rem', height: '24px' }}
-                      />
-                      <Chip 
-                        label={`${(exercise as any).usesTheraband ? 'Mit Theraband' : 'Ohne Theraband'}`}
-                        color="secondary"
-                        variant="outlined"
-                        size="small" 
-                        sx={{ fontSize: '0.8rem', height: '24px' }}
-                      />
+                  >
+                    {exercise.name}
+                  </Typography>
+                  
+                  {/* Chips - Senior-friendly larger size */}
+                  <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                    <Chip 
+                      label={exercise.muscleGroup} 
+                      color="primary" 
+                      size="medium"
+                      sx={{ 
+                        fontSize: { xs: '0.9rem', sm: '0.95rem' },
+                        height: { xs: '30px', sm: '32px' },
+                        fontWeight: 600
+                      }}
+                    />
+                    <Chip 
+                      label={getCategoryText((exercise as any).category)} 
+                      color="secondary" 
+                      size="medium"
+                      sx={{ 
+                        fontSize: { xs: '0.9rem', sm: '0.95rem' },
+                        height: { xs: '30px', sm: '32px' },
+                        fontWeight: 600
+                      }}
+                    />
+                    <Chip 
+                      label={`${(exercise as any).isSitting ? 'Sitzend' : 'Stehend'}`}
+                      color="secondary"
+                      variant="outlined"
+                      size="medium"
+                      sx={{ 
+                        fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                        height: { xs: '30px', sm: '32px' }
+                      }}
+                    />
+                    <Chip 
+                      label={`${(exercise as any).usesTheraband ? 'Mit Theraband' : 'Ohne Theraband'}`}
+                      color="secondary"
+                      variant="outlined"
+                      size="medium"
+                      sx={{ 
+                        fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                        height: { xs: '30px', sm: '32px' }
+                      }}
+                    />
+                    {exercise.duration && exercise.duration > 0 && (
                       <Chip 
                         label={`Dauer: ${formatDuration(exercise.duration)}`}
                         color="primary"
                         variant="outlined"
-                        size="small" 
-                        sx={{ fontSize: '0.8rem', height: '24px' }}
+                        size="medium"
+                        sx={{ 
+                          fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                          height: { xs: '30px', sm: '32px' }
+                        }}
                       />
-                    </Box>
-                    
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                      {exercise.description && exercise.description.length > 100 
-                        ? exercise.description.substring(0, 100) + '...' 
-                        : exercise.description}
-                    </Typography>
-                  </CardContent>
-                </Box>
+                    )}
+                  </Box>
+                  
+                  {/* Description - Senior-friendly size */}
+                  <Typography 
+                    variant="body2" 
+                    color="text.secondary" 
+                    sx={{ 
+                      mb: 1,
+                      fontSize: { xs: '0.95rem', sm: '1rem' },
+                      lineHeight: 1.5
+                    }}
+                  >
+                    {exercise.description && exercise.description.length > 100 
+                      ? exercise.description.substring(0, 100) + '...' 
+                      : exercise.description}
+                  </Typography>
+                </CardContent>
               </Card>
             </Grid>
           ))}
         </Grid>
       )}
-    </Box>
+    </Container>
   );
 };
 
