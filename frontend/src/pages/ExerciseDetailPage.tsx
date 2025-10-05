@@ -10,9 +10,10 @@ import {
   Chip,
   Paper,
   Divider,
-  Container
+  Container,
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
-import { Grid } from '@mui/material';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
@@ -31,6 +32,8 @@ import { ProgressResponse } from '../types';
 
 const ExerciseDetailPage: React.FC = () => {
   const { refreshUser } = useContext(AuthContext);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [videoStarted, setVideoStarted] = useState(false);
   const [isAborted, setIsAborted] = useState(false);
@@ -310,57 +313,91 @@ const ExerciseDetailPage: React.FC = () => {
     setWatchStartTime(Date.now());
   };
   
-  // Kompakte Übungsdetails rendern
+  // Kompakte Übungsdetails rendern - Optimized for readability
   const renderExerciseDetails = () => {
     if (!exercise) return null;
     
     return (
       <Box>
-        <Typography variant="h6" sx={{ mb: 1 }}>{exercise.name}</Typography>
-        <Divider sx={{ mb: 1 }} />
+        <Typography 
+          variant="h5" 
+          sx={{ 
+            mb: 2, 
+            fontWeight: 'bold',
+            fontSize: { md: '1.35rem', lg: '1.5rem' },
+            lineHeight: 1.3,
+            color: 'primary.main'
+          }}
+        >
+          {exercise.name}
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
         
-        {/* Charakteristiken der Übung in kompakterer Darstellung */}
-        <Box sx={{ mb: 1.5 }}>
-          <Typography variant="subtitle2" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+        {/* Charakteristiken der Übung - Senior-friendly chips */}
+        <Box sx={{ mb: 2.5 }}>
+          <Typography 
+            variant="subtitle1" 
+            sx={{ 
+              fontWeight: 'bold', 
+              mb: 1,
+              fontSize: { md: '1.05rem', lg: '1.1rem' }
+            }}
+          >
             Charakteristiken:
           </Typography>
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 0.5 }}>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
             {/* Dauer anzeigen */}
             <Chip
               label={`Dauer: ${formatDuration(videoDuration && videoDuration > 0 ? videoDuration : exercise.duration)}`}
               color="primary"
               variant="outlined"
-              size="small"
-              sx={{ fontSize: '0.8rem', height: '24px' }}
+              size="medium"
+              sx={{ 
+                fontSize: { md: '0.9rem', lg: '0.95rem' },
+                height: { md: '30px', lg: '32px' },
+                fontWeight: 600
+              }}
             />
+            <Chip 
+              label={`Muskelgruppe: ${exercise.muscleGroup || 'Verschiedene'}`}
+              color="primary"
+              size="medium"
+              sx={{ 
+                fontSize: { md: '0.9rem', lg: '0.95rem' },
+                height: { md: '30px', lg: '32px' },
+                fontWeight: 600
+              }}
+            />
+          </Box>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
             <Chip 
               label={`${exercise.isSitting ? 'Sitzend' : 'Stehend'}`}
               color="secondary"
               variant="outlined"
-              size="small"
-              sx={{ fontSize: '0.8rem', height: '24px' }} 
+              size="medium"
+              sx={{ fontSize: { md: '0.85rem', lg: '0.9rem' }, height: { md: '30px', lg: '32px' } }} 
             />
             <Chip 
               label={getCategoryText((exercise as any).category)}
               color="secondary"
               variant="outlined"
-              size="small"
-              sx={{ fontSize: '0.8rem', height: '24px' }} 
+              size="medium"
+              sx={{ fontSize: { md: '0.85rem', lg: '0.9rem' }, height: { md: '30px', lg: '32px' } }} 
             />
             <Chip 
               label={`${exercise.usesTheraband ? 'Mit Theraband' : 'Ohne Theraband'}`}
               color="secondary"
               variant="outlined"
-              size="small"
-              sx={{ fontSize: '0.8rem', height: '24px' }} 
+              size="medium"
+              sx={{ fontSize: { md: '0.85rem', lg: '0.9rem' }, height: { md: '30px', lg: '32px' } }} 
             />
             {exercise.isDynamic !== undefined && (
               <Chip 
                 label={`${exercise.isDynamic ? 'Dynamisch' : 'Statisch'}`}
                 color="secondary"
                 variant="outlined"
-                size="small"
-                sx={{ fontSize: '0.8rem', height: '24px' }} 
+                size="medium"
+                sx={{ fontSize: { md: '0.85rem', lg: '0.9rem' }, height: { md: '30px', lg: '32px' } }} 
               />
             )}
             {exercise.isUnilateral !== undefined && (
@@ -368,133 +405,219 @@ const ExerciseDetailPage: React.FC = () => {
                 label={`${exercise.isUnilateral ? 'Einseitig' : 'Beidseitig'}`}
                 color="secondary"
                 variant="outlined"
-                size="small"
-                sx={{ fontSize: '0.8rem', height: '24px' }} 
+                size="medium"
+                sx={{ fontSize: { md: '0.85rem', lg: '0.9rem' }, height: { md: '30px', lg: '32px' } }} 
               />
             )}
           </Box>
-                    <Chip 
-              label={`Muskelgruppe: ${exercise.muscleGroup || 'Verschiedene'}`}
-              color="secondary"
-              variant="outlined"
-              size="small"
-              sx={{ fontSize: '0.8rem', height: '24px' }} 
-            />
           </Box>
         
         {/* Ziel der Übung */}
         {exercise.goal && (
-          <Box sx={{ mb: 1.5 }}>
-            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', mb: 0.5 }}>
-              Ziel der Übung:
+          <Box sx={{ mb: 2 }}>
+            <Typography 
+              variant="subtitle1" 
+              gutterBottom 
+              sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: { md: '1.05rem', lg: '1.1rem' },
+                color: 'primary.dark'
+              }}
+            >
+              🎯 Ziel der Übung:
             </Typography>
-            <Typography variant="body2">{exercise.goal}</Typography>
+            <Typography 
+              variant="body1"
+              sx={{ 
+                fontSize: { md: '0.95rem', lg: '1rem' },
+                lineHeight: 1.6
+              }}
+            >
+              {exercise.goal}
+            </Typography>
           </Box>
         )}
 
         {/* Vorbereitung */}
         {exercise.preparation && (
-          <Box sx={{ mb: 1.5 }}>
-            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', mb: 0.5 }}>
-              Vorbereitung:
+          <Box sx={{ mb: 2 }}>
+            <Typography 
+              variant="subtitle1" 
+              gutterBottom 
+              sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: { md: '1.05rem', lg: '1.1rem' },
+                color: 'primary.dark'
+              }}
+            >
+              🔧 Vorbereitung:
             </Typography>
-            <Typography variant="body2">{exercise.preparation}</Typography>
+            <Typography 
+              variant="body1"
+              sx={{ 
+                fontSize: { md: '0.95rem', lg: '1rem' },
+                lineHeight: 1.6
+              }}
+            >
+              {exercise.preparation}
+            </Typography>
           </Box>
         )}
 
         {/* Durchführung */}
         {exercise.execution && (
-          <Box sx={{ mb: 1.5 }}>
-            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', mb: 0.5 }}>
-              Durchführung:
+          <Box sx={{ mb: 2 }}>
+            <Typography 
+              variant="subtitle1" 
+              gutterBottom 
+              sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: { md: '1.05rem', lg: '1.1rem' },
+                color: 'primary.dark'
+              }}
+            >
+              ▶️ Durchführung:
             </Typography>
-            <Typography variant="body2">{exercise.execution}</Typography>
+            <Typography 
+              variant="body1"
+              sx={{ 
+                fontSize: { md: '0.95rem', lg: '1rem' },
+                lineHeight: 1.6
+              }}
+            >
+              {exercise.execution}
+            </Typography>
           </Box>
         )}
 
         {/* Tipps */}
         {exercise.tips && exercise.tips.trim() !== '' && (
-          <Box sx={{ mb: 1.5 }}>
-            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', mb: 0.5 }}>
-              Tipps:
+          <Box sx={{ mb: 2 }}>
+            <Typography 
+              variant="subtitle1" 
+              gutterBottom 
+              sx={{ 
+                fontWeight: 'bold', 
+                mb: 1,
+                fontSize: { md: '1.05rem', lg: '1.1rem' },
+                color: 'primary.dark'
+              }}
+            >
+              💡 Tipps:
             </Typography>
-
-            <ul style={{ margin: 0, paddingLeft: '20px', listStyleType: 'disc' }}>
-              <li>
-                <Typography variant="body2" component="span" sx={{ display: 'block', mb: 0.5 }}>
-                  {exercise.tips}
-                </Typography>
-              </li>
-            </ul>
+            <Box 
+              sx={{ 
+                pl: 2,
+                borderLeft: 3,
+                borderColor: 'primary.light',
+                bgcolor: 'grey.50',
+                p: 1.5,
+                borderRadius: 1
+              }}
+            >
+              <Typography 
+                variant="body1"
+                sx={{ 
+                  fontSize: { md: '0.95rem', lg: '1rem' },
+                  lineHeight: 1.6
+                }}
+              >
+                {exercise.tips}
+              </Typography>
+            </Box>
           </Box>
         )}
       </Box>
     );
   };
 
-  // Video-Vorschau für ungestartete Übung
+  // Video-Vorschau für ungestartete Übung - Optimized for space
   const renderVideoPreview = () => {
     if (!exercise) return null;
     
-    // Cloudinary-Thumbnail aus exerciseUtils verwenden
     const thumbnailUrl = getThumbnailUrl(exercise);
 
     return (
-      <Box>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        height: '100%',
+        justifyContent: 'center'
+      }}>
         {/* Video-Container mit Thumbnail */}
         <Paper 
           elevation={2}
           sx={{ 
             overflow: 'hidden',
             borderRadius: 2,
-            mb: 1.5, // Reduzierter Abstand
-            backgroundColor: 'white'
+            mb: 2,
+            backgroundColor: '#f5f5f5',
+            flex: '1 1 auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            maxHeight: 'calc(100% - 180px)' // Leave space for info box
           }}
         >
-          {/* Das Video wird als statisches Bild angezeigt */}
           <Box 
             component="img"
             src={thumbnailUrl}
             alt={`Vorschaubild für ${exercise.name}`}
             sx={{ 
               width: '100%', 
-              height: 'auto',
+              height: '100%',
               display: 'block',
-              objectFit: 'contain', // Show full image without cropping
-              maxHeight: '320px', // Reduzierte Höhe
-              backgroundColor: 'white' // White background for seamless video effect
+              objectFit: 'contain'
             }}
           />
         </Paper>
         
-        {/* Informationsbox unter dem Video */}
+        {/* Compact Informationsbox */}
         <Paper 
           elevation={1}
           sx={{ 
-            p: 2, // Weniger Padding 
-            mb: 2, // Reduzierter Abstand
+            p: 2,
             borderRadius: 2,
             backgroundColor: 'white'
           }}
         >
-          <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 'bold' }}>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              mb: 1.5, 
+              fontWeight: 'bold',
+              fontSize: { md: '1.15rem', lg: '1.25rem' }
+            }}
+          >
             Bereit für die Übung?
           </Typography>
-          <Typography variant="body2" sx={{ mb: 1 }}>
-            {exercise.isSitting ? 'Diese Übung wird im Sitzen durchgeführt.' : 'Diese Übung wird im Stehen durchgeführt.'}
-            {exercise.usesTheraband && ' Sie benötigen ein Theraband.'}
-          </Typography>
-          <Typography variant="body2" sx={{ mb: 1.5 }}>
-            Lesen Sie zuerst die Anleitung rechts durch und starten Sie dann die Übung.
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              mb: 1.5,
+              fontSize: { md: '0.95rem', lg: '1rem' },
+              lineHeight: 1.5
+            }}
+          >
+            {exercise.isSitting ? '🪑 Diese Übung wird im Sitzen durchgeführt.' : '🧍 Diese Übung wird im Stehen durchgeführt.'}
+            {exercise.usesTheraband && ' 🎗️ Sie benötigen ein Theraband.'}
           </Typography>
           <Button
             variant="contained"
-            size="medium" // Kleinerer Button
+            size="large"
+            fullWidth
             onClick={handleStartExercise}
-            sx={{ fontSize: '1rem', py: 1, px: 3 }}
+            sx={{ 
+              fontSize: { md: '1rem', lg: '1.1rem' },
+              py: 1.5,
+              fontWeight: 600
+            }}
             disabled={completed}
           >
-            Übung starten
+            Übung jetzt starten
           </Button>
         </Paper>
       </Box>
@@ -537,11 +660,17 @@ const ExerciseDetailPage: React.FC = () => {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: 'grey.50' }}>
-      {/* Header mit Zurück-Button und Erfolgsanzeige - direkt unter der Navigationsleiste */}
+    <Container 
+      maxWidth="xl" 
+      sx={{ 
+        minHeight: '100vh',
+        py: { xs: 1, md: 2 },
+        px: { xs: 1, md: 2 }
+      }}
+    >
+      {/* Compact Header - Back button and status */}
       <Box sx={{ 
-        mb: 1, 
-        mt: 0.5,
+        mb: { xs: 1, md: 1.5 },
         display: 'flex', 
         flexDirection: { xs: 'column', sm: 'row' }, 
         flexWrap: 'wrap',
@@ -667,29 +796,74 @@ const ExerciseDetailPage: React.FC = () => {
         </Accordion>
       </Box>
 
-      {/* Desktop Layout: Grid mit Video links, Details rechts */}
+      {/* Desktop Layout: Optimized viewport-aware layout */}
       <Box 
         sx={{ 
           display: { xs: 'none', md: 'flex' },
           gap: 2,
-          mt: 2
+          height: 'calc(100vh - 180px)', // Account for navbar + header + padding
+          maxHeight: 'calc(100vh - 180px)',
+          overflow: 'hidden'
         }}
       >
-        <Box sx={{ width: '50%' }}>
+        {/* Video Section - 55% width for better video visibility */}
+        <Box sx={{ 
+          width: '55%', 
+          display: 'flex', 
+          flexDirection: 'column',
+          minHeight: 0 // Important for flexbox scrolling
+        }}>
           {videoStarted ? (
-            <ExerciseVideo
-              exercise={exercise}
-              onVideoComplete={handleExerciseComplete}
-              videoRef={videoRef}
-              onTimeUpdate={handleTimeUpdate}
-            />
+            <Box sx={{ 
+              flex: '1 1 auto',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              maxHeight: '100%'
+            }}>
+              <ExerciseVideo
+                exercise={exercise}
+                onVideoComplete={handleExerciseComplete}
+                videoRef={videoRef}
+                onTimeUpdate={handleTimeUpdate}
+              />
+            </Box>
           ) : (
             renderVideoPreview()
           )}
         </Box>
         
-        <Box sx={{ width: '50%' }}>
-          <Paper elevation={1} sx={{ p: 2, height: '100%' }}> {/* height:100% für gleiche Höhe */}
+        {/* Details Section - 45% width with scrollable content */}
+        <Box sx={{ 
+          width: '45%',
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: 0 // Important for flexbox scrolling
+        }}>
+          <Paper 
+            elevation={2} 
+            sx={{ 
+              p: 2.5, 
+              height: '100%',
+              overflow: 'auto', // Enable scrolling for details
+              display: 'flex',
+              flexDirection: 'column',
+              '&::-webkit-scrollbar': {
+                width: '8px'
+              },
+              '&::-webkit-scrollbar-track': {
+                background: '#f1f1f1',
+                borderRadius: '4px'
+              },
+              '&::-webkit-scrollbar-thumb': {
+                background: theme.palette.primary.main,
+                borderRadius: '4px',
+                '&:hover': {
+                  background: theme.palette.primary.dark
+                }
+              }
+            }}
+          >
             {renderExerciseDetails()}
           </Paper>
         </Box>
@@ -717,7 +891,7 @@ const ExerciseDetailPage: React.FC = () => {
         }}
         pointsEarned={pointsEarned}
       />
-    </Box>
+    </Container>
   );
 };
 
