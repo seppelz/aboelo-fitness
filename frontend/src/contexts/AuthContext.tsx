@@ -10,6 +10,7 @@ interface AuthContextType {
   register: (userData: RegisterData) => Promise<User>;
   logout: () => void;
   refreshUser: () => Promise<void>;
+  updateUserLocally: (userData: Partial<User>) => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -28,6 +29,9 @@ export const AuthContext = createContext<AuthContextType>({
   refreshUser: async () => {
     throw new Error('AuthContext not initialized');
   },
+  updateUserLocally: () => {
+    throw new Error('AuthContext not initialized');
+  },
 });
 
 interface AuthProviderProps {
@@ -35,25 +39,37 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    try {
+      return getCurrentUser();
+    } catch (error) {
+      console.error('Fehler beim Lesen des Benutzers aus dem lokalen Speicher:', error);
+      return null;
+    }
+  });
   const [loading, setLoading] = useState(true);
 
   // Beim Start prüfen, ob ein Benutzer angemeldet ist
   useEffect(() => {
-    const checkLoggedIn = async () => {
+    const syncUser = async () => {
       try {
-        const userData = getCurrentUser();
-        if (userData) {
-          setUser(userData);
+        const token = typeof window !== 'undefined' ? localStorage.getItem('userToken') : null;
+
+        if (!token) {
+          setUser(null);
+          return;
         }
+
+        const freshUserData = await fetchUserFromServer();
+        setUser(freshUserData);
       } catch (error) {
-        console.error('Fehler beim Abrufen des aktuellen Benutzers:', error);
+        console.error('Fehler beim Synchronisieren des Benutzers:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    checkLoggedIn();
+    syncUser();
   }, []);
 
   // Login-Funktion
@@ -96,6 +112,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const updateUserLocally = (userData: Partial<User>) => {
+    setUser((prev) => {
+      if (!prev) {
+        return prev;
+      }
+      const updatedUser = { ...prev, ...userData } as User;
+      localStorage.setItem('userData', JSON.stringify(updatedUser));
+      return updatedUser;
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -106,6 +133,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         register,
         logout,
         refreshUser,
+        updateUserLocally,
       }}
     >
       {children}

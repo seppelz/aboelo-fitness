@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import User, { IUser } from '../models/User';
 import Progress from '../models/Progress';
 
@@ -9,6 +10,43 @@ const generateToken = (id: string) => {
     expiresIn: '30d',
   });
 };
+
+const formatObjectId = (value: mongoose.Types.ObjectId | string | undefined | null): string | undefined => {
+  if (!value) {
+    return undefined;
+  }
+  if (value instanceof mongoose.Types.ObjectId) {
+    return value.toString();
+  }
+  if (typeof value === 'object' && 'toString' in value) {
+    return (value as any).toString();
+  }
+  return String(value);
+};
+
+const formatUserResponse = (user: IUser) => ({
+  _id: formatObjectId(user._id) ?? '',
+  name: user.name,
+  email: user.email,
+  age: user.age,
+  level: user.level,
+  points: user.points,
+  achievements: user.achievements,
+  dailyStreak: user.dailyStreak,
+  longestStreak: user.longestStreak,
+  lastActivityDate: user.lastActivityDate,
+  perfectDaysCount: user.perfectDaysCount,
+  streakProtectionUsed: user.streakProtectionUsed,
+  completedExercises: Array.isArray(user.completedExercises)
+    ? user.completedExercises
+        .map(exerciseId => formatObjectId(exerciseId as any))
+        .filter((id): id is string => typeof id === 'string')
+    : [],
+  hasTheraband: user.hasTheraband,
+  weeklyGoal: user.weeklyGoal,
+  monthlyStats: user.monthlyStats,
+  reminderSettings: user.reminderSettings || { enabled: true, intervalMinutes: 60 },
+});
 
 // Benutzer registrieren
 export const registerUser = async (req: Request, res: Response) => {
@@ -49,22 +87,12 @@ export const registerUser = async (req: Request, res: Response) => {
     });
 
     if (user) {
-      const token = generateToken(user._id.toString());
+      const token = generateToken(formatObjectId(user._id) ?? '');
       
       res.status(201).json({
         success: true,
         token,
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          age: user.age,
-          level: user.level,
-          points: user.points,
-          achievements: user.achievements,
-          dailyStreak: user.dailyStreak,
-          hasTheraband: user.hasTheraband,
-        },
+        user: formatUserResponse(user),
       });
     } else {
       res.status(400).json({ 
@@ -103,17 +131,7 @@ export const loginUser = async (req: Request, res: Response) => {
       res.status(200).json({
         success: true,
         token,
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          age: user.age,
-          level: user.level,
-          points: user.points,
-          achievements: user.achievements,
-          dailyStreak: user.dailyStreak,
-          hasTheraband: user.hasTheraband,
-        },
+        user: formatUserResponse(user),
       });
     } else {
       res.status(401).json({ 
@@ -138,17 +156,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
     if (user) {
       res.json({
         success: true,
-        user: {
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-          age: user.age,
-          level: user.level,
-          points: user.points,
-          achievements: user.achievements,
-          dailyStreak: user.dailyStreak,
-          hasTheraband: user.hasTheraband,
-        },
+        user: formatUserResponse(user as IUser),
       });
     } else {
       res.status(404).json({ 
@@ -186,19 +194,27 @@ export const updateUserProfile = async (req: Request, res: Response) => {
         user.hasTheraband = req.body.hasTheraband;
       }
 
+      if (req.body.reminderSettings) {
+        const { enabled, intervalMinutes } = req.body.reminderSettings;
+        if (!user.reminderSettings) {
+          user.reminderSettings = { enabled: true, intervalMinutes: 60 } as any;
+        }
+        if (typeof enabled === 'boolean') {
+          user.reminderSettings.enabled = enabled;
+        }
+        if (intervalMinutes !== undefined) {
+          const parsedInterval = parseInt(intervalMinutes, 10);
+          if (!Number.isNaN(parsedInterval)) {
+            user.reminderSettings.intervalMinutes = Math.max(1, parsedInterval);
+          }
+        }
+      }
+
       const updatedUser = await user.save();
 
       res.json({
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        email: updatedUser.email,
-        age: updatedUser.age,
-        level: updatedUser.level,
-        points: updatedUser.points,
-        achievements: updatedUser.achievements,
-        dailyStreak: updatedUser.dailyStreak,
-        hasTheraband: updatedUser.hasTheraband,
-        token: generateToken(updatedUser._id),
+        ...formatUserResponse(updatedUser as unknown as IUser),
+        token: generateToken(formatObjectId(updatedUser._id) ?? ''),
       });
     } else {
       res.status(404).json({ message: 'Benutzer nicht gefunden' });

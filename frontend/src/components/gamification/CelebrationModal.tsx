@@ -61,7 +61,8 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
   const newAchievements = gamificationData.achievements.filter(a => a.isNew);
   const totalSlides = newAchievements.length + (pointsEarned > 0 ? 1 : 0) + 
                     (gamificationData.streakInfo ? 1 : 0) + 
-                    (gamificationData.weeklyGoal?.completed ? 1 : 0);
+                    (gamificationData.weeklyGoal?.completed ? 1 : 0) + 
+                    (gamificationData.perfectDay?.isPerfectDay ? 1 : 0);
 
   useEffect(() => {
     if (open && (newAchievements.length > 0 || gamificationData.weeklyGoal?.completed)) {
@@ -70,18 +71,6 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
       return () => clearTimeout(timer);
     }
   }, [open, newAchievements.length, gamificationData.weeklyGoal?.completed]);
-
-  const handleNext = () => {
-    if (currentSlide < totalSlides - 1) {
-      setCurrentSlide(currentSlide + 1);
-    } else {
-      onClose();
-    }
-  };
-
-  const handleSkip = () => {
-    onClose();
-  };
 
   const renderPointsSlide = () => (
     <Box textAlign="center" py={2}>
@@ -131,6 +120,27 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
     </Box>
   );
 
+  const renderPerfectDaySlide = () => (
+    <Box textAlign="center" py={2}>
+      <Box sx={{ fontSize: 64, mb: 2 }}>✨</Box>
+      <Typography variant="h4" gutterBottom>
+        Perfekter Tag! 🎉
+      </Typography>
+      <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', color: theme.palette.success.main }}>
+        Alle 6 Muskelgruppen trainiert!
+      </Typography>
+      <Typography variant="body1" color="textSecondary" sx={{ mb: 2 }}>
+        {gamificationData.perfectDay?.message}
+      </Typography>
+      <Chip 
+        label={`+${gamificationData.perfectDay?.bonusPoints} Bonus-Punkte`} 
+        color="success" 
+        size="medium"
+        sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}
+      />
+    </Box>
+  );
+
   const renderAchievementSlide = (achievement: any, index: number) => (
     <Box textAlign="center" py={2} key={index}>
       <Box
@@ -163,6 +173,18 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
     </Box>
   );
 
+  const handleNext = () => {
+    if (currentSlide < totalSlides - 1) {
+      setCurrentSlide(currentSlide + 1);
+    } else {
+      onClose();
+    }
+  };
+
+  const handleSkip = () => {
+    onClose();
+  };
+
   const getCurrentSlide = () => {
     let slideIndex = 0;
     
@@ -181,6 +203,12 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
     // Weekly goal slide
     if (gamificationData.weeklyGoal?.completed) {
       if (currentSlide === slideIndex) return renderWeeklyGoalSlide();
+      slideIndex++;
+    }
+    
+    // Perfect Day slide
+    if (gamificationData.perfectDay?.isPerfectDay) {
+      if (currentSlide === slideIndex) return renderPerfectDaySlide();
       slideIndex++;
     }
     

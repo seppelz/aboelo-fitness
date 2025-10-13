@@ -76,7 +76,7 @@ const ExerciseList: React.FC = () => {
   
   // Navigation zur Detailseite
   const navigateToDetail = (id: string) => {
-    navigate(`/exercises/${id}`);
+    navigate(`/app/exercises/${id}`);
   };
   
   // Zurücksetzen aller Filter
@@ -572,97 +572,96 @@ const ExerciseList: React.FC = () => {
         </Paper>
       ) : (
         <Grid container spacing={{ xs: 2, sm: 3 }}>
-          {filteredExercises.map(exercise => (
-            <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6', md: 'span 6', lg: 'span 4' } }} key={(exercise as any)._id}>
-              <Card 
-                sx={{ 
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  '&:hover': {
-                    boxShadow: 8,
-                    transform: 'translateY(-4px)'
-                  },
-                  '&:active': {
-                    transform: 'translateY(-2px)'
-                  }
-                }}
-                onClick={() => navigateToDetail((exercise as any)._id)}
-              >
-                <CardMedia
-                  component="img"
-                  height={isMobile ? "160" : "200"}
-                  image={getThumbnailUrl(exercise)}
-                  alt={exercise.name}
+          {filteredExercises.map(exercise => {
+            const displayName = exercise.name || (exercise as any).title || 'Übung';
+            const overlayText = (exercise.goal && exercise.goal.trim().length > 0) ? exercise.goal : displayName;
+            return (
+              <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6', md: 'span 6', lg: 'span 4' } }} key={(exercise as any)._id}>
+                <Card 
                   sx={{ 
-                    objectFit: 'contain',
-                    bgcolor: '#f5f5f5'
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      boxShadow: 8,
+                      transform: 'translateY(-4px)'
+                    },
+                    '&:active': {
+                      transform: 'translateY(-2px)'
+                    }
                   }}
-                />
-                <CardContent sx={{ flexGrow: 1, p: { xs: 2, sm: 2.5 } }}>
-                  {/* Title - Senior-friendly size */}
-                  <Typography 
-                    variant="h6" 
-                    component="div" 
-                    gutterBottom 
-                    sx={{ 
-                      fontWeight: 'bold',
-                      fontSize: { xs: '1.15rem', sm: '1.25rem' },
-                      lineHeight: 1.3,
-                      mb: 2
-                    }}
-                  >
-                    {exercise.name}
-                  </Typography>
-                  
-                  {/* Chips - Senior-friendly larger size */}
-                  <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                    <Chip 
-                      label={exercise.muscleGroup} 
-                      color="primary" 
-                      size="medium"
+                  onClick={() => navigateToDetail((exercise as any)._id)}
+                >
+                  <Box sx={{ position: 'relative' }}>
+                    <CardMedia
+                      component="img"
+                      height={isMobile ? "180" : "220"}
+                      image={getThumbnailUrl(exercise)}
+                      alt={overlayText}
                       sx={{ 
-                        fontSize: { xs: '0.9rem', sm: '0.95rem' },
-                        height: { xs: '30px', sm: '32px' },
-                        fontWeight: 600
+                        objectFit: 'contain',
+                        bgcolor: '#f5f5f5'
                       }}
                     />
-                    <Chip 
-                      label={getCategoryText((exercise as any).category)} 
-                      color="secondary" 
-                      size="medium"
-                      sx={{ 
-                        fontSize: { xs: '0.9rem', sm: '0.95rem' },
-                        height: { xs: '30px', sm: '32px' },
-                        fontWeight: 600
-                      }}
-                    />
-                    <Chip 
-                      label={`${(exercise as any).isSitting ? 'Sitzend' : 'Stehend'}`}
-                      color="secondary"
-                      variant="outlined"
-                      size="medium"
-                      sx={{ 
-                        fontSize: { xs: '0.85rem', sm: '0.9rem' },
-                        height: { xs: '30px', sm: '32px' }
-                      }}
-                    />
-                    <Chip 
-                      label={`${(exercise as any).usesTheraband ? 'Mit Theraband' : 'Ohne Theraband'}`}
-                      color="secondary"
-                      variant="outlined"
-                      size="medium"
-                      sx={{ 
-                        fontSize: { xs: '0.85rem', sm: '0.9rem' },
-                        height: { xs: '30px', sm: '32px' }
-                      }}
-                    />
-                    {exercise.duration && exercise.duration > 0 && (
+                    {overlayText && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          bgcolor: theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
+                          py: 1,
+                          px: 2,
+                          textAlign: 'center',
+                          borderRadius: '12px 12px 0 0'
+                        }}
+                      >
+                        <Typography
+                          variant={isMobile ? 'subtitle1' : 'h6'}
+                          sx={{
+                            fontWeight: 'bold',
+                            fontSize: { xs: '1rem', sm: '1.2rem' },
+                            lineHeight: 1.2,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden'
+                          }}
+                        >
+                          {overlayText}
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                  <CardContent sx={{ flexGrow: 1, p: { xs: 2, sm: 2.5 } }}>
+                    <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                       <Chip 
-                        label={`Dauer: ${formatDuration(exercise.duration)}`}
-                        color="primary"
+                        label={exercise.muscleGroup} 
+                        color="primary" 
+                        size="medium"
+                        sx={{ 
+                          fontSize: { xs: '0.9rem', sm: '0.95rem' },
+                          height: { xs: '30px', sm: '32px' },
+                          fontWeight: 600
+                        }}
+                      />
+                      <Chip 
+                        label={getCategoryText((exercise as any).category)} 
+                        color="secondary" 
+                        size="medium"
+                        sx={{ 
+                          fontSize: { xs: '0.9rem', sm: '0.95rem' },
+                          height: { xs: '30px', sm: '32px' },
+                          fontWeight: 600
+                        }}
+                      />
+                      <Chip 
+                        label={`${(exercise as any).isSitting ? 'Sitzend' : 'Stehend'}`}
+                        color="secondary"
                         variant="outlined"
                         size="medium"
                         sx={{ 
@@ -670,27 +669,47 @@ const ExerciseList: React.FC = () => {
                           height: { xs: '30px', sm: '32px' }
                         }}
                       />
-                    )}
-                  </Box>
-                  
-                  {/* Description - Senior-friendly size */}
-                  <Typography 
-                    variant="body2" 
-                    color="text.secondary" 
-                    sx={{ 
-                      mb: 1,
-                      fontSize: { xs: '0.95rem', sm: '1rem' },
-                      lineHeight: 1.5
-                    }}
-                  >
-                    {exercise.description && exercise.description.length > 100 
-                      ? exercise.description.substring(0, 100) + '...' 
-                      : exercise.description}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+                      <Chip 
+                        label={`${(exercise as any).usesTheraband ? 'Mit Theraband' : 'Ohne Theraband'}`}
+                        color="secondary"
+                        variant="outlined"
+                        size="medium"
+                        sx={{ 
+                          fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                          height: { xs: '30px', sm: '32px' }
+                        }}
+                      />
+                      {exercise.duration && exercise.duration > 0 && (
+                        <Chip 
+                          label={`Dauer: ${formatDuration(exercise.duration)}`}
+                          color="primary"
+                          variant="outlined"
+                          size="medium"
+                          sx={{ 
+                            fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                            height: { xs: '30px', sm: '32px' }
+                          }}
+                        />
+                      )}
+                    </Box>
+                    <Typography 
+                      variant="body2" 
+                      color="text.secondary" 
+                      sx={{ 
+                        mb: 1,
+                        fontSize: { xs: '0.95rem', sm: '1rem' },
+                        lineHeight: 1.5
+                      }}
+                    >
+                      {exercise.description && exercise.description.length > 100 
+                        ? exercise.description.substring(0, 100) + '...' 
+                        : exercise.description}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          })}
         </Grid>
       )}
     </Container>

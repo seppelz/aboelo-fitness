@@ -33,29 +33,11 @@ export const saveProgress = async (req: Request, res: Response) => {
       return res.status(404).json({ message: 'Übung nicht gefunden' });
     }
 
-    // Check for duplicate progress on the same day for completed exercises
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    
-    const existingProgress = await Progress.findOne({
-      user: userId,
-      exercise: exerciseId,
-      completed: true,
-      date: { $gte: startOfDay, $lt: endOfDay }
-    });
-    
-    if (existingProgress && completed) {
-      console.log('Duplicate completed exercise found, preventing save');
-      return res.status(400).json({ 
-        message: 'Diese Übung wurde heute bereits abgeschlossen',
-        alreadyCompleted: true 
-      });
-    }
 
-    console.log('No existing progress found, proceeding with save...');
-
-    // Punkte berechnen
+    // Punkte berechnen mit Bonus für Extra-Übungen
     let pointsEarned = 0;
     if (completed) {
       // Basis-Punkte für abgeschlossene Übung
@@ -63,15 +45,32 @@ export const saveProgress = async (req: Request, res: Response) => {
       
       // Zusätzliche Punkte basierend auf der Schwierigkeit
       pointsEarned += ((exercise.difficulty || 1) - 1) * 5;
+      
+      // Bonus für Extra-Übungen derselben Muskelgruppe am selben Tag
+      const todayProgressSameMuscle = await Progress.find({
+        user: userId,
+        completed: true,
+        date: { $gte: startOfDay, $lt: endOfDay }
+      }).populate('exercise');
+      
+      const sameMuscleGroupCount = todayProgressSameMuscle.filter(
+        p => p.exercise && (p.exercise as any).muscleGroup === exercise.muscleGroup
+      ).length;
+      
+      // First exercise of muscle group: 10 points (base)
+      // Second exercise: +5 bonus
+      // Third+ exercise: +3 bonus each
+      if (sameMuscleGroupCount === 1) {
+        pointsEarned += 5;
+      } else if (sameMuscleGroupCount >= 2) {
+        pointsEarned += 3;
+      }
     } else if (!aborted) {
       // Teilpunkte für teilweise angesehene Übungen
       const exerciseDuration = exercise.duration || 1;
       const progressPercentage = Math.min(100, (watchDuration / exerciseDuration) * 100);
       pointsEarned = Math.floor((progressPercentage / 100) * 10);
     }
-
-    console.log(`Saving progress: exercise ${exerciseId}, completed: ${completed}, points: ${pointsEarned}`);
-
     // Fortschritt speichern
     const progress = await Progress.create({
       user: userId,
@@ -79,15 +78,43 @@ export const saveProgress = async (req: Request, res: Response) => {
       completed,
       aborted,
       watchDuration,
-      pointsEarned
+      pointsEarned,
+      timeOfDay: new Date().getHours() // Track time of day for analytics
     });
 
     console.log(`Progress saved successfully with ID: ${progress._id}`);
 
-    let gamificationData = {
+    interface StreakInfo {
+      currentStreak: number;
+      longestStreak: number;
+      message: string;
+      streakBroken: boolean;
+    }
+    
+    interface WeeklyGoalInfo {
+      progress: number;
+      target: number;
+      completed: boolean;
+      message: string;
+    }
+    
+    interface PerfectDayInfo {
+      isPerfectDay: boolean;
+      bonusPoints: number;
+      message: string;
+    }
+    
+    let gamificationData: {
+      achievements: any[];
+      streakInfo: StreakInfo | null;
+      weeklyGoal: WeeklyGoalInfo | null;
+      perfectDay: PerfectDayInfo | null;
+      motivationalQuote: string;
+    } = {
       achievements: [],
       streakInfo: null,
       weeklyGoal: null,
+      perfectDay: null,
       motivationalQuote: AchievementService.getDailyMotivationalQuote()
     };
 
@@ -95,6 +122,42 @@ export const saveProgress = async (req: Request, res: Response) => {
     if (pointsEarned > 0 && completed) {
       const user = await User.findById(userId);
       if (user) {
+        // Ensure legacy users have required nested documents initialized
+        if (!user.exerciseFrequency || typeof (user.exerciseFrequency as any).set !== 'function') {
+          const rawFrequency = (user.exerciseFrequency as any) || {};
+          const frequencyEntries = typeof rawFrequency === 'object' && rawFrequency !== null
+            ? Object.entries(rawFrequency)
+            : [];
+          const normalized = new Map<string, number>();
+          for (const [key, value] of frequencyEntries) {
+            if (typeof key === 'string') {
+              const numericValue = typeof value === 'number' ? value : parseInt(String(value), 10);
+              if (!isNaN(numericValue)) {
+                normalized.set(key, numericValue);
+              }
+            }
+          }
+          user.exerciseFrequency = normalized;
+        }
+
+        if (!user.weeklyGoal) {
+          user.weeklyGoal = {
+            exercisesTarget: 5,
+            currentProgress: 0,
+            weekStartDate: new Date()
+          };
+        }
+
+        if (!user.monthlyStats) {
+          const nowDate = new Date();
+          user.monthlyStats = {
+            exercisesCompleted: 0,
+            pointsEarned: 0,
+            month: nowDate.getMonth(),
+            year: nowDate.getFullYear()
+          };
+        }
+
         // Points und Level aktualisieren
         user.points += pointsEarned;
         
@@ -110,7 +173,15 @@ export const saveProgress = async (req: Request, res: Response) => {
         }
 
         // Exercise frequency tracking aktualisieren
-        const exerciseFrequency = user.exerciseFrequency || new Map();
+        const exerciseFrequency = user.exerciseFrequency instanceof Map
+          ? user.exerciseFrequency
+          : new Map<string, number>(
+              Object.entries((user.exerciseFrequency as any) || {})
+                .map(([key, value]) => {
+                  const numericValue = typeof value === 'number' ? value : parseInt(String(value), 10);
+                  return [key, isNaN(numericValue) ? 0 : numericValue] as [string, number];
+                })
+            );
         const exerciseIdStr = (exercise._id as any).toString();
         const currentFreq = exerciseFrequency.get(exerciseIdStr) || 0;
         exerciseFrequency.set(exerciseIdStr, currentFreq + 1);
@@ -152,6 +223,44 @@ export const saveProgress = async (req: Request, res: Response) => {
             "🎉 Wochenziel erreicht! Du bist fantastisch!" : 
             `${weeklyGoalResult.progress}/${weeklyGoalResult.target} Übungen diese Woche`
         };
+
+        // Check for Perfect Day (all 6 muscle groups trained)
+        const todayProgress = await Progress.find({
+          user: userId,
+          completed: true,
+          date: { $gte: startOfDay, $lt: endOfDay }
+        }).populate('exercise');
+        
+        const trainedMuscleGroups = new Set<string>();
+        for (const progressEntry of todayProgress) {
+          const muscleGroup = ((progressEntry.exercise as any)?.muscleGroup) as string | undefined;
+          if (!muscleGroup) {
+            continue;
+          }
+          trainedMuscleGroups.add(muscleGroup);
+        }
+        
+        const allMuscleGroups = ['Bauch', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'];
+        const isPerfectDay = allMuscleGroups.every(group => trainedMuscleGroups.has(group));
+        
+        if (isPerfectDay) {
+          // Award Perfect Day bonus
+          const perfectDayBonus = 50;
+          user.points += perfectDayBonus;
+          pointsEarned += perfectDayBonus;
+          
+          // Increment perfect days counter
+          user.perfectDaysCount += 1;
+          
+          await user.save();
+          
+          gamificationData.perfectDay = {
+            isPerfectDay: true,
+            bonusPoints: perfectDayBonus,
+            message: `🎉 Perfekter Tag! Alle 6 Muskelgruppen trainiert! +${perfectDayBonus} Bonus-Punkte!`
+          };
+          
+        }
 
         // Check and unlock achievements
         const achievements = await AchievementService.checkAndUnlockAchievements(userId);
@@ -203,8 +312,9 @@ export const getDailyProgress = async (req: Request, res: Response) => {
     // Trainierte Muskelgruppen zählen
     const muscleGroupsTrainedToday = new Set(
       progress
-        .filter(p => p.completed)
-        .map(p => (p.exercise as any).muscleGroup)
+        .filter(p => p.completed && p.exercise)
+        .map(p => ((p.exercise as any)?.muscleGroup) as string)
+        .filter(Boolean)
     );
 
 
@@ -212,7 +322,7 @@ export const getDailyProgress = async (req: Request, res: Response) => {
     res.json({
       progress,
       muscleGroupsTrainedToday: Array.from(muscleGroupsTrainedToday),
-      totalMuscleGroups: 8, // Bauch, Beine, Po, Schulter, Arme, Brust, Nacken und Rücken
+      totalMuscleGroups: 6, // Bauch, Po, Schulter, Brust, Nacken und Rücken
       totalExercisesCompleted: progress.filter(p => p.completed).length
     });
   } catch (error: any) {
@@ -256,8 +366,9 @@ export const getWeeklyProgress = async (req: Request, res: Response) => {
       // Trainierte Muskelgruppen an diesem Tag
       const muscleGroups = new Set(
         dayProgress
-          .filter(p => p.completed)
-          .map(p => (p.exercise as any).muscleGroup)
+          .filter(p => p.completed && p.exercise)
+          .map(p => ((p.exercise as any)?.muscleGroup) as string)
+          .filter(Boolean)
       );
       
       return {
@@ -280,9 +391,12 @@ export const getWeeklyProgress = async (req: Request, res: Response) => {
     const totalCompletedExercises = progress.filter(p => p.completed).length;
     
     progress
-      .filter(p => p.completed)
+      .filter(p => p.completed && p.exercise)
       .forEach(p => {
-        const muscleGroup = (p.exercise as any).muscleGroup;
+        const muscleGroup = ((p.exercise as any)?.muscleGroup) as string | undefined;
+        if (!muscleGroup) {
+          return;
+        }
         muscleGroupCounts.set(muscleGroup, (muscleGroupCounts.get(muscleGroup) || 0) + 1);
       });
 
@@ -356,9 +470,12 @@ export const getMonthlyProgress = async (req: Request, res: Response) => {
     // Meisttrainierte Muskelgruppen
     const muscleGroupCounts = new Map<string, number>();
     progress
-      .filter(p => p.completed)
+      .filter(p => p.completed && p.exercise)
       .forEach(p => {
-        const muscleGroup = (p.exercise as any).muscleGroup;
+        const muscleGroup = ((p.exercise as any)?.muscleGroup) as string | undefined;
+        if (!muscleGroup) {
+          return;
+        }
         muscleGroupCounts.set(muscleGroup, (muscleGroupCounts.get(muscleGroup) || 0) + 1);
       });
 
@@ -402,11 +519,14 @@ export const getRecommendedExercises = async (req: Request, res: Response) => {
     }).populate('exercise');
 
     const trainedMuscleGroups = new Set(
-      todayProgress.map(p => (p.exercise as any).muscleGroup)
+      todayProgress
+        .filter(p => p.exercise)
+        .map(p => ((p.exercise as any)?.muscleGroup) as string)
+        .filter(Boolean)
     );
 
-    // Alle Muskelgruppen (corrected - removed 'Arme' as it doesn't exist in Exercise model)
-    const allMuscleGroups = ['Bauch', 'Beine', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'];
+    // Alle Muskelgruppen - 6 groups total
+    const allMuscleGroups = ['Bauch', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'];
     
     // Nicht trainierte Muskelgruppen finden
     const untrainedMuscleGroups = allMuscleGroups.filter(

@@ -45,15 +45,21 @@ export const fetchUserFromServer = async (): Promise<User> => {
 // Benutzerprofil aktualisieren
 export const updateProfile = async (userData: any): Promise<User> => {
   const response = await api.put('/users/profile', userData);
-  if (response.data) {
-    // Aktualisierte Benutzerdaten im localStorage speichern
-    const currentUser = getCurrentUser();
-    if (currentUser) {
-      const updatedUser = { ...currentUser, ...response.data };
-      localStorage.setItem('userData', JSON.stringify(updatedUser));
-    }
+  const { token, ...updatedUserData } = response.data;
+
+  if (token) {
+    localStorage.setItem('userToken', token);
   }
-  return response.data;
+
+  const currentUser = getCurrentUser();
+  if (currentUser) {
+    const mergedUser = { ...currentUser, ...updatedUserData } as User;
+    localStorage.setItem('userData', JSON.stringify(mergedUser));
+  } else {
+    localStorage.setItem('userData', JSON.stringify(updatedUserData));
+  }
+
+  return updatedUserData as User;
 };
 
 // Prüfen, ob der Benutzer angemeldet ist

@@ -35,6 +35,7 @@ import { Exercise, MuscleGroup, DailyProgress } from '../types';
 import { getThumbnailUrl, preloadThumbnails } from '../components/exercises/exerciseUtils';
 import StreakDisplay from '../components/gamification/StreakDisplay';
 import MotivationalQuote from '../components/gamification/MotivationalQuote';
+import MorningMotivation from '../components/gamification/MorningMotivation';
 
 // Dauer formatieren - show seconds if under 1 minute  
 const formatDuration = (seconds?: number): string => {
@@ -146,13 +147,18 @@ const HomePage: React.FC = () => {
     fetchData();
   }, [isAuthenticated]);
   
+  // Helper function to get display name for muscle groups
+  const getMuscleGroupDisplayName = (muscleGroup: MuscleGroup): string => {
+    if (muscleGroup === 'Schulter') return 'Schulter/Arme';
+    return muscleGroup;
+  };
+
   // Muskelgruppen-Icons zuordnen
   const getMuscleGroupIcon = (muscleGroup: MuscleGroup): React.ReactElement => {
     const iconStyle = { fontSize: '2rem', color: 'primary.main' };
     
     const icons: Record<MuscleGroup, React.ReactElement> = {
       'Bauch': <SelfImprovementIcon sx={iconStyle} />,
-      'Beine': <DirectionsRunIcon sx={iconStyle} />,
       'Po': <DirectionsWalkIcon sx={iconStyle} />,
       'Schulter': <AccessibilityNewIcon sx={iconStyle} />,
       'Brust': <FavoriteBorderIcon sx={iconStyle} />,
@@ -386,6 +392,41 @@ const HomePage: React.FC = () => {
         </Box>
       </Paper>
 
+      {/* Morning Motivation */}
+      {isAuthenticated && <MorningMotivation />}
+
+      {/* Weekly Training Plan Guidance */}
+      {isAuthenticated && dailyProgress && (
+        <Paper
+          elevation={2}
+          sx={{
+            p: 3,
+            mb: 3,
+            borderRadius: 3,
+            border: '2px solid',
+            borderColor: 'primary.light',
+            background: 'linear-gradient(to right, #f8f9fa 0%, #ffffff 100%)'
+          }}
+        >
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', mb: 2 }}>
+            📅 Ihr Trainingsplan
+          </Typography>
+          <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.6 }}>
+            <strong>Basis-Training:</strong> Trainieren Sie jede Muskelgruppe mindestens einmal pro Tag. 
+            Das gibt Ihrem Körper eine ausgewogene Grundlage.
+          </Typography>
+          <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.6 }}>
+            <strong>Fokus-Training:</strong> Danach können Sie zusätzliche Übungen für Ihre Lieblingsmuskelgruppen machen 
+            und erhalten Bonus-Punkte!
+          </Typography>
+          <Box sx={{ mt: 2, p: 2, bgcolor: 'success.light', borderRadius: 2, color: 'white' }}>
+            <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+              💡 Tipp: Trainieren Sie alle 6 Muskelgruppen für einen "Perfekten Tag" und erhalten Sie +50 Bonus-Punkte!
+            </Typography>
+          </Box>
+        </Paper>
+      )}
+
       {/* Gamification Section */}
       {isAuthenticated && user && renderGamificationSection()}
 
@@ -496,13 +537,13 @@ const HomePage: React.FC = () => {
                           Tägliche Muskelgruppen-Challenge
                         </Typography>
                         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: 1 }}>
-                          {['Bauch', 'Beine', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'].map((group: string) => {
+                          {['Bauch', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'].map((group: string) => {
                             const isTrained = dailyProgress.muscleGroupsTrainedToday?.includes(group as MuscleGroup);
                             return (
                               <Chip 
                                 key={group}
                                 icon={getMuscleGroupIcon(group as MuscleGroup)}
-                                label={group}
+                                label={getMuscleGroupDisplayName(group as MuscleGroup)}
                                 size="small"
                                 color={isTrained ? "success" : "default"}
                                 variant={isTrained ? "filled" : "outlined"}
@@ -516,21 +557,21 @@ const HomePage: React.FC = () => {
                         </Box>
                         <LinearProgress 
                           variant="determinate" 
-                          value={(dailyProgress.muscleGroupsTrainedToday?.length || 0) / 7 * 100}
+                          value={(dailyProgress.muscleGroupsTrainedToday?.length || 0) / (dailyProgress.totalMuscleGroups || 6) * 100}
                           sx={{ 
                             mt: 2, 
                             height: 8, 
                             borderRadius: 4,
                             backgroundColor: 'rgba(0,0,0,0.1)',
                             '& .MuiLinearProgress-bar': {
-                              backgroundColor: dailyProgress.muscleGroupsTrainedToday?.length === 7 ? '#4caf50' : '#2196f3'
+                              backgroundColor: dailyProgress.muscleGroupsTrainedToday?.length === (dailyProgress.totalMuscleGroups || 6) ? '#4caf50' : '#2196f3'
                             }
                           }}
                         />
                         <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
-                          {dailyProgress.muscleGroupsTrainedToday?.length === 7 
+                          {dailyProgress.muscleGroupsTrainedToday?.length === (dailyProgress.totalMuscleGroups || 6) 
                             ? "Fantastisch! Alle Muskelgruppen trainiert!" 
-                            : `Noch ${7 - (dailyProgress.muscleGroupsTrainedToday?.length || 0)} Muskelgruppen für die tägliche Challenge!`
+                            : `Noch ${(dailyProgress.totalMuscleGroups || 6) - (dailyProgress.muscleGroupsTrainedToday?.length || 0)} Muskelgruppen für die tägliche Challenge!`
                           }
                         </Typography>
                       </Box>
@@ -542,7 +583,7 @@ const HomePage: React.FC = () => {
                       </Typography>
                       <Button 
                         variant="contained" 
-                        onClick={() => navigate('/exercises')}
+                        onClick={() => navigate('/app/exercises')}
                         startIcon={<FitnessCenterIcon />}
                         size="large"
                         sx={{ 
@@ -627,96 +668,161 @@ const HomePage: React.FC = () => {
             gap: { xs: 2, sm: 3 },
             px: { xs: 1, sm: 0 }
           }}>
-            {recommendedExercises.slice(0, 6).map((exercise) => (
-              <Card 
-                key={(exercise as any)._id}
-                sx={{ 
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  border: isMobile ? '2px solid transparent' : '1px solid transparent',
-                  borderRadius: 3,
-                  minHeight: isMobile ? 300 : 280,
-                  '&:hover': {
-                    transform: isMobile ? 'scale(1.02)' : 'translateY(-4px)',
-                    boxShadow: isMobile ? 8 : 6,
-                    borderColor: theme.palette.primary.main
-                  },
-                  '&:active': {
-                    transform: 'scale(0.98)',
-                    transition: 'transform 0.1s'
-                  }
-                }}
-                onClick={() => navigate(`/exercises/${(exercise as any)._id}`)}
-              >
-                <CardMedia
-                  component="img"
-                  height={isMobile ? "140" : "180"}
-                  image={getThumbnailUrl(exercise)}
-                  alt={exercise.name}
+            {recommendedExercises.slice(0, 6).map((exercise) => {
+              const durationLabel = exercise.duration && exercise.duration > 0 ? formatDuration(exercise.duration) : null;
+              const categoryLabel = exercise.category === 'Kraft' ? 'Kräftigend' : 'Mobilisierend';
+              const postureLabel = exercise.isSitting ? 'Sitzend' : 'Stehend';
+              const therabandLabel = exercise.usesTheraband ? 'Mit Theraband' : 'Ohne Theraband';
+              const displayName = exercise.name || (exercise as any).title || 'Übung';
+              const overlayText = exercise.goal && exercise.goal.trim().length > 0 ? exercise.goal.trim() : displayName;
+              const description = exercise.description && exercise.description.trim().length > 0 ? exercise.description.trim() : null;
+
+              return (
+                <Card 
+                  key={exercise._id}
                   sx={{ 
-                    objectFit: 'contain',
-                    borderRadius: '12px 12px 0 0'
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    border: isMobile ? '2px solid transparent' : '1px solid transparent',
+                    borderRadius: 3,
+                    minHeight: isMobile ? 300 : 280,
+                    '&:hover': {
+                      transform: isMobile ? 'scale(1.02)' : 'translateY(-4px)',
+                      boxShadow: isMobile ? 8 : 6,
+                      borderColor: theme.palette.primary.main
+                    },
+                    '&:active': {
+                      transform: 'scale(0.98)',
+                      transition: 'transform 0.1s'
+                    }
                   }}
-                />
-                <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
-                  <Typography 
-                    variant={isMobile ? "h6" : "h6"} 
-                    sx={{ 
-                      fontWeight: 'bold', 
-                      mb: 2,
-                      fontSize: { xs: '1.1rem', sm: '1.25rem' },
-                      lineHeight: 1.3,
-                      display: '-webkit-box',
-                      WebkitLineClamp: 2,
-                      WebkitBoxOrient: 'vertical',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    {exercise.name}
-                  </Typography>
-                  <Box sx={{ 
-                    display: 'flex', 
-                    flexDirection: isMobile ? 'column' : 'row',
-                    alignItems: isMobile ? 'stretch' : 'center', 
-                    gap: 1,
-                    mb: 2 
-                  }}>
-                    <Chip 
-                      icon={getMuscleGroupIcon(exercise.muscleGroup)}
-                      label={exercise.muscleGroup}
-                      size={isMobile ? "medium" : "small"}
-                      color="primary"
-                      variant="outlined"
+                  onClick={() => navigate(`/app/exercises/${exercise._id}`)}
+                >
+                  <Box sx={{ position: 'relative' }}>
+                    <CardMedia
+                      component="img"
+                      height={isMobile ? "160" : "200"}
+                      image={getThumbnailUrl(exercise)}
+                      alt={overlayText}
                       sx={{ 
-                        fontWeight: 'bold',
-                        fontSize: { xs: '0.9rem', sm: '0.75rem' },
-                        height: { xs: 36, sm: 32 }
+                        objectFit: 'contain',
+                        borderRadius: '12px 12px 0 0',
+                        bgcolor: '#f5f5f5'
                       }}
                     />
-                    <Chip 
-                      label={formatDuration(exercise.duration)}
-                      size={isMobile ? "medium" : "small"}
-                      color="secondary"
-                      variant="outlined"
-                      sx={{ 
-                        fontSize: { xs: '0.9rem', sm: '0.75rem' },
-                        height: { xs: 36, sm: 32 }
-                      }}
-                    />
+                    {overlayText && (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          bgcolor: theme.palette.primary.main,
+                          color: theme.palette.primary.contrastText,
+                          py: 1,
+                          px: 1.5,
+                          textAlign: 'center',
+                          borderRadius: '12px 12px 0 0'
+                        }}
+                      >
+                        <Typography
+                          variant={isMobile ? 'subtitle1' : 'h6'}
+                          sx={{
+                            fontWeight: 'bold',
+                            fontSize: { xs: '1rem', sm: '1.2rem' },
+                            lineHeight: 1.2,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden'
+                          }}
+                        >
+                          {overlayText}
+                        </Typography>
+                      </Box>
+                    )}
                   </Box>
-                  <Typography 
-                    variant="body2" 
-                    color="text.secondary"
-                    sx={{ 
-                      fontSize: { xs: '1rem', sm: '0.875rem' },
-                      fontWeight: 500
-                    }}
-                  >
-                    {exercise.equipment?.includes('Theraband') ? 'Mit Theraband' : 'Ohne Geräte'}
-                  </Typography>
-                </CardContent>
-              </Card>
-            ))}
+                  <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+                    <Box sx={{ 
+                      display: 'flex', 
+                      flexWrap: 'wrap',
+                      gap: 1,
+                      mb: 2 
+                    }}>
+                      <Chip 
+                        icon={getMuscleGroupIcon(exercise.muscleGroup)}
+                        label={getMuscleGroupDisplayName(exercise.muscleGroup)}
+                        size={isMobile ? "medium" : "small"}
+                        color="primary"
+                        variant="outlined"
+                        sx={{ 
+                          fontWeight: 'bold',
+                          fontSize: { xs: '0.9rem', sm: '0.75rem' },
+                          height: { xs: 36, sm: 32 }
+                        }}
+                      />
+                      {durationLabel && (
+                        <Chip 
+                          label={`Dauer: ${durationLabel}`}
+                          size={isMobile ? "medium" : "small"}
+                          color="secondary"
+                          variant="outlined"
+                          sx={{ 
+                            fontSize: { xs: '0.9rem', sm: '0.75rem' },
+                            height: { xs: 36, sm: 32 }
+                          }}
+                        />
+                      )}
+                      <Chip 
+                        label={categoryLabel}
+                        size={isMobile ? "medium" : "small"}
+                        color="secondary"
+                        variant="outlined"
+                        sx={{ 
+                          fontSize: { xs: '0.9rem', sm: '0.75rem' },
+                          height: { xs: 36, sm: 32 }
+                        }}
+                      />
+                      <Chip 
+                        label={postureLabel}
+                        size={isMobile ? "medium" : "small"}
+                        variant="outlined"
+                        sx={{ 
+                          fontSize: { xs: '0.9rem', sm: '0.75rem' },
+                          height: { xs: 36, sm: 32 }
+                        }}
+                      />
+                      <Chip 
+                        label={therabandLabel}
+                        size={isMobile ? "medium" : "small"}
+                        color={exercise.usesTheraband ? 'success' : 'default'}
+                        variant={exercise.usesTheraband ? 'filled' : 'outlined'}
+                        sx={{ 
+                          fontSize: { xs: '0.9rem', sm: '0.75rem' },
+                          height: { xs: 36, sm: 32 }
+                        }}
+                      />
+                    </Box>
+                    {description && (
+                      <Typography 
+                        variant="body2" 
+                        color="text.secondary"
+                        sx={{ 
+                          fontSize: { xs: '1rem', sm: '0.875rem' },
+                          fontWeight: 500,
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden'
+                        }}
+                      >
+                        {description.length > 140 ? `${description.slice(0, 140)}…` : description}
+                      </Typography>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
           </Box>
         ) : (
           <Box sx={{ textAlign: 'center', py: 4 }}>

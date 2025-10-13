@@ -7,6 +7,73 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Exercise from '../models/Exercise';
 
+const CLOUDINARY_CLOUD_NAME = 'dtihzud16';
+
+const VIDEO_ID_MAPPING: Record<string, string> = {
+  '1': '1_qj081s',
+  '2': '2_s5xqrb',
+  '3': '3_zut1mi',
+  '5': '5_ekyjqw',
+  '6': '6_bnetzw',
+  '7': '7_uyhdtj',
+  '9': '9_rux8u9',
+  '10': '10_i10azd',
+  '11': '11_ihgw34',
+  '12': '12_ykvvuo',
+  '13': '13_ehgt6e',
+  '15': '15_y8exbj',
+  '17': '17_tppsaf',
+  '20': '20_v2okek',
+  '21': '21_qa0pqj',
+  '22': '22_a6bpyk',
+  '24': '24_rgphia',
+  '25': '25_czrvvd',
+  '27': '27_xvkej4',
+  '28': '28_u2x6jg',
+  '30': '30_lchqot',
+  '31': '31_cnztct',
+  '32': '32_j3mogo',
+  '100': '100_qnjbdf',
+  '102': '102_m9mgh2',
+  '103': '103_cxvmrn',
+  '105': '105_gj0kwh',
+  '106': '106_oae044',
+  '201': '201_xdxhlt',
+  '202': '202_ecdhda',
+  '204': '204_fqxhfa',
+  '205': '205_aulbfd',
+  '301': '301_i4iiug',
+  '302': '302_a2sp2l',
+  '303': '303_juen7n',
+  '400': '400_dpd1pl',
+  '402': '402_hx3xvt',
+  '403': '403_z7atto',
+  '405': '405_kcnh38',
+  '406': '406_en6vg6',
+  '407': '407_udrfti',
+  '408': '408_aoybf9',
+  '409': '409_svmaem',
+  '410': '410_rv0q0g',
+  '411': '411_nzs1ym',
+  '500': '500_qznt6y',
+  '501': '501_eohzz3',
+  '502': '502_ts5srr',
+  '503': '503_mvlt3v',
+  '505': '505_ogukjt',
+  '507': '507_yoh6ur',
+  '508': '508_zggre3',
+  '512': '512_metpzk',
+  '513': '513_rtdxel',
+  '514': '514_sg5eyp',
+  '515': '515_aug5xv',
+  '520': '520_onoj46',
+  '521': '521_oz16wl',
+  '523': '523_cbz73o',
+  '550': '550_p4pyqa',
+  '551': '551_ckblmp',
+  '552': '552_jnzs3y'
+};
+
 dotenv.config();
 
 // MongoDB-Verbindung herstellen
@@ -109,13 +176,8 @@ const parseExerciseFile = (fileContent: string, fileName: string) => {
       exercise.tips = 'Achten Sie auf korrekte Körperhaltung';
     }
     
-    if (!exercise.youtubeVideoId) {
-      console.log(`Warnung: Übung VideoID ${exercise.videoId} in ${fileName} hat keine YouTube-Video-ID. Setze Platzhalter.`);
-      exercise.youtubeVideoId = 'dQw4w9WgXcQ'; // Platzhalter-Video
-    }
-    
     // Pflichtfelder prüfen
-    const requiredFields = ['videoId', 'title', 'preparation', 'execution', 'goal', 'tips', 'muscleGroup', 'category', 'youtubeVideoId'];
+    const requiredFields = ['videoId', 'title', 'preparation', 'execution', 'goal', 'tips', 'muscleGroup', 'category'];
     for (const field of requiredFields) {
       if (!exercise[field]) {
         console.log(`Überspringe Übung: Fehlendes Pflichtfeld ${field} für VideoID ${exercise.videoId || 'unbekannt'} in ${fileName}`);
@@ -125,8 +187,14 @@ const parseExerciseFile = (fileContent: string, fileName: string) => {
     }
     
     if (hasRequiredFields) {
-      // Generiere Thumbnail-URL aus der YouTube-Video-ID
-      exercise.thumbnailUrl = `https://img.youtube.com/vi/${exercise.youtubeVideoId}/hqdefault.jpg`;
+      if (!exercise.videoId || !VIDEO_ID_MAPPING[exercise.videoId]) {
+        console.log(`Überspringe Übung: Keine Cloudinary-Zuordnung für VideoID ${exercise.videoId} in ${fileName}`);
+        continue;
+      }
+
+      const cloudinaryId = VIDEO_ID_MAPPING[exercise.videoId];
+      exercise.youtubeVideoId = cloudinaryId; // speichern für Konsistenz
+      exercise.thumbnailUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,c_pad,b_auto,w_576,h_720/${cloudinaryId}.jpg`;
       exercises.push(exercise);
     }
   }
@@ -150,6 +218,7 @@ const importExercises = async () => {
     
     let totalExercises = 0;
     let importedExercises = 0;
+    const seenVideoIds = new Set<string>();
     
     for (const file of files) {
       const filePath = path.join(instructionsDir, file);
@@ -161,6 +230,12 @@ const importExercises = async () => {
       
       // Übungen in die Datenbank importieren
       for (const exercise of exercises) {
+        if (seenVideoIds.has(exercise.videoId)) {
+          console.log(`Überspringe doppelte Übung (bereits importiert in dieser Sitzung) mit VideoID ${exercise.videoId}`);
+          continue;
+        }
+        seenVideoIds.add(exercise.videoId);
+
         try {
           // Überprüfen, ob Übung bereits existiert (basierend auf videoId)
           const existingExercise = await Exercise.findOne({ videoId: exercise.videoId });

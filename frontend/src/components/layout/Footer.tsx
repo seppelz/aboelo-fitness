@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Container, Typography, Link, useTheme } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   const theme = useTheme();
@@ -61,7 +62,8 @@ const Footer: React.FC = () => {
           }}
         >
           <Link 
-            href="#" 
+            component={RouterLink}
+            to="/datenschutz"
             color="inherit" 
             underline="hover"
             sx={{ fontSize: '1.1rem' }}
@@ -69,7 +71,8 @@ const Footer: React.FC = () => {
             Datenschutz
           </Link>
           <Link 
-            href="#" 
+            component={RouterLink}
+            to="/impressum"
             color="inherit" 
             underline="hover"
             sx={{ fontSize: '1.1rem' }}
@@ -77,7 +80,8 @@ const Footer: React.FC = () => {
             Impressum
           </Link>
           <Link 
-            href="#" 
+            component={RouterLink}
+            to="/kontakt"
             color="inherit" 
             underline="hover"
             sx={{ fontSize: '1.1rem' }}
@@ -85,12 +89,22 @@ const Footer: React.FC = () => {
             Kontakt
           </Link>
           <Link 
-            href="#" 
+            component={RouterLink}
+            to="/help"
             color="inherit" 
             underline="hover"
             sx={{ fontSize: '1.1rem' }}
           >
             Hilfe
+          </Link>
+          <Link 
+            component={RouterLink}
+            to="/barrierefreiheit"
+            color="inherit" 
+            underline="hover"
+            sx={{ fontSize: '1.1rem' }}
+          >
+            Barrierefreiheit
           </Link>
         </Box>
       </Container>

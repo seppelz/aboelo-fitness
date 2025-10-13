@@ -311,7 +311,7 @@ aboelo-fitness/
   execution: String,
   goal: String,
   tips: String,
-  muscleGroup: 'Bauch' | 'Beine' | 'Po' | 'Schulter' | 'Arme' | 'Brust' | 'Nacken' | 'Rücken',
+  muscleGroup: 'Bauch' | 'Beine' | 'Po' | 'Schulter' | 'Brust' | 'Nacken' | 'Rücken',
   category: 'Kraft' | 'Mobilisation',
   isSitting: Boolean,
   usesTheraband: Boolean,
@@ -494,15 +494,6 @@ npm run build
 
 ### Current Limitations
 
-1. **Limited Exercise Count:**
-   - Only 62 exercises currently in database
-   - Some muscle groups underrepresented (Po: 3, Brust: 4, Bauch: 5)
-   - Solution: Add more exercises with Cloudinary videos
-
-2. **Video Quality:**
-   - All videos hosted on Cloudinary
-   - Quality depends on original upload
-   - Some exercises may need re-filming
 
 3. **No Social Features:**
    - No friend system
@@ -549,10 +540,6 @@ npm run build
 
 ### High Priority
 
-1. **Add More Exercises:**
-   - Target: 100+ exercises
-   - Balance muscle group distribution
-   - Add more variations (beginner, intermediate, advanced)
 
 2. **Implement Testing:**
    - Unit tests for services and utilities
@@ -656,7 +643,6 @@ npm run build
 
 **Database:**
 - MongoDB Atlas (recommended)
-- Self-hosted MongoDB on DigitalOcean
 
 ---
 

@@ -9,6 +9,7 @@ export interface IProgress extends Document {
   watchDuration: number; // in Sekunden
   date: Date;
   pointsEarned: number;
+  timeOfDay?: number; // Hour of day (0-23) when exercise was completed
 }
 
 // Schema für Übungsfortschritt
@@ -43,6 +44,9 @@ const progressSchema = new mongoose.Schema(
     pointsEarned: {
       type: Number,
       default: 0,
+    },
+    timeOfDay: {
+      type: Number, // Hour of day (0-23)
     },
   },
   {

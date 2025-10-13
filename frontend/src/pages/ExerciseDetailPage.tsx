@@ -21,6 +21,13 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import TrackChangesIcon from '@mui/icons-material/TrackChanges';
+import BuildIcon from '@mui/icons-material/Build';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
+import EventSeatIcon from '@mui/icons-material/EventSeat';
+import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { getExerciseById } from '../services/exerciseService';
 import { saveProgress } from '../services/progressService';
 import { AuthContext } from '../contexts/AuthContext';
@@ -224,11 +231,7 @@ const ExerciseDetailPage: React.FC = () => {
     // Start the video manually when user clicks the button
     setTimeout(() => {
       if (videoRef.current) {
-        console.log('Attempting to play video...', videoRef.current.src);
-        console.log('Video readyState:', videoRef.current.readyState);
-        console.log('Video paused:', videoRef.current.paused);
-        
-        // Ensure video is loaded before playing
+         // Ensure video is loaded before playing
         if (videoRef.current.readyState >= 2) { // HAVE_CURRENT_DATA
           videoRef.current.play()
             .then(() => {
@@ -313,25 +316,20 @@ const ExerciseDetailPage: React.FC = () => {
     setWatchStartTime(Date.now());
   };
   
+  const getExerciseDisplayName = () => {
+    if (!exercise) return 'Übung';
+    const goalText = exercise.goal && exercise.goal.trim().length > 0 ? exercise.goal : null;
+    return goalText || exercise.name || (exercise as any)?.title || 'Übung';
+  };
+
   // Kompakte Übungsdetails rendern - Optimized for readability
   const renderExerciseDetails = () => {
     if (!exercise) return null;
     
     return (
       <Box>
-        <Typography 
-          variant="h5" 
-          sx={{ 
-            mb: 2, 
-            fontWeight: 'bold',
-            fontSize: { md: '1.35rem', lg: '1.5rem' },
-            lineHeight: 1.3,
-            color: 'primary.main'
-          }}
-        >
-          {exercise.name}
-        </Typography>
-        <Divider sx={{ mb: 2 }} />
+        
+        <Divider sx={{ mb: 2, mx: 'auto', width: { xs: '100%', sm: '80%', md: '70%' } }} />
         
         {/* Charakteristiken der Übung - Senior-friendly chips */}
         <Box sx={{ mb: 2.5 }}>
@@ -410,8 +408,8 @@ const ExerciseDetailPage: React.FC = () => {
               />
             )}
           </Box>
-          </Box>
-        
+        </Box>
+      
         {/* Ziel der Übung */}
         {exercise.goal && (
           <Box sx={{ mb: 2 }}>
@@ -425,7 +423,7 @@ const ExerciseDetailPage: React.FC = () => {
                 color: 'primary.dark'
               }}
             >
-              🎯 Ziel der Übung:
+              <TrackChangesIcon sx={{ fontSize: '1.3rem', mr: 0.5, verticalAlign: 'middle' }} /> Ziel der Übung:
             </Typography>
             <Typography 
               variant="body1"
@@ -452,7 +450,7 @@ const ExerciseDetailPage: React.FC = () => {
                 color: 'primary.dark'
               }}
             >
-              🔧 Vorbereitung:
+              <BuildIcon sx={{ fontSize: '1.3rem', mr: 0.5, verticalAlign: 'middle' }} /> Vorbereitung:
             </Typography>
             <Typography 
               variant="body1"
@@ -479,7 +477,7 @@ const ExerciseDetailPage: React.FC = () => {
                 color: 'primary.dark'
               }}
             >
-              ▶️ Durchführung:
+              <PlayArrowIcon sx={{ fontSize: '1.3rem', mr: 0.5, verticalAlign: 'middle' }} /> Durchführung:
             </Typography>
             <Typography 
               variant="body1"
@@ -493,7 +491,7 @@ const ExerciseDetailPage: React.FC = () => {
           </Box>
         )}
 
-        {/* Tipps */}
+        {/* Hinweise */}
         {exercise.tips && exercise.tips.trim() !== '' && (
           <Box sx={{ mb: 2 }}>
             <Typography 
@@ -506,7 +504,7 @@ const ExerciseDetailPage: React.FC = () => {
                 color: 'primary.dark'
               }}
             >
-              💡 Tipps:
+              <TipsAndUpdatesIcon sx={{ fontSize: '1.3rem', mr: 0.5, verticalAlign: 'middle' }} /> Hinweise:
             </Typography>
             <Box 
               sx={{ 
@@ -545,32 +543,39 @@ const ExerciseDetailPage: React.FC = () => {
         display: 'flex', 
         flexDirection: 'column',
         height: '100%',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        maxWidth: '100%',
+        width: { xs: '100%', sm: '90%', md: '85%' },
+        mx: 'auto'
       }}>
-        {/* Video-Container mit Thumbnail */}
+        {/* Video-Container mit Thumbnail - matches VideoPlayer dimensions */}
         <Paper 
-          elevation={2}
+          elevation={3}
           sx={{ 
             overflow: 'hidden',
             borderRadius: 2,
             mb: 2,
-            backgroundColor: '#f5f5f5',
-            flex: '1 1 auto',
+            backgroundColor: 'white',
+            position: 'relative',
+            aspectRatio: '4/3',  // Match video aspect ratio
+            width: '100%',
+            height: 'auto',
+            minHeight: '400px',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            maxHeight: 'calc(100% - 180px)' // Leave space for info box
+            justifyContent: 'center'
           }}
         >
           <Box 
             component="img"
             src={thumbnailUrl}
-            alt={`Vorschaubild für ${exercise.name}`}
+            alt={`Vorschaubild für ${getExerciseDisplayName()}`}
             sx={{ 
               width: '100%', 
               height: '100%',
               display: 'block',
-              objectFit: 'contain'
+              objectFit: 'contain',  // Show full image content, pad if needed
+              maxHeight: '100%'
             }}
           />
         </Paper>
@@ -594,17 +599,41 @@ const ExerciseDetailPage: React.FC = () => {
           >
             Bereit für die Übung?
           </Typography>
-          <Typography 
-            variant="body2" 
+          <Box 
             sx={{ 
               mb: 1.5,
               fontSize: { md: '0.95rem', lg: '1rem' },
-              lineHeight: 1.5
+              lineHeight: 1.5,
+              display: 'flex',
+              flexWrap: 'wrap',
+              alignItems: 'center',
+              gap: 1
             }}
           >
-            {exercise.isSitting ? '🪑 Diese Übung wird im Sitzen durchgeführt.' : '🧍 Diese Übung wird im Stehen durchgeführt.'}
-            {exercise.usesTheraband && ' 🎗️ Sie benötigen ein Theraband.'}
-          </Typography>
+            {exercise.isSitting ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <EventSeatIcon sx={{ fontSize: '1.2rem' }} />
+                <Typography variant="body2" sx={{ fontSize: { md: '0.95rem', lg: '1rem' } }}>
+                  Diese Übung wird im Sitzen durchgeführt.
+                </Typography>
+              </Box>
+            ) : (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <DirectionsWalkIcon sx={{ fontSize: '1.2rem' }} />
+                <Typography variant="body2" sx={{ fontSize: { md: '0.95rem', lg: '1rem' } }}>
+                  Diese Übung wird im Stehen durchgeführt.
+                </Typography>
+              </Box>
+            )}
+            {exercise.usesTheraband && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                <FitnessCenterIcon sx={{ fontSize: '1.2rem' }} />
+                <Typography variant="body2" sx={{ fontSize: { md: '0.95rem', lg: '1rem' } }}>
+                  Sie benötigen ein Theraband.
+                </Typography>
+              </Box>
+            )}
+          </Box>
           <Button
             variant="contained"
             size="large"
@@ -668,6 +697,22 @@ const ExerciseDetailPage: React.FC = () => {
         px: { xs: 1, md: 2 }
       }}
     >
+      <Box sx={{ textAlign: 'center', mb: { xs: 2, md: 3 } }}>
+        <Typography
+          variant={isMobile ? 'h5' : 'h4'}
+          component="h1"
+          sx={{
+            fontWeight: 'bold',
+            color: 'primary.main',
+            fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' },
+            lineHeight: 1.3,
+            mb: { xs: 1, md: 1.5 }
+          }}
+        >
+          {getExerciseDisplayName()}
+        </Typography>
+      </Box>
+
       {/* Compact Header - Back button and status */}
       <Box sx={{ 
         mb: { xs: 1, md: 1.5 },

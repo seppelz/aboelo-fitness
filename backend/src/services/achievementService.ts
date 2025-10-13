@@ -2,6 +2,9 @@ import User, { IUser, IUserAchievement } from '../models/User';
 import Progress from '../models/Progress';
 import { ACHIEVEMENTS } from '../models/Achievement';
 
+export const DEFAULT_WEEKLY_GOAL_TARGET = 30;
+export const SECONDS_PER_DAY = 24 * 60 * 60 * 1000;
+
 export interface AchievementUnlocked {
   achievement: IUserAchievement;
   isNew: boolean;
@@ -37,7 +40,7 @@ export class AchievementService {
           title: achievementDef.title,
           description: achievementDef.description,
           icon: achievementDef.icon,
-          rarity: achievementDef.rarity
+          rarity: achievementDef.rarity as IUserAchievement['rarity']
         };
 
         user.achievements.push(newAchievement);
@@ -84,6 +87,9 @@ export class AchievementService {
       case 'consistency_muscle_groups':
         return await this.checkConsistencyMuscleGroups(user, requirements);
 
+      case 'perfect_days':
+        return user.perfectDaysCount >= requirements.value;
+
       default:
         return false;
     }
@@ -97,9 +103,15 @@ export class AchievementService {
       date: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } // Last 30 days
     }).populate('exercise', 'muscleGroup');
 
-    const trainedGroups = new Set(
-      recentProgress.map(p => (p.exercise as any).muscleGroup)
-    );
+    const trainedGroups = new Set<string>();
+    for (const progressEntry of recentProgress) {
+      const exerciseDoc = progressEntry.exercise as { muscleGroup?: string } | null | undefined;
+      const muscleGroup = exerciseDoc?.muscleGroup;
+      if (!muscleGroup) {
+        continue;
+      }
+      trainedGroups.add(muscleGroup);
+    }
 
     return requiredGroups.every(group => trainedGroups.has(group));
   }
@@ -143,9 +155,16 @@ export class AchievementService {
       date: { $gte: startOfDay, $lt: endOfDay }
     }).populate('exercise', 'muscleGroup');
 
-    const trainedGroups = [...new Set(
-      todayProgress.map(p => (p.exercise as any).muscleGroup)
-    )];
+    const trainedGroupSet = new Set<string>();
+    for (const progressEntry of todayProgress) {
+      const exerciseDoc = progressEntry.exercise as { muscleGroup?: string } | null | undefined;
+      const muscleGroup = exerciseDoc?.muscleGroup;
+      if (!muscleGroup) {
+        continue;
+      }
+      trainedGroupSet.add(muscleGroup);
+    }
+    const trainedGroups = [...trainedGroupSet];
 
     // Check if specific muscle groups were trained
     if (requirements.muscleGroups) {
@@ -172,9 +191,11 @@ export class AchievementService {
       date: { $gte: startOfDay, $lt: endOfDay }
     }).populate('exercise', 'muscleGroup');
 
-    const targetGroupCount = todayProgress.filter(p => 
-      (p.exercise as any).muscleGroup === requirements.muscleGroup
-    ).length;
+    const targetGroupCount = todayProgress.filter(p => {
+      const exerciseDoc = p.exercise as { muscleGroup?: string } | null | undefined;
+      const muscleGroup = exerciseDoc?.muscleGroup;
+      return muscleGroup === requirements.muscleGroup;
+    }).length;
 
     return targetGroupCount >= requirements.value;
   }
@@ -226,35 +247,46 @@ export class AchievementService {
            dailyStats.every(day => day.muscleGroupCount >= minMuscleGroups);
   }
 
-  // Update daily streak for user
-  static async updateDailyStreak(user: IUser): Promise<{ streakUpdated: boolean; newStreak: number; streakBroken: boolean }> {
+  // Update daily streak for user with streak protection
+  static async updateDailyStreak(user: IUser): Promise<{ streakUpdated: boolean; newStreak: number; streakBroken: boolean; protectionUsed: boolean }> {
     const today = new Date();
-    const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
-    
+
     // If no last activity date, this is the first activity
     if (!user.lastActivityDate) {
       user.dailyStreak = 1;
+      user.longestStreak = Math.max(user.longestStreak, user.dailyStreak);
       user.lastActivityDate = today;
       await user.save();
-      return { streakUpdated: true, newStreak: 1, streakBroken: false };
+      return { streakUpdated: true, newStreak: 1, streakBroken: false, protectionUsed: false };
     }
 
     const lastActivity = new Date(user.lastActivityDate);
-    const daysSinceLastActivity = Math.floor((today.getTime() - lastActivity.getTime()) / (24 * 60 * 60 * 1000));
+    const daysSinceLastActivity = Math.floor((today.getTime() - lastActivity.getTime()) / SECONDS_PER_DAY);
 
     let streakBroken = false;
-    
+    let protectionUsed = false;
+
     if (daysSinceLastActivity === 0) {
-      // Same day activity, no streak change
-      return { streakUpdated: false, newStreak: user.dailyStreak, streakBroken: false };
-    } else if (daysSinceLastActivity === 1) {
-      // Consecutive day, increment streak
+      return { streakUpdated: false, newStreak: user.dailyStreak, streakBroken: false, protectionUsed: false };
+    }
+
+    if (daysSinceLastActivity === 1) {
       user.dailyStreak += 1;
       if (user.dailyStreak > user.longestStreak) {
         user.longestStreak = user.dailyStreak;
       }
+    } else if (daysSinceLastActivity === 2) {
+      const weekAgo = new Date(today.getTime() - 7 * SECONDS_PER_DAY);
+      const canUseProtection = !user.streakProtectionUsed || new Date(user.streakProtectionUsed) < weekAgo;
+
+      if (canUseProtection && user.dailyStreak > 0) {
+        protectionUsed = true;
+        user.streakProtectionUsed = today;
+      } else {
+        streakBroken = user.dailyStreak > 0;
+        user.dailyStreak = 1;
+      }
     } else {
-      // Streak broken, reset to 1
       streakBroken = user.dailyStreak > 0;
       user.dailyStreak = 1;
     }
@@ -262,39 +294,14 @@ export class AchievementService {
     user.lastActivityDate = today;
     await user.save();
 
-    return { 
-      streakUpdated: true, 
-      newStreak: user.dailyStreak, 
-      streakBroken 
-    };
-  }
-
-  // Update weekly goal progress
-  static async updateWeeklyGoal(user: IUser): Promise<{ goalCompleted: boolean; progress: number; target: number }> {
-    const now = new Date();
-    const weekStart = new Date(user.weeklyGoal.weekStartDate);
-    const daysSinceWeekStart = Math.floor((now.getTime() - weekStart.getTime()) / (24 * 60 * 60 * 1000));
-
-    // If more than 7 days since week start, reset weekly goal
-    if (daysSinceWeekStart >= 7) {
-      user.weeklyGoal.currentProgress = 1; // Starting with current exercise
-      user.weeklyGoal.weekStartDate = now;
-    } else {
-      user.weeklyGoal.currentProgress += 1;
-    }
-
-    const goalCompleted = user.weeklyGoal.currentProgress >= user.weeklyGoal.exercisesTarget;
-    
-    await user.save();
-
     return {
-      goalCompleted,
-      progress: user.weeklyGoal.currentProgress,
-      target: user.weeklyGoal.exercisesTarget
+      streakUpdated: true,
+      newStreak: user.dailyStreak,
+      streakBroken,
+      protectionUsed,
     };
   }
 
-  // Get encouraging streak messages
   static getStreakMessage(streak: number, streakBroken: boolean = false): string {
     if (streakBroken) {
       return "Nicht schlimm! Jeder Neustart ist ein Erfolg. Lass uns wieder durchstarten! 💪";
@@ -302,21 +309,82 @@ export class AchievementService {
 
     if (streak === 1) {
       return "Großartiger Start! Der erste Schritt ist getan! 🎯";
-    } else if (streak === 3) {
-      return "3 Tage in Folge! Du bist auf dem richtigen Weg! 🔥";
-    } else if (streak === 7) {
-      return "Eine ganze Woche! Du bist ein echter Champion! ⚡";
-    } else if (streak === 14) {
-      return "Zwei Wochen Durchhaltevermögen! Unglaublich! 🌟";
-    } else if (streak === 30) {
-      return "30 Tage! Du bist absolut unaufhaltsam! 👑";
-    } else if (streak % 10 === 0) {
-      return `${streak} Tage in Folge! Du bist eine Inspiration! 🚀`;
-    } else if (streak % 7 === 0) {
-      return `${streak} Tage Streak! Weiter so! 💎`;
-    } else {
-      return `${streak} Tage am Stück! Fantastisch! 💪`;
     }
+
+    if (streak === 3) {
+      return "3 Tage in Folge! Du bist auf dem richtigen Weg! 🔥";
+    }
+
+    if (streak === 7) {
+      return "Eine ganze Woche! Du bist ein echter Champion! ⚡";
+    }
+
+    if (streak === 14) {
+      return "Zwei Wochen Durchhaltevermögen! Unglaublich! 🌟";
+    }
+
+    if (streak === 30) {
+      return "30 Tage! Du bist absolut unaufhaltsam! 👑";
+    }
+
+    if (streak % 10 === 0) {
+      return `${streak} Tage in Folge! Du bist eine Inspiration! 🚀`;
+    }
+
+    if (streak % 7 === 0) {
+      return `${streak} Tage Streak! Weiter so! 💎`;
+    }
+
+    return `${streak} Tage am Stück! Fantastisch! 💪`;
+  }
+
+  static ensureWeeklyGoalInitialized(user: IUser, now: Date) {
+    if (!user.weeklyGoal) {
+      user.weeklyGoal = {
+        exercisesTarget: DEFAULT_WEEKLY_GOAL_TARGET,
+        currentProgress: 0,
+        weekStartDate: now,
+      };
+      return;
+    }
+
+    if (!user.weeklyGoal.exercisesTarget || user.weeklyGoal.exercisesTarget < DEFAULT_WEEKLY_GOAL_TARGET) {
+      user.weeklyGoal.exercisesTarget = DEFAULT_WEEKLY_GOAL_TARGET;
+    }
+
+    if (!user.weeklyGoal.weekStartDate) {
+      user.weeklyGoal.weekStartDate = now;
+    }
+
+    if (typeof user.weeklyGoal.currentProgress !== 'number' || Number.isNaN(user.weeklyGoal.currentProgress)) {
+      user.weeklyGoal.currentProgress = 0;
+    }
+  }
+
+  static async updateWeeklyGoal(user: IUser): Promise<{ goalCompleted: boolean; progress: number; target: number }> {
+    const now = new Date();
+
+    AchievementService.ensureWeeklyGoalInitialized(user, now);
+
+    const weekStart = new Date(user.weeklyGoal.weekStartDate);
+    const daysSinceWeekStart = Math.floor((now.getTime() - weekStart.getTime()) / SECONDS_PER_DAY);
+
+    if (daysSinceWeekStart >= 7) {
+      user.weeklyGoal.currentProgress = 1;
+      user.weeklyGoal.weekStartDate = now;
+    } else {
+      user.weeklyGoal.currentProgress += 1;
+    }
+
+    const goalCompleted = user.weeklyGoal.currentProgress >= user.weeklyGoal.exercisesTarget;
+
+    await user.save();
+
+    return {
+      goalCompleted,
+      progress: user.weeklyGoal.currentProgress,
+      target: user.weeklyGoal.exercisesTarget,
+    };
   }
 
   // Get daily motivational quote

@@ -19,6 +19,8 @@ export interface User {
   dailyStreak: number;
   longestStreak: number;
   lastActivityDate?: string;
+  perfectDaysCount: number;
+  streakProtectionUsed?: string;
   completedExercises: string[];
   hasTheraband: boolean;
   weeklyGoal: {
@@ -31,6 +33,10 @@ export interface User {
     pointsEarned: number;
     month: number;
     year: number;
+  };
+  reminderSettings?: {
+    enabled: boolean;
+    intervalMinutes: number;
   };
 }
 
@@ -53,10 +59,17 @@ export interface AchievementUnlocked {
   isNew: boolean;
 }
 
+export interface PerfectDayInfo {
+  isPerfectDay: boolean;
+  bonusPoints: number;
+  message: string;
+}
+
 export interface GamificationData {
   achievements: AchievementUnlocked[];
   streakInfo: StreakInfo | null;
   weeklyGoal: WeeklyGoal | null;
+  perfectDay: PerfectDayInfo | null;
   motivationalQuote: string;
 }
 
@@ -71,7 +84,8 @@ export interface ProgressResponse {
 export interface Exercise {
   _id: string;
   videoId: string; // ID zur Identifizierung der Übung
-  name: string;
+  name?: string;
+  title?: string;
   description?: string;
   preparation: string; // Vorbereitung der Übung
   execution: string; // Ausführungsbeschreibung
@@ -111,7 +125,7 @@ export interface Progress {
 }
 
 // Enums für Übungen
-export type MuscleGroup = 'Bauch' | 'Beine' | 'Po' | 'Schulter' | 'Brust' | 'Nacken' | 'Rücken';
+export type MuscleGroup = 'Bauch' | 'Po' | 'Schulter' | 'Brust' | 'Nacken' | 'Rücken';
 export type ExerciseType = 'sitzend' | 'stehend';
 export type ExerciseCategory = 'Mobilisation' | 'Kraft';
 export type Equipment = 'Theraband' | 'ohne';
@@ -150,9 +164,29 @@ export interface WeeklyProgress {
   daysWithActivityThisWeek: number;
 }
 
+export interface MonthlyProgress {
+  month: number;
+  year: number;
+  totalExercisesThisMonth: number;
+  totalPointsThisMonth: number;
+  daysWithActivityThisMonth: number;
+  activityByDate: {
+    date: string;
+    exercisesCompleted: number;
+    pointsEarned: number;
+    muscleGroupsTrained: MuscleGroup[];
+  }[];
+  mostTrainedMuscleGroups: {
+    muscleGroup: string;
+    count: number;
+  }[];
+}
+
 export interface ExerciseRecommendation {
   trainedToday: MuscleGroup[];
   recommendations: Exercise[];
+  muscleGroupsTrainedToday?: MuscleGroup[];
+  totalMuscleGroups?: number;
 }
 
 // Typen für Authentifizierung

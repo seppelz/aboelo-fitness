@@ -8,7 +8,7 @@ export interface IExercise extends Document {
   execution: string;        // Ausführung der Übung
   goal: string;             // Ziel der Übung
   tips: string;             // Tipps zur Durchführung
-  muscleGroup: string;      // Muskelgruppe (Bauch, Beine, etc.)
+  muscleGroup: string;      // Muskelgruppe (Bauch, Po, Schulter, etc.)
   category: string;         // Kategorie (Kraft, Mobilisation)
   isSitting: boolean;       // Sitzende Übung
   usesTheraband: boolean;   // Mit Theraband
@@ -61,7 +61,7 @@ const exerciseSchema = new mongoose.Schema(
     muscleGroup: {
       type: String,
       required: [true, 'Muskelgruppe ist erforderlich'],
-      enum: ['Bauch', 'Beine', 'Po', 'Schulter', 'Arme', 'Brust', 'Nacken', 'Rücken'],
+      enum: ['Bauch', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'],
     },
     category: {
       type: String,

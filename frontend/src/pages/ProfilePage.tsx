@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { 
   Box, 
   Typography, 
@@ -18,21 +18,25 @@ import {
   ListItemIcon,
   Container,
   FormControlLabel,
-  Switch
+  Switch,
+  Stack
 } from '@mui/material';
 import { AuthContext } from '../contexts/AuthContext';
 import { updateProfile } from '../services/authService';
 import { resetUserProgress } from '../services/authService';
+import { getDailyProgress, getRecommendedExercises } from '../services/progressService';
 import LockIcon from '@mui/icons-material/Lock';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import StarIcon from '@mui/icons-material/Star';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import { useActivityReminder } from '../hooks/useActivityReminder';
+import { Exercise } from '../types';
 
 const ProfilePage: React.FC = () => {
   // In AuthContext ist setUser nicht Teil der öffentlichen Schnittstelle
   // Wir verwenden nur die Eigenschaften, die tatsächlich im Kontext verfügbar sind
-  const { user, refreshUser } = useContext(AuthContext);
+  const { user, refreshUser, updateUserLocally } = useContext(AuthContext);
   
   // Calculate estimated exercises from points for data consistency
   const estimatedExercises = user ? Math.floor((user.points || 0) / 10) : 0;
@@ -49,6 +53,8 @@ const ProfilePage: React.FC = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [hasTheraband, setHasTheraband] = useState(user?.hasTheraband || false);
+  const [reminderEnabled, setReminderEnabled] = useState<boolean>(user?.reminderSettings?.enabled ?? true);
+  const [reminderInterval, setReminderInterval] = useState<number>(user?.reminderSettings?.intervalMinutes ?? 60);
   
   // Zustandsvariablen für den Bearbeitungsmodus und Feedback
   const [isEditing, setIsEditing] = useState(false);
@@ -56,6 +62,61 @@ const ProfilePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isResetting, setIsResetting] = useState(false);
+
+  const fetchNextExerciseForReminder = useCallback(async () => {
+    try {
+      const [dailyProgressData, recommendationsData] = await Promise.all([
+        getDailyProgress().catch(() => null),
+        getRecommendedExercises().catch(() => null)
+      ]);
+
+      const muscleGroupsOrder = ['Bauch', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'];
+      const trainedToday = new Set<string>(
+        Array.isArray((dailyProgressData as any)?.muscleGroupsTrainedToday)
+          ? (dailyProgressData as any).muscleGroupsTrainedToday
+          : []
+      );
+      const targetGroup = muscleGroupsOrder.find(group => !trainedToday.has(group));
+
+      const recommendationsList: Exercise[] = Array.isArray((recommendationsData as any)?.recommendations)
+        ? (recommendationsData as any).recommendations
+        : Array.isArray((recommendationsData as any)?.recommendedExercises)
+          ? (recommendationsData as any).recommendedExercises
+          : [];
+
+      let nextExercise: Exercise | undefined = targetGroup
+        ? recommendationsList.find(exercise => exercise.muscleGroup === targetGroup)
+        : undefined;
+
+      if (!nextExercise) {
+        nextExercise = recommendationsList[0];
+      }
+
+      if (!nextExercise) {
+        return null;
+      }
+
+      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+
+      return {
+        title: nextExercise.name || (nextExercise as any).title || 'Übung',
+        url: `${origin}/app/exercises/${nextExercise._id}`,
+        muscleGroup: nextExercise.muscleGroup,
+      };
+    } catch (error) {
+      console.error('[Reminder] Failed to determine next exercise', error);
+      return null;
+    }
+  }, []);
+
+  const { 
+    supportsNotifications, 
+    permission, 
+    requestPermission, 
+    triggerTestReminder,
+    permissionRequested,
+    permissionMessage
+  } = useActivityReminder({ enabled: reminderEnabled, intervalMinutes: reminderInterval, fetchNextExercise: fetchNextExerciseForReminder });
   
   // Benutzerdaten in das Formular laden
   useEffect(() => {
@@ -64,6 +125,8 @@ const ProfilePage: React.FC = () => {
       setEmail(user.email);
       setAge(user.age ? user.age.toString() : '');
       setHasTheraband(user.hasTheraband || false);
+      setReminderEnabled(user.reminderSettings?.enabled ?? true);
+      setReminderInterval(user.reminderSettings?.intervalMinutes ?? 60);
     }
   }, [user]);
   
@@ -82,6 +145,8 @@ const ProfilePage: React.FC = () => {
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
+      setReminderEnabled(user.reminderSettings?.enabled ?? true);
+      setReminderInterval(user.reminderSettings?.intervalMinutes ?? 60);
     }
   };
   
@@ -129,13 +194,16 @@ const ProfilePage: React.FC = () => {
         age: age ? parseInt(age) : undefined,
         hasTheraband,
         currentPassword: currentPassword || undefined,
-        newPassword: newPassword || undefined
+        newPassword: newPassword || undefined,
+        reminderSettings: {
+          enabled: reminderEnabled,
+          intervalMinutes: reminderInterval
+        }
       };
       
       // updateProfile aktualisiert bereits den Benutzer im localStorage
-      await updateProfile(updatedData);
-      
-      // WICHTIG: AuthContext mit frischen Daten vom Server aktualisieren
+      const updatedUser = await updateProfile(updatedData);
+      updateUserLocally(updatedUser);
       await refreshUser();
       
       // Erfolgsbenachrichtigung anzeigen und Bearbeitungsmodus deaktivieren
@@ -192,6 +260,30 @@ const ProfilePage: React.FC = () => {
     } finally {
       setIsResetting(false);
     }
+  };
+
+  const handleReminderToggle = async (checked: boolean) => {
+    if (checked && permission !== 'granted') {
+      const result = await requestPermission();
+      if (result !== 'granted') {
+        setReminderEnabled(false);
+        return;
+      }
+    }
+    setReminderEnabled(checked);
+  };
+
+  const handleReminderIntervalChange = (value: string) => {
+    const parsed = parseInt(value, 10);
+    if (!Number.isNaN(parsed)) {
+      setReminderInterval(Math.max(1, parsed));
+    } else if (value === '') {
+      setReminderInterval(1);
+    }
+  };
+
+  const handleTestReminder = async () => {
+    await triggerTestReminder();
   };
 
   if (!user) {
@@ -336,6 +428,78 @@ const ProfilePage: React.FC = () => {
                   mb: 2
                 }}
               />
+
+              <Box sx={{ mt: 3 }}>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
+                  Aktivpausen-Erinnerung
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  Standardmäßig wirst du alle 60 Minuten an eine 1–2-minütige Bewegung erinnert. Wir zeigen vor der Systemabfrage, warum sich die Aktivierung lohnt.
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2, bgcolor: 'action.hover', p: 2, borderRadius: 2 }}>
+                  <strong>Warum erlauben?</strong> Du erhältst motivierende Erinnerungen zu deinen Aktivpausen. Benachrichtigungen lassen sich jederzeit in den Browser-Einstellungen deaktivieren.
+                </Typography>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={reminderEnabled}
+                      onChange={(e) => handleReminderToggle(e.target.checked)}
+                      disabled={!isEditing || isSubmitting}
+                      color="primary"
+                    />
+                  }
+                  label={
+                    <Box>
+                      <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                        Erinnerungen aktivieren
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Wenn aktiviert, erhältst du Browser-Benachrichtigungen für Aktivpausen.
+                      </Typography>
+                    </Box>
+                  }
+                  sx={{ alignItems: 'flex-start', mb: 2 }}
+                />
+
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ xs: 'stretch', sm: 'center' }} sx={{ mb: 1 }}>
+                  <TextField
+                    label="Intervall (Minuten)"
+                    type="number"
+                    variant="outlined"
+                    value={reminderInterval}
+                    onChange={(e) => handleReminderIntervalChange(e.target.value)}
+                    disabled={!isEditing || isSubmitting || !reminderEnabled}
+                    InputProps={{
+                      inputProps: { min: 1 },
+                      sx: { fontSize: '1.1rem' }
+                    }}
+                    InputLabelProps={{
+                      sx: { fontSize: '1.1rem' }
+                    }}
+                    sx={{ width: { xs: '100%', sm: 220 } }}
+                  />
+                  <Button
+                    variant="outlined"
+                    onClick={handleTestReminder}
+                    disabled={reminderEnabled === false || isSubmitting}
+                  >
+                    Erinnerung testen
+                  </Button>
+                </Stack>
+                <Typography variant="body2" color={permission === 'granted' ? 'success.main' : 'text.secondary'}>
+                  {permissionMessage}
+                </Typography>
+                {permission === 'granted' && (
+                  <Typography variant="body2" color="success.main" sx={{ mt: 1 }}>
+                    🎉 Du wirst jetzt an deine Aktivpausen erinnert. Du kannst den Rhythmus jederzeit anpassen.
+                  </Typography>
+                )}
+                {permissionRequested && permission === 'default' && (
+                  <Typography variant="body2" color="warning.main" sx={{ mt: 1 }}>
+                    Bitte bestätige das Browser-Popup, um Benachrichtigungen zu erlauben.
+                  </Typography>
+                )}
+              </Box>
               
               {/* Passwort-Änderung (nur im Bearbeitungsmodus) */}
               {isEditing && (

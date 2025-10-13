@@ -47,16 +47,13 @@ const achievementSchema = new mongoose.Schema(
     pointsRequired: {
       type: Number,
     },
-    exercisesRequired: {
-      type: Number,
-    },
     streakRequired: {
       type: Number,
     },
     requirements: {
       type: {
         type: String,
-        enum: ['first_exercise', 'exercises_count', 'streak_days', 'points_total', 'muscle_groups', 'weekly_goal', 'perfect_week'],
+        enum: ['first_exercise', 'exercises_count', 'streak_days', 'points_total', 'muscle_groups', 'weekly_goal', 'perfect_week', 'daily_muscle_groups', 'muscle_specialist', 'consistency_muscle_groups', 'perfect_days'],
         required: true,
       },
       value: {
@@ -173,35 +170,35 @@ export const ACHIEVEMENTS = [
     category: 'special',
     requirements: { 
       type: 'muscle_groups', 
-      muscleGroups: ['Bauch', 'Beine', 'Po', 'Schulter', 'Arme', 'Brust', 'Nacken', 'Rücken'] 
+      muscleGroups: ['Bauch', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'] 
     },
     rarity: 'epic',
   },
   {
     id: 'perfect_week',
     title: 'Perfekte Woche',
-    description: 'Eine ganze Woche alle täglichen Ziele erreicht',
+    description: 'Eine ganze Woche alle 6 täglichen Übungen abgeschlossen',
     icon: '🌈',
     category: 'weekly',
     requirements: { type: 'perfect_week' },
-    rarity: 'legendary',
+    rarity: 'epic',
   },
   // Daily Muscle Group Achievements
   {
     id: 'daily_all_muscle_groups',
     title: 'Täglicher Allrounder',
-    description: 'Alle Muskelgruppen an einem Tag trainiert',
+    description: 'Alle 6 Muskelgruppen an einem Tag trainiert',
     icon: '🔥',
     category: 'daily',
     requirements: { 
       type: 'daily_muscle_groups', 
-      muscleGroups: ['Bauch', 'Beine', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'] 
+      muscleGroups: ['Bauch', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'] 
     },
     rarity: 'legendary',
   },
   {
     id: 'daily_5_muscle_groups',
-    title: 'Vielseitiger Trainer',
+    title: 'Fokus-Tag',
     description: '5 verschiedene Muskelgruppen an einem Tag trainiert',
     icon: '⭐',
     category: 'daily',
@@ -238,10 +235,47 @@ export const ACHIEVEMENTS = [
   {
     id: 'consistency_champion',
     title: 'Beständigkeits-Champion',
-    description: '7 Tage in Folge mindestens 3 Muskelgruppen trainiert',
+    description: '7 Tage in Folge alle 6 Muskelgruppen trainiert',
     icon: '👑',
     category: 'consistency',
-    requirements: { type: 'consistency_muscle_groups', days: 7, minMuscleGroups: 3 },
+    requirements: { type: 'consistency_muscle_groups', days: 7, minMuscleGroups: 6 },
+    rarity: 'legendary',
+  },
+  // Perfect Days Achievements
+  {
+    id: 'perfect_day_1',
+    title: 'Perfekter Tag',
+    description: 'Alle 6 Muskelgruppen an einem Tag trainiert',
+    icon: '✨',
+    category: 'special',
+    requirements: { type: 'perfect_days', value: 1 },
+    rarity: 'epic',
+  },
+  {
+    id: 'perfect_days_10',
+    title: 'Perfektionist',
+    description: '10 Tage alle 6 Muskelgruppen trainiert',
+    icon: '🌟',
+    category: 'special',
+    requirements: { type: 'perfect_days', value: 10 },
+    rarity: 'epic',
+  },
+  {
+    id: 'perfect_days_30',
+    title: 'Meister der Balance',
+    description: '30 Tage alle 6 Muskelgruppen trainiert',
+    icon: '💫',
+    category: 'special',
+    requirements: { type: 'perfect_days', value: 30 },
+    rarity: 'legendary',
+  },
+  {
+    id: 'perfect_days_100',
+    title: 'Legende der Vollständigkeit',
+    description: '100 Tage alle 6 Muskelgruppen trainiert',
+    icon: '🏆',
+    category: 'special',
+    requirements: { type: 'perfect_days', value: 100 },
     rarity: 'legendary',
   }
 ]; 

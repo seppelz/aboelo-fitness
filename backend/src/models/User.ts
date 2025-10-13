@@ -23,6 +23,8 @@ export interface IUser extends Document {
   dailyStreak: number;
   longestStreak: number;
   lastActivityDate?: Date;
+  perfectDaysCount: number; // Days when all 6 muscle groups were trained
+  streakProtectionUsed?: Date; // Last time streak protection was used
   completedExercises: mongoose.Types.ObjectId[];
   exerciseFrequency: Map<string, number>; // Track how often each exercise was recommended/completed
   hasTheraband: boolean; // Whether user has theraband equipment available
@@ -36,6 +38,10 @@ export interface IUser extends Document {
     pointsEarned: number;
     month: number;
     year: number;
+  };
+  reminderSettings: {
+    enabled: boolean;
+    intervalMinutes: number;
   };
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -94,6 +100,13 @@ const userSchema = new mongoose.Schema(
     lastActivityDate: {
       type: Date,
     },
+    perfectDaysCount: {
+      type: Number,
+      default: 0,
+    },
+    streakProtectionUsed: {
+      type: Date,
+    },
     completedExercises: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -119,6 +132,10 @@ const userSchema = new mongoose.Schema(
       pointsEarned: { type: Number, default: 0 },
       month: { type: Number, default: () => new Date().getMonth() },
       year: { type: Number, default: () => new Date().getFullYear() }
+    },
+    reminderSettings: {
+      enabled: { type: Boolean, default: true },
+      intervalMinutes: { type: Number, default: 60 }
     }
   },
   {

@@ -19,15 +19,17 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
+import HelpIcon from '@mui/icons-material/Help';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 
-// Navigationslinks
-const navItems = [
-  { name: 'Startseite', path: '/', icon: <HomeIcon fontSize="large" /> },
-  { name: 'Übungen', path: '/exercises', icon: <FitnessCenterIcon fontSize="large" /> },
-  { name: 'Fortschritt', path: '/progress', icon: <BarChartIcon fontSize="large" /> },
-  { name: 'Einstellungen', path: '/settings', icon: <SettingsIcon fontSize="large" /> },
+// Navigationslinks für eingeloggte Nutzer
+const appNavItems = [
+  { name: 'Startseite', path: '/app', icon: <HomeIcon fontSize="large" /> },
+  { name: 'Übungen', path: '/app/exercises', icon: <FitnessCenterIcon fontSize="large" /> },
+  { name: 'Fortschritt', path: '/app/progress', icon: <BarChartIcon fontSize="large" /> },
+  { name: 'Hilfe', path: '/app/help', icon: <HelpIcon fontSize="large" /> },
+  { name: 'Einstellungen', path: '/app/settings', icon: <SettingsIcon fontSize="large" /> },
 ];
 
 const Navigation = () => {
@@ -110,7 +112,7 @@ const Navigation = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {navItems.map((item) => (
+              {appNavItems.map((item) => (
                 <MenuItem 
                   key={item.path} 
                   onClick={() => handleNavigation(item.path)}
@@ -143,7 +145,7 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', gap: 2 }}>
-            {navItems.map((item) => (
+            {user ? appNavItems.map((item) => (
               <Button
                 key={item.path}
                 onClick={() => handleNavigation(item.path)}
@@ -165,7 +167,24 @@ const Navigation = () => {
                 {item.icon}
                 {item.name}
               </Button>
-            ))}
+            )) : (
+              <Button
+                onClick={() => handleNavigation('/willkommen')}
+                sx={{ 
+                  my: 2,
+                  color: 'white',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  textTransform: 'none',
+                  fontSize: '1rem',
+                  padding: '10px 20px'
+                }}
+              >
+                <HomeIcon fontSize="large" />
+                Willkommen
+              </Button>
+            )}
           </Box>
 
           {/* Benutzermenü */}

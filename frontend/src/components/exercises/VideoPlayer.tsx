@@ -77,7 +77,6 @@ const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props,
         // Check duration when data is loaded
         const duration = video.duration;
         if (duration && duration !== Infinity && !isNaN(duration)) {
-          console.log('Duration from loadeddata event:', Math.round(duration), 'seconds');
         }
       };
       
@@ -89,7 +88,6 @@ const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props,
       video.addEventListener('loadedmetadata', () => {
         const videoDuration = video.duration;
         if (videoDuration && videoDuration !== Infinity && !isNaN(videoDuration)) {
-          console.log('Duration from loadedmetadata listener:', Math.round(videoDuration), 'seconds');
           setDuration(videoDuration);
         }
       });
@@ -97,7 +95,6 @@ const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props,
       video.addEventListener('durationchange', () => {
         const videoDuration = video.duration;
         if (videoDuration && videoDuration !== Infinity && !isNaN(videoDuration)) {
-          console.log('Duration changed to:', Math.round(videoDuration), 'seconds');
           setDuration(videoDuration);
         }
       });
@@ -120,7 +117,6 @@ const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props,
     if (autoplay && videoRef.current) {
       const timer = setTimeout(() => {
         if (videoRef.current) {
-          console.log('VideoPlayer: Attempting autoplay');
           videoRef.current.play()
             .then(() => console.log('VideoPlayer: Autoplay successful'))
             .catch(err => console.error('VideoPlayer: Autoplay failed:', err));
@@ -178,12 +174,10 @@ const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props,
               if (onComplete) onComplete();
             }}
             onPlay={() => {
-              console.log('Video started playing');
               setIsPaused(false);
               if (onPlay) onPlay();
             }}
             onPause={() => {
-              console.log('Video paused');
               setIsPaused(true);
               if (onPause) onPause();
             }}
@@ -195,21 +189,16 @@ const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props,
               // console.log('Video loading started:', src);
             }}
             onCanPlay={() => {
-              console.log('Video can play - ready to start');
             }}
             onLoadedMetadata={() => {
               const duration = videoRef.current?.duration;
-              console.log('Video metadata loaded, duration:', duration);
               if (duration && duration !== Infinity && !isNaN(duration)) {
-                console.log('Valid duration detected:', Math.round(duration), 'seconds');
               } else {
-                console.log('Duration not ready yet, will wait for durationchange event');
               }
             }}
             onDurationChange={() => {
               const duration = videoRef.current?.duration;
               if (duration && duration !== Infinity && !isNaN(duration)) {
-                console.log('Duration updated via durationchange:', Math.round(duration), 'seconds');
               }
             }}
             style={{ 

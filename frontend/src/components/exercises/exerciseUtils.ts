@@ -77,14 +77,10 @@ export const VIDEO_ID_MAPPING: Record<string, string> = {
  * Priorität: Cloudinary-Poster > explizites Thumbnail > Platzhalter.
  */
 export const getThumbnailUrl = (exercise: Exercise): string => {
-  const videoId = (exercise as any).videoId || '';
-  
-  console.log(`🖼️ [DEBUG] getThumbnailUrl: Übung "${exercise.name}" mit VideoID: ${videoId}`);
-  
+  const videoId = (exercise as any).videoId || '';  
   // Check cache first
   const cacheKey = `${videoId}_${exercise.name}`;
   if (thumbnailCache.has(cacheKey)) {
-    console.log(`✅ [DEBUG] getThumbnailUrl: Thumbnail aus Cache für "${exercise.name}"`);
     return thumbnailCache.get(cacheKey)!;
   }
   
@@ -95,26 +91,22 @@ export const getThumbnailUrl = (exercise: Exercise): string => {
     // Erzeugt die URL für das .jpg-Poster, das von Cloudinary generiert wird.
     // c_pad mit Hintergrund statt c_fit um sicherzustellen, dass die ganze Person sichtbar ist
     thumbnailUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,c_pad,b_auto,w_576,h_720/${cloudinaryId}.jpg`;
-    console.log(`✅ [DEBUG] getThumbnailUrl: Cloudinary Thumbnail für "${exercise.name}": ${thumbnailUrl}`);
   } else {
-    console.log(`⚠️ [DEBUG] getThumbnailUrl: Keine VideoID-Mapping für "${exercise.name}" (VideoID: ${videoId})`);
     
     // Fallback - block YouTube URLs and create branded placeholder
     if (exercise.thumbnailUrl && !exercise.thumbnailUrl.includes('youtube') && !exercise.thumbnailUrl.includes('ytimg')) {
       thumbnailUrl = exercise.thumbnailUrl;
-      console.log(`✅ [DEBUG] getThumbnailUrl: Fallback Thumbnail für "${exercise.name}": ${thumbnailUrl}`);
     } else {
       // Generate color-coded placeholder
       const muscleGroup = (exercise as any).muscleGroup || 'Allgemein';
       const muscleGroupColors: Record<string, string> = {
-        'Bauch': '#ff6b6b', 'Beine': '#4ecdc4', 'Po': '#45b7d1', 'Schulter': '#96ceb4',
+        'Bauch': '#ff6b6b', 'Po': '#45b7d1', 'Schulter': '#96ceb4',
         'Brust': '#fcea2b', 'Nacken': '#ff9ff3', 'Rücken': '#54a0ff', 'Allgemein': '#778ca3'
       };
       const color = muscleGroupColors[muscleGroup] || muscleGroupColors['Allgemein'];
       
       // Create a data URL for a simple colored rectangle with text (no emojis to avoid btoa encoding issues)
       thumbnailUrl = `data:image/svg+xml;base64,${btoa(`<svg width="576" height="720" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="${color}"/><text x="50%" y="40%" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" fill="white" font-weight="bold">${muscleGroup}</text><text x="50%" y="55%" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" fill="white">Training</text><text x="50%" y="70%" text-anchor="middle" font-family="Arial, sans-serif" font-size="20" fill="white">Video wird geladen...</text></svg>`)}`;
-      console.log(`🎨 [DEBUG] getThumbnailUrl: Platzhalter-Thumbnail für "${exercise.name}" (Muskelgruppe: ${muscleGroup})`);
     }
   }
   
@@ -130,25 +122,18 @@ export const getVideoDetails = (exercise: Exercise): { type: 'video' | 'none', s
   const videoId = (exercise as any).videoId || '';
   const poster = getThumbnailUrl(exercise);
 
-  console.log(`🎥 [DEBUG] getVideoDetails: Übung "${exercise.name}" mit VideoID: ${videoId}`);
-
   // Prüfen, ob eine gültige Cloudinary-Video-ID vorhanden ist.
   if (videoId && VIDEO_ID_MAPPING[videoId]) {
     const cloudinaryId = VIDEO_ID_MAPPING[videoId];
     // Use proper video dimensions and ensure full person is visible
     const videoUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/video/upload/q_auto,c_pad,b_auto,w_640,h_480/${cloudinaryId}.mp4`;
-    
-    console.log(`✅ [DEBUG] getVideoDetails: Video gefunden für "${exercise.name}": ${videoUrl}`);
-    
+        
     return {
       type: 'video',
       source: videoUrl,
       poster: poster,
     };
-  }
-  
-  console.log(`⚠️ [DEBUG] getVideoDetails: Kein Video für "${exercise.name}" (VideoID: ${videoId})`);
-  
+  }  
   // Wenn kein Video gefunden wird, 'none' zurückgeben.
   return {
     type: 'none',

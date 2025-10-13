@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { CssBaseline, ThemeProvider } from '@mui/material';
+import { CssBaseline, ThemeProvider, CircularProgress, Box } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 
 // Contexts
@@ -11,6 +11,7 @@ import { ThemeProvider as CustomThemeProvider } from './contexts/ThemeContext';
 import Layout from './components/layout/Layout';
 
 // Pages
+import WelcomePage from './pages/WelcomePage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -18,6 +19,11 @@ import ExerciseListPage from './pages/ExerciseListPage';
 import ExerciseDetailPage from './pages/ExerciseDetailPage';
 import ProgressPage from './pages/ProgressPage';
 import ProfilePage from './pages/ProfilePage';
+import HelpPage from './pages/HelpPage';
+import DatenschutzPage from './pages/DatenschutzPage';
+import ImpressumPage from './pages/ImpressumPage';
+import ContactPage from './pages/ContactPage';
+import AccessibilityPage from './pages/AccessibilityPage';
 import NotFoundPage from './pages/NotFoundPage';
 
 // MUI Theme Configuration with Dark Green Color Scheme
@@ -101,13 +107,29 @@ const theme = createTheme({
 
 // Protected Route Component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, loading } = React.useContext(AuthContext);
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <CircularProgress color="primary" thickness={4} size={48} />
+      </Box>
+    );
+  }
+
+  return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
+};
+
+const LandingRoute = () => {
   const { isAuthenticated } = React.useContext(AuthContext);
-  
-  return isAuthenticated ? (
-    <>{children}</>
-  ) : (
-    <Navigate to="/login" replace />
-  );
+  return isAuthenticated ? <Navigate to="/app" replace /> : <WelcomePage />;
 };
 
 function App() {
@@ -118,44 +140,38 @@ function App() {
         <AuthProvider>
           <Router>
             <Routes>
-              <Route path="/" element={<Layout />}>
+              <Route path="/" element={<LandingRoute />} />
+              <Route path="/willkommen" element={<WelcomePage />} />
+
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/help" element={<HelpPage />} />
+              <Route path="/datenschutz" element={<DatenschutzPage />} />
+              <Route path="/impressum" element={<ImpressumPage />} />
+              <Route path="/kontakt" element={<ContactPage />} />
+              <Route path="/barrierefreiheit" element={<AccessibilityPage />} />
+
+              <Route
+                path="/app"
+                element={
+                  <ProtectedRoute>
+                    <Layout />
+                  </ProtectedRoute>
+                }
+              >
                 <Route index element={<HomePage />} />
-                <Route path="login" element={<LoginPage />} />
-                <Route path="register" element={<RegisterPage />} />
-                
                 <Route path="exercises" element={<ExerciseListPage />} />
                 <Route path="exercises/:id" element={<ExerciseDetailPage />} />
-                
-                <Route 
-                  path="progress" 
-                  element={
-                    <ProtectedRoute>
-                      <ProgressPage />
-                    </ProtectedRoute>
-                  } 
-                />
-                
-                <Route 
-                  path="profile" 
-                  element={
-                    <ProtectedRoute>
-                      <ProfilePage />
-                    </ProtectedRoute>
-                  } 
-                />
-                
-                {/* Settings redirects to profile */}
-                <Route 
-                  path="settings" 
-                  element={
-                    <ProtectedRoute>
-                      <ProfilePage />
-                    </ProtectedRoute>
-                  } 
-                />
-                
-                <Route path="*" element={<NotFoundPage />} />
+                <Route path="progress" element={<ProgressPage />} />
+                <Route path="profile" element={<ProfilePage />} />
+                <Route path="help" element={<HelpPage />} />
+                <Route path="datenschutz" element={<DatenschutzPage />} />
+                <Route path="impressum" element={<ImpressumPage />} />
+                <Route path="kontakt" element={<ContactPage />} />
+                <Route path="settings" element={<ProfilePage />} />
               </Route>
+
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Router>
         </AuthProvider>

@@ -173,13 +173,18 @@ const ProgressPage: React.FC = () => {
     setTabValue(newValue);
   };
   
+  // Helper function to get display name for muscle groups
+  const getMuscleGroupDisplayName = (muscleGroup: string): string => {
+    if (muscleGroup === 'Schulter') return 'Schulter/Arme';
+    return muscleGroup;
+  };
+
   // Hilfsfunktion für Muskelgruppen-Icons
   const getMuscleGroupIcon = (group: string): React.ReactElement => {
     const iconStyle = { fontSize: '1.5rem', color: 'primary.main' };
     
     switch (group) {
       case 'Bauch': return <SelfImprovementIcon sx={iconStyle} />;
-      case 'Beine': return <DirectionsRunIcon sx={iconStyle} />;
       case 'Po': return <DirectionsWalkIcon sx={iconStyle} />;
       case 'Schulter': return <AccessibilityNewIcon sx={iconStyle} />;
       case 'Brust': return <FavoriteBorderIcon sx={iconStyle} />;
@@ -336,7 +341,7 @@ const ProgressPage: React.FC = () => {
               </Typography>
               
               <Grid container spacing={2} sx={{ mb: 4 }}>
-                {['Bauch', 'Beine', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'].map((group) => {
+                {['Bauch', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'].map((group) => {
                   const muscleGroup = group as MuscleGroup;
                   const isTrained = dailyProgress.muscleGroupsTrainedToday.indexOf(muscleGroup) !== -1;
                   
@@ -353,8 +358,8 @@ const ProgressPage: React.FC = () => {
                           <Box sx={{ fontSize: '2rem', mb: 1 }}>
                             {getMuscleGroupIcon(muscleGroup)}
                           </Box>
-                          <Typography variant="body1" sx={{ fontWeight: isTrained ? 'bold' : 'normal' }}>
-                            {group}
+                          <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                            {getMuscleGroupDisplayName(muscleGroup)}
                           </Typography>
                           <Typography variant="body2" sx={{ mt: 1 }}>
                             {isTrained ? 'Trainiert' : 'Nicht trainiert'}

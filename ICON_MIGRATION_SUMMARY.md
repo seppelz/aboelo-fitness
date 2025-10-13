@@ -12,7 +12,6 @@ Successfully replaced all childish emoji icons with professional Material-UI ico
 | Muscle Group | Old Emoji | New Material Icon | Icon Component |
 |--------------|-----------|-------------------|----------------|
 | Bauch (Abs) | 💪 | 🧘 | `SelfImprovementIcon` |
-| Beine (Legs) | 🦵 | 🏃 | `DirectionsRunIcon` |
 | Po (Glutes) | 🍑 | 🚶 | `DirectionsWalkIcon` |
 | Schulter (Shoulder) | 💪 | ♿ | `AccessibilityNewIcon` |
 | Brust (Chest) | 💪 | ❤️ | `FavoriteBorderIcon` |
