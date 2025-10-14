@@ -95,7 +95,7 @@ const WelcomePage: React.FC = () => {
         },
         {
           question: 'Gibt es Live-Coachings?',
-          answer: 'Nein. aboelo-fitness setzt auf leicht verständliche Videos und Schritt-für-Schritt-Anleitungen, damit jede Person selbstständig trainieren kann.'
+          answer: 'Nein. aboelo-fitness setzt auf leicht verständliche Videos und Schritt-für-Schritt-Anleitungen, damit jede Person selbstständig trainieren kann. Wir helfen dabei, alle 60 Minuten aufzustehen und das 6-Übungen-pro-Tag-Ziel locker zu erreichen – ganz ohne Live-Coachings.'
         },
         {
           question: 'Welche Erinnerungen erhalte ich?',
