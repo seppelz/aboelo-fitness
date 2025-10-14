@@ -28,10 +28,10 @@ const WelcomePage: React.FC = () => {
   const content = useMemo(() => ({
     de: {
       metaTitle: 'aboelo-fitness | Digitale Bewegungslösungen für Senioren, Unternehmen und Gesundheitspartner',
-      metaDescription: 'aboelo-fitness kombiniert evidenzbasierte Trainingsprogramme, Live-Coachings und Analytics für Senioren, Mitarbeitende und Pflegeeinrichtungen. Jetzt informieren und registrieren.',
+      metaDescription: 'aboelo-fitness kombiniert evidenzbasierte Trainingsprogramme, Videoanleitungen und Analytics für Senioren, Mitarbeitende und Pflegeeinrichtungen. Jetzt informieren und registrieren.',
       heroBadge: 'Ganzheitliche Bewegungslösungen',
       heroTitle: 'Digitale Fitness, die Menschen bewegt – zuhause, im Büro und in der Pflege',
-      heroSubtitle: 'aboelo-fitness verbindet evidenzbasierte Mikro-Pausen von 1–2 Minuten mit klaren Videoanleitungen und intelligenten Erinnerungen. Wir helfen dabei, alle 60 Minuten aufzustehen und das 6-Übungen-pro-Tag-Ziel locker zu erreichen.',
+      heroSubtitle: 'aboelo-fitness verbindet evidenzbasierte Mikro-Pausen von 1–2 Minuten mit klaren Videoanleitungen und intelligenten Erinnerungen. Wir helfen dabei, alle 60 Minuten aufzustehen und das 6-Übungen-pro-Tag-Ziel locker zu erreichen – ganz ohne Live-Coachings.',
       heroPrimaryCta: 'Jetzt registrieren',
       heroSecondaryCta: 'Programm entdecken',
       stats: [
@@ -123,10 +123,10 @@ const WelcomePage: React.FC = () => {
     },
     en: {
       metaTitle: 'aboelo-fitness | Digital movement solutions for seniors, teams and care partners',
-      metaDescription: 'aboelo-fitness delivers science-backed exercise programs, live coaching and analytics for seniors, caregivers, companies and medical partners. Discover the platform and sign up today.',
+      metaDescription: 'aboelo-fitness delivers science-backed exercise programs, guided videos and analytics for seniors, caregivers, companies and medical partners. Discover the platform and sign up today.',
       heroBadge: 'Holistic Movement Platform',
       heroTitle: 'Digital fitness that empowers people – at home, at work and in care',
-      heroSubtitle: 'aboelo-fitness blends science-backed 1–2 minute movement breaks with easy-to-follow videos and intelligent reminders. We help desk workers stand up every hour and hit their 6-exercises-a-day goal.',
+      heroSubtitle: 'aboelo-fitness blends science-backed 1–2 minute movement breaks with easy-to-follow videos and intelligent reminders. We help desk workers stand up every hour and hit their 6-exercises-a-day goal—no live coaching required.',
       heroPrimaryCta: 'Register now',
       heroSecondaryCta: 'Explore the program',
       stats: [
@@ -386,7 +386,9 @@ const WelcomePage: React.FC = () => {
               />
               <CardContent sx={{ color: '#fff' }}>
                 <Typography variant="subtitle1" sx={{ opacity: 0.85 }}>
-                  {language === 'de' ? 'Live-Coaching, alltagstaugliche Übungen und motivierende Gamification.' : 'Live coaching, everyday-friendly workouts and motivational gamification.'}
+                  {language === 'de'
+                    ? 'Geführte Video-Routinen, alltagstaugliche Übungen und motivierende Gamification.'
+                    : 'Guided video routines, everyday-friendly workouts and motivational gamification.'}
                 </Typography>
               </CardContent>
             </Card>
