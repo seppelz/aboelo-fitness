@@ -1,47 +1,91 @@
 import axios from 'axios';
 
-// API-Basis-URL
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'https://localhost:5000/api';
+const CSRF_COOKIE_NAME = 'aboelo_csrf_token';
+const CSRF_HEADER_NAME = 'x-csrf-token';
 
-// Axios-Instanz mit Basis-URL
 const api = axios.create({
   baseURL: API_URL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Interceptor für Token-Authentifizierung
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('userToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+const getCookieValue = (name: string): string | null => {
+  if (typeof document === 'undefined') {
+    return null;
+  }
 
-// Interceptor für 401 Unauthorized Fehler (abgelaufene Tokens)
+  const match = document.cookie.match(new RegExp(`(?:^|; )${name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, '\\$1')}=([^;]*)`));
+  return match ? decodeURIComponent(match[1]) : null;
+};
+
+let csrfTokenPromise: Promise<string | null> | null = null;
+
+const ensureCsrfToken = async (): Promise<string | null> => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const existingToken = getCookieValue(CSRF_COOKIE_NAME);
+  if (existingToken) {
+    return existingToken;
+  }
+
+  if (!csrfTokenPromise) {
+    csrfTokenPromise = axios
+      .get(`${API_URL}/auth/csrf`, { withCredentials: true })
+      .then(() => getCookieValue(CSRF_COOKIE_NAME))
+      .catch((error) => {
+        console.error('Fehler beim Abrufen des CSRF-Tokens:', error);
+        return null;
+      })
+      .finally(() => {
+        csrfTokenPromise = null;
+      });
+  }
+
+  return csrfTokenPromise;
+};
+
+api.interceptors.request.use(async (config) => {
+  config.withCredentials = true;
+
+  if (typeof window === 'undefined') {
+    return config;
+  }
+
+  if (config.url && config.url.includes('/auth/csrf')) {
+    return config;
+  }
+
+  const csrfToken = await ensureCsrfToken();
+  if (csrfToken) {
+    if (config.headers) {
+      (config.headers as any)[CSRF_HEADER_NAME] = csrfToken;
+    } else {
+      config.headers = { [CSRF_HEADER_NAME]: csrfToken } as any;
+    }
+  }
+
+  return config;
+});
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      // Token ist abgelaufen oder ungültig
-      console.log('🔒 Token abgelaufen oder ungültig - Benutzer wird abgemeldet');
-      
-      // Lokale Daten löschen
-      localStorage.removeItem('userToken');
-      localStorage.removeItem('user');
-      
-      // Zur Login-Seite umleiten, wenn nicht schon dort
+    if (error.response?.status === 401 && typeof window !== 'undefined') {
+      console.log('🔒 Sitzung ungültig - Benutzer wird abgemeldet');
+      localStorage.removeItem('userData');
       if (!window.location.pathname.includes('/login')) {
         window.location.href = '/login?expired=true';
       }
     }
+
     return Promise.reject(error);
   }
 );
 
+export { ensureCsrfToken, getCookieValue, CSRF_COOKIE_NAME, CSRF_HEADER_NAME };
 export default api;

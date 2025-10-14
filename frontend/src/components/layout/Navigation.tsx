@@ -24,7 +24,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 
 // Navigationslinks für eingeloggte Nutzer
-const appNavItems = [
+const baseNavItems = [
   { name: 'Startseite', path: '/app', icon: <HomeIcon fontSize="large" /> },
   { name: 'Übungen', path: '/app/exercises', icon: <FitnessCenterIcon fontSize="large" /> },
   { name: 'Fortschritt', path: '/app/progress', icon: <BarChartIcon fontSize="large" /> },
@@ -36,7 +36,18 @@ const Navigation = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, isAdmin } = useContext(AuthContext);
+
+  const appNavItems = React.useMemo(() => {
+    if (!isAdmin) {
+      return baseNavItems;
+    }
+    return [
+      ...baseNavItems.slice(0, 3),
+      { name: 'Admin', path: '/app/admin', icon: <BarChartIcon fontSize="large" /> },
+      ...baseNavItems.slice(3),
+    ];
+  }, [isAdmin]);
   
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);

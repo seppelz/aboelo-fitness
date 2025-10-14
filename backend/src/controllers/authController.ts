@@ -1,16 +1,13 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/User';
+import { jwtConfig } from '../config/env';
 
 // Funktion zum Erstellen eines JWT Tokens
 const generateToken = (id: string): string => {
-  return jwt.sign(
-    { id }, 
-    process.env.JWT_SECRET || 'aboelo_fitness_secret', 
-    {
-    expiresIn: process.env.JWT_EXPIRE || '30d',
-    }
-  );
+  return jwt.sign({ id }, jwtConfig.secret, {
+    expiresIn: jwtConfig.expiresIn,
+  });
 };
 
 // @desc    Benutzer registrieren

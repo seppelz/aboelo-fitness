@@ -3,11 +3,22 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import User, { IUser } from '../models/User';
 import Progress from '../models/Progress';
+import { jwtConfig } from '../config/env';
+import { clearAuthCookie, setAuthCookie } from '../utils/authCookies';
 
 // JWT Token generieren
 const generateToken = (id: string) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || 'geheimnis', {
-    expiresIn: '30d',
+  return jwt.sign({ id }, jwtConfig.secret, {
+    expiresIn: jwtConfig.expiresIn,
+  });
+};
+
+export const logoutUser = async (_req: Request, res: Response) => {
+  clearAuthCookie(res);
+
+  res.status(200).json({
+    success: true,
+    message: 'Abmeldung erfolgreich',
   });
 };
 
@@ -31,6 +42,7 @@ const formatUserResponse = (user: IUser) => ({
   age: user.age,
   level: user.level,
   points: user.points,
+  role: user.role || 'user',
   achievements: user.achievements,
   dailyStreak: user.dailyStreak,
   longestStreak: user.longestStreak,
@@ -84,14 +96,15 @@ export const registerUser = async (req: Request, res: Response) => {
       email,
       password,
       age,
+      role: 'user',
     });
 
     if (user) {
       const token = generateToken(formatObjectId(user._id) ?? '');
-      
+      setAuthCookie(res, token);
+
       res.status(201).json({
         success: true,
-        token,
         user: formatUserResponse(user),
       });
     } else {
@@ -127,10 +140,10 @@ export const loginUser = async (req: Request, res: Response) => {
     // Prüfen, ob Benutzer existiert und das Passwort korrekt ist
     if (user && (await user.comparePassword(password))) {
       const token = generateToken(user._id.toString());
-      
+      setAuthCookie(res, token);
+
       res.status(200).json({
         success: true,
-        token,
         user: formatUserResponse(user),
       });
     } else {
@@ -212,9 +225,12 @@ export const updateUserProfile = async (req: Request, res: Response) => {
 
       const updatedUser = await user.save();
 
+      const refreshedToken = generateToken(formatObjectId(updatedUser._id) ?? '');
+      setAuthCookie(res, refreshedToken);
+
       res.json({
-        ...formatUserResponse(updatedUser as unknown as IUser),
-        token: generateToken(formatObjectId(updatedUser._id) ?? ''),
+        success: true,
+        user: formatUserResponse(updatedUser as unknown as IUser),
       });
     } else {
       res.status(404).json({ message: 'Benutzer nicht gefunden' });

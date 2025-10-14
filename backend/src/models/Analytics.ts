@@ -27,7 +27,7 @@ export interface IDailyEngagement extends Document {
   totalDuration: number; // in seconds
   exercisesCompleted: number;
   uniqueMuscleGroupsTrained: string[];
-  timeSpentPerMuscleGroup: Record<string, number>;
+  timeSpentPerMuscleGroup: mongoose.Types.Map<number>;
   userSatisfactionRating?: number; // 1-5 scale
   difficultyRating?: number; // 1-5 scale
   accessibilityIssues?: string[];

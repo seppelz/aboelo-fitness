@@ -25,6 +25,7 @@ import ImpressumPage from './pages/ImpressumPage';
 import ContactPage from './pages/ContactPage';
 import AccessibilityPage from './pages/AccessibilityPage';
 import NotFoundPage from './pages/NotFoundPage';
+import AdminDashboard from './pages/admin/AdminDashboard';
 
 // MUI Theme Configuration with Dark Green Color Scheme
 const theme = createTheme({
@@ -127,6 +128,35 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const { isAuthenticated, isAdmin, loading } = React.useContext(AuthContext);
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <CircularProgress color="primary" thickness={4} size={48} />
+      </Box>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!isAdmin) {
+    return <Navigate to="/app" replace />;
+  }
+
+  return <>{children}</>;
+};
+
 const LandingRoute = () => {
   const { isAuthenticated } = React.useContext(AuthContext);
   return isAuthenticated ? <Navigate to="/app" replace /> : <WelcomePage />;
@@ -164,6 +194,14 @@ function App() {
                 <Route path="exercises/:id" element={<ExerciseDetailPage />} />
                 <Route path="progress" element={<ProgressPage />} />
                 <Route path="profile" element={<ProfilePage />} />
+                <Route
+                  path="admin"
+                  element={
+                    <AdminRoute>
+                      <AdminDashboard />
+                    </AdminRoute>
+                  }
+                />
                 <Route path="help" element={<HelpPage />} />
                 <Route path="datenschutz" element={<DatenschutzPage />} />
                 <Route path="impressum" element={<ImpressumPage />} />

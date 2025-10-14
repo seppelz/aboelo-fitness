@@ -13,6 +13,7 @@ export interface User {
   name: string;
   email: string;
   age?: number;
+  role: 'admin' | 'user';
   level: number;
   points: number;
   achievements: UserAchievement[];

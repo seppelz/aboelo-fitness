@@ -13,10 +13,12 @@ export interface IUserAchievement {
 
 // Interface für Benutzer
 export interface IUser extends Document {
+  _id: mongoose.Types.ObjectId;
   name: string;
   email: string;
   password: string;
   age?: number;
+  role: 'admin' | 'user';
   level: number;
   points: number;
   achievements: IUserAchievement[];
@@ -43,6 +45,8 @@ export interface IUser extends Document {
     enabled: boolean;
     intervalMinutes: number;
   };
+  createdAt: Date;
+  updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -65,6 +69,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Bitte geben Sie ein Passwort ein'],
       minlength: 6,
+    },
+    role: {
+      type: String,
+      enum: ['admin', 'user'],
+      default: 'user',
     },
     age: {
       type: Number,

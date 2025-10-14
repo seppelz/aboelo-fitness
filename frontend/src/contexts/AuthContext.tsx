@@ -5,6 +5,7 @@ import { loginUser as apiLogin, registerUser as apiRegister, logoutUser, getCurr
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  isAdmin: boolean;
   loading: boolean;
   login: (credentials: LoginCredentials) => Promise<User>;
   register: (userData: RegisterData) => Promise<User>;
@@ -16,6 +17,7 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   isAuthenticated: false,
+  isAdmin: false,
   loading: true,
   login: async () => {
     throw new Error('AuthContext not initialized');
@@ -41,7 +43,11 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
     try {
-      return getCurrentUser();
+      const storedUser = getCurrentUser();
+      if (storedUser) {
+        localStorage.setItem('userRole', storedUser.role);
+      }
+      return storedUser;
     } catch (error) {
       console.error('Fehler beim Lesen des Benutzers aus dem lokalen Speicher:', error);
       return null;
@@ -128,6 +134,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       value={{
         user,
         isAuthenticated: !!user,
+        isAdmin: !!user && user.role === 'admin',
         loading,
         login,
         register,

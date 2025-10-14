@@ -6,15 +6,20 @@ import {
   updateUserProfile,
   updateUserProgress,
   updateDailyStreak,
-  resetUserProgress
+  resetUserProgress,
+  logoutUser
 } from '../controllers/userController';
 import { protect } from '../middleware/authMiddleware';
+import { loginLimiter } from '../middleware/rateLimiters';
+import { validateRequest } from '../middleware/validationMiddleware';
+import { loginValidationRules, registerValidationRules } from '../validators/authValidators';
 
 const router = express.Router();
 
 // Öffentliche Routen
-router.post('/register', registerUser);
-router.post('/login', loginUser);
+router.post('/register', registerValidationRules, validateRequest, registerUser);
+router.post('/login', loginLimiter, loginValidationRules, validateRequest, loginUser);
+router.post('/logout', protect, logoutUser);
 
 // Geschützte Routen
 router.get('/profile', protect, getUserProfile);
