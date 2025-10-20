@@ -17,6 +17,7 @@ import {
   TextField,
   Typography,
   Alert,
+  Tooltip as MuiTooltip,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -31,7 +32,7 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
+  Tooltip as RechartsTooltip,
   Legend,
   BarChart,
   Bar,
@@ -290,21 +291,35 @@ const AdminDashboard: React.FC = () => {
                         <Box component="td" sx={{ p: 1.5, textTransform: 'capitalize' }}>{userItem.role}</Box>
                         <Box component="td" sx={{ p: 1.5 }}>{userItem.level}</Box>
                         <Box component="td" sx={{ p: 1.5 }}>{userItem.points}</Box>
-                        <Box component="td" sx={{ p: 1.5, textAlign: 'center' }}>
-                          <IconButton aria-label="Bearbeiten" onClick={() => handleOpenEdit(userItem)}>
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton
-                            aria-label="Löschen"
-                            onClick={() => handleDeleteUser(userItem)}
-                            disabled={deletingUserId === userItem._id}
-                          >
-                            {deletingUserId === userItem._id ? (
-                              <CircularProgress size={20} />
-                            ) : (
-                              <DeleteIcon />
-                            )}
-                          </IconButton>
+                        <Box component="td" sx={{ p: 1.5 }}>
+                          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} justifyContent="center">
+                            <MuiTooltip title="Benutzer bearbeiten">
+                              <span>
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  startIcon={<EditIcon />}
+                                  onClick={() => handleOpenEdit(userItem)}
+                                >
+                                  Bearbeiten
+                                </Button>
+                              </span>
+                            </MuiTooltip>
+                            <MuiTooltip title="Benutzer löschen">
+                              <span>
+                                <Button
+                                  size="small"
+                                  variant="contained"
+                                  color="error"
+                                  startIcon={deletingUserId === userItem._id ? undefined : <DeleteIcon />}
+                                  onClick={() => handleDeleteUser(userItem)}
+                                  disabled={deletingUserId === userItem._id}
+                                >
+                                  {deletingUserId === userItem._id ? <CircularProgress size={18} color="inherit" /> : 'Löschen'}
+                                </Button>
+                              </span>
+                            </MuiTooltip>
+                          </Stack>
                         </Box>
                       </Box>
                     ))}
@@ -374,7 +389,7 @@ const AdminDashboard: React.FC = () => {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="day" tick={{ fontSize: 12 }} />
                       <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-                      <Tooltip labelFormatter={(label) => `Tag: ${label}`} />
+                      <RechartsTooltip labelFormatter={(label) => `Tag: ${label}`} />
                       <Legend />
                       <Line type="monotone" dataKey="dailyActiveUsers" name="Aktive Nutzer" stroke="#2d7d7d" strokeWidth={2} />
                     </LineChart>
@@ -402,7 +417,7 @@ const AdminDashboard: React.FC = () => {
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="day" tick={{ fontSize: 12 }} />
                       <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
-                      <Tooltip labelFormatter={(label) => `Tag: ${label}`} />
+                      <RechartsTooltip labelFormatter={(label) => `Tag: ${label}`} />
                       <Legend />
                       <Bar dataKey="completedExercises" name="Abgeschlossen" fill="#4caf50" />
                       <Bar dataKey="abortedExercises" name="Abgebrochen" fill="#f44336" />
