@@ -6,7 +6,8 @@ import {
   CardContent,
   LinearProgress,
   Chip,
-  useTheme
+  useTheme,
+  Alert
 } from '@mui/material';
 import FlashOnIcon from '@mui/icons-material/FlashOn';
 import { StreakInfo } from '../../types';
@@ -59,6 +60,14 @@ const StreakDisplay: React.FC<StreakDisplayProps> = ({
             sx={{ fontSize: '0.7rem', height: 20 }}
           />
         )}
+        {!streakInfo.streakBroken && streakInfo.protectionUsed && (
+          <Chip 
+            label={streakInfo.protectionMessage || 'Streak-Schutz aktiv'} 
+            size="small" 
+            color="info"
+            sx={{ fontSize: '0.7rem', height: 20 }}
+          />
+        )}
       </Box>
     );
   }
@@ -93,9 +102,19 @@ const StreakDisplay: React.FC<StreakDisplayProps> = ({
           </Box>
         </Box>
 
-        <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+        <Typography variant="body2" color="textSecondary" sx={{ mb: streakInfo.protectionUsed ? 1 : 2 }}>
           {streakInfo.message}
         </Typography>
+
+        {!streakInfo.streakBroken && streakInfo.protectionUsed && (
+          <Alert 
+            severity="info" 
+            sx={{ mb: 2 }}
+            icon={<FlashOnIcon fontSize="small" />}
+          >
+            {streakInfo.protectionMessage || '🛡️ Streak-Schutz aktiv: Wir haben Ihren Streak für Sie geschützt!'}
+          </Alert>
+        )}
 
         {!streakInfo.streakBroken && streakInfo.currentStreak < nextMilestone && (
           <Box>

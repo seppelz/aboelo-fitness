@@ -89,6 +89,8 @@ export const saveProgress = async (req: Request, res: Response) => {
       longestStreak: number;
       message: string;
       streakBroken: boolean;
+      protectionUsed?: boolean;
+      protectionMessage?: string;
     }
     
     interface WeeklyGoalInfo {
@@ -206,11 +208,16 @@ export const saveProgress = async (req: Request, res: Response) => {
 
         // Update streak (nur für abgeschlossene Übungen)
         const streakResult = await AchievementService.updateDailyStreak(user);
+        const streakMessage = AchievementService.getStreakMessage(streakResult.newStreak, streakResult.streakBroken);
         gamificationData.streakInfo = {
           currentStreak: streakResult.newStreak,
           longestStreak: user.longestStreak,
-          message: AchievementService.getStreakMessage(streakResult.newStreak, streakResult.streakBroken),
-          streakBroken: streakResult.streakBroken
+          message: streakMessage,
+          streakBroken: streakResult.streakBroken,
+          protectionUsed: streakResult.protectionUsed,
+          protectionMessage: streakResult.protectionUsed
+            ? '🛡️ Streak-Schutz aktiv: Wir haben Ihren Streak für Sie geschützt!'
+            : undefined
         };
 
         // Update weekly goal
@@ -242,15 +249,18 @@ export const saveProgress = async (req: Request, res: Response) => {
         
         const allMuscleGroups = ['Bauch', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'];
         const isPerfectDay = allMuscleGroups.every(group => trainedMuscleGroups.has(group));
-        
-        if (isPerfectDay) {
-          // Award Perfect Day bonus
+        const todayDateKey = startOfDay.toISOString();
+        const lastPerfectDayDateKey = user.lastPerfectDayDate ? new Date(user.lastPerfectDayDate).toISOString().split('T')[0] : null;
+        const currentDateKey = startOfDay.toISOString().split('T')[0];
+
+        if (isPerfectDay && lastPerfectDayDateKey !== currentDateKey) {
+          // Award Perfect Day bonus once per day
           const perfectDayBonus = 50;
           user.points += perfectDayBonus;
           pointsEarned += perfectDayBonus;
           
-          // Increment perfect days counter
           user.perfectDaysCount += 1;
+          user.lastPerfectDayDate = startOfDay;
           
           await user.save();
           

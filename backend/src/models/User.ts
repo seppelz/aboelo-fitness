@@ -26,6 +26,7 @@ export interface IUser extends Document {
   longestStreak: number;
   lastActivityDate?: Date;
   perfectDaysCount: number; // Days when all 6 muscle groups were trained
+  lastPerfectDayDate?: Date;
   streakProtectionUsed?: Date; // Last time streak protection was used
   completedExercises: mongoose.Types.ObjectId[];
   exerciseFrequency: Map<string, number>; // Track how often each exercise was recommended/completed
@@ -114,6 +115,9 @@ const userSchema = new mongoose.Schema(
     perfectDaysCount: {
       type: Number,
       default: 0,
+    },
+    lastPerfectDayDate: {
+      type: Date,
     },
     streakProtectionUsed: {
       type: Date,

@@ -13,7 +13,8 @@ import {
   Stack,
   Card,
   CardContent,
-  useTheme
+  useTheme,
+  Alert
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
@@ -90,9 +91,18 @@ const CelebrationModal: React.FC<CelebrationModalProps> = ({
       <Typography variant="h4" gutterBottom>
         {gamificationData.streakInfo?.currentStreak} Tage Streak!
       </Typography>
-      <Typography variant="body1" color="textSecondary" sx={{ mb: 2 }}>
+      <Typography variant="body1" color="textSecondary" sx={{ mb: gamificationData.streakInfo?.protectionUsed ? 1 : 2 }}>
         {gamificationData.streakInfo?.message}
       </Typography>
+      {!gamificationData.streakInfo?.streakBroken && gamificationData.streakInfo?.protectionUsed && (
+        <Alert 
+          severity="info" 
+          sx={{ mb: 2, display: 'inline-flex', textAlign: 'left' }}
+          icon={<FlashOnIcon fontSize="small" />}
+        >
+          {gamificationData.streakInfo?.protectionMessage || '🛡️ Streak-Schutz aktiv: Wir haben Ihren Streak für Sie geschützt!'}
+        </Alert>
+      )}
       <LinearProgress 
         variant="determinate" 
         value={Math.min(100, (gamificationData.streakInfo?.currentStreak || 0) * 10)} 

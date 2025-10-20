@@ -244,6 +244,9 @@ const HelpPage: React.FC = () => {
               <Typography variant="body1" sx={{ fontWeight: 'bold', mb: 1 }}>
                 ✨ Alle 6 Muskelgruppen an einem Tag trainiert
               </Typography>
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                Ein "Perfekter Tag" bedeutet, dass Sie an einem Kalendertag je eine Übung für Bauch, Po, Schulter, Brust, Nacken und Rücken abschließen.
+              </Typography>
               <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
                 +50 Bonus-Punkte!
               </Typography>
@@ -255,7 +258,7 @@ const HelpPage: React.FC = () => {
               </Typography>
               <Typography variant="body2" component="div">
                 • 6 Übungen (je 1 pro Muskelgruppe): 6 × 10 = <strong>60 Punkte</strong><br />
-                • Perfekter Tag Bonus: <strong>+50 Punkte</strong><br />
+                • Perfekter Tag Bonus (einmal pro Tag): <strong>+50 Punkte</strong><br />
                 • <strong>Gesamt: 110 Punkte</strong> = Level-Aufstieg! 🎉
               </Typography>
             </Box>
@@ -355,7 +358,7 @@ const HelpPage: React.FC = () => {
               </Typography>
               <Typography variant="body2" component="div" sx={{ mt: 1 }}>
                 • Wenn Sie einen Tag verpassen, wird Ihr Streak automatisch geschützt<br />
-                • Sie erhalten eine Benachrichtigung: "Wir haben Ihren Streak für Sie geschützt!"<br />
+                • Sobald der Schutz greift, sehen Sie den Hinweis <strong>"Streak-Schutz aktiv: Wir haben Ihren Streak für Sie geschützt!"</strong><br />
                 • Der Schutz erneuert sich jede Woche<br />
                 • So können Sie ohne Stress trainieren, auch wenn mal etwas dazwischen kommt
               </Typography>

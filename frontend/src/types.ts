@@ -46,6 +46,8 @@ export interface StreakInfo {
   longestStreak: number;
   message: string;
   streakBroken: boolean;
+  protectionUsed?: boolean;
+  protectionMessage?: string;
 }
 
 export interface WeeklyGoal {
