@@ -220,7 +220,7 @@ export const saveProgress = async (req: Request, res: Response) => {
           target: weeklyGoalResult.target,
           completed: weeklyGoalResult.goalCompleted,
           message: weeklyGoalResult.goalCompleted ? 
-            "🎉 Wochenziel erreicht! Du bist fantastisch!" : 
+            "🎉 Wochenziel erreicht! Sie sind fantastisch!" : 
             `${weeklyGoalResult.progress}/${weeklyGoalResult.target} Übungen diese Woche`
         };
 

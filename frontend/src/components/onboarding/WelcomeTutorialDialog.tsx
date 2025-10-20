@@ -102,8 +102,7 @@ const WelcomeTutorialDialog: React.FC = () => {
               </ListItemIcon>
               <ListItemText
                 primary="Trainieren Sie im Stehen oder Sitzen"
-                secondary="Jede Übung ist sowohl für stehende als auch sitzende Ausführung geeignet – ganz nach Ihrem Wohlbefinden."
-              />
+                secondary="Für das Training der verschiedenen Muskelgruppen können Sie zwischen Übungen im Stehen oder Sitzen wählen."             />
             </ListItem>
             <ListItem>
               <ListItemIcon>

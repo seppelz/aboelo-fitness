@@ -594,24 +594,10 @@ const ExerciseList: React.FC = () => {
                   }}
                   onClick={() => navigateToDetail((exercise as any)._id)}
                 >
-                  <Box sx={{ position: 'relative' }}>
-                    <CardMedia
-                      component="img"
-                      height={isMobile ? "180" : "220"}
-                      image={getThumbnailUrl(exercise)}
-                      alt={overlayText}
-                      sx={{ 
-                        objectFit: 'contain',
-                        bgcolor: '#f5f5f5'
-                      }}
-                    />
+                  <Box>
                     {overlayText && (
                       <Box
                         sx={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: '100%',
                           bgcolor: theme.palette.primary.main,
                           color: theme.palette.primary.contrastText,
                           py: 1,
@@ -636,6 +622,17 @@ const ExerciseList: React.FC = () => {
                         </Typography>
                       </Box>
                     )}
+                    <CardMedia
+                      component="img"
+                      height={isMobile ? "180" : "220"}
+                      image={getThumbnailUrl(exercise)}
+                      alt={overlayText}
+                      sx={{ 
+                        objectFit: 'contain',
+                        bgcolor: '#f5f5f5',
+                        borderRadius: overlayText ? 0 : '12px 12px 0 0'
+                      }}
+                    />
                   </Box>
                   <CardContent sx={{ flexGrow: 1, p: { xs: 2, sm: 2.5 } }}>
                     <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>

@@ -304,7 +304,7 @@ export class AchievementService {
 
   static getStreakMessage(streak: number, streakBroken: boolean = false): string {
     if (streakBroken) {
-      return "Nicht schlimm! Jeder Neustart ist ein Erfolg. Lass uns wieder durchstarten! 💪";
+      return "Nicht schlimm! Jeder Neustart ist ein Erfolg. Lassen Sie uns wieder durchstarten! 💪";
     }
 
     if (streak === 1) {
@@ -312,11 +312,11 @@ export class AchievementService {
     }
 
     if (streak === 3) {
-      return "3 Tage in Folge! Du bist auf dem richtigen Weg! 🔥";
+      return "3 Tage in Folge! Sie sind auf dem richtigen Weg! 🔥";
     }
 
     if (streak === 7) {
-      return "Eine ganze Woche! Du bist ein echter Champion! ⚡";
+      return "Eine ganze Woche! Sie sind ein echter Champion! ⚡";
     }
 
     if (streak === 14) {
@@ -324,11 +324,11 @@ export class AchievementService {
     }
 
     if (streak === 30) {
-      return "30 Tage! Du bist absolut unaufhaltsam! 👑";
+      return "30 Tage! Sie sind absolut unaufhaltsam! 👑";
     }
 
     if (streak % 10 === 0) {
-      return `${streak} Tage in Folge! Du bist eine Inspiration! 🚀`;
+      return `${streak} Tage in Folge! Sie sind eine Inspiration! 🚀`;
     }
 
     if (streak % 7 === 0) {
@@ -391,19 +391,19 @@ export class AchievementService {
   static getDailyMotivationalQuote(): string {
     const quotes = [
       "Jeder Schritt zählt! 💪",
-      "Du schaffst das! 🌟",
-      "Bleib dran und glaub an dich! 🔥",
+      "Sie schaffen das! 🌟",
+      "Bleiben Sie dran und glauben Sie an sich! 🔥",
       "Heute ist ein neuer Tag für neue Erfolge! ⚡",
-      "Deine Gesundheit ist das wertvollste Gut! 💎",
+      "Ihre Gesundheit ist das wertvollste Gut! 💎",
       "Kleine Schritte führen zu großen Veränderungen! 🚀",
-      "Du bist stärker als du denkst! 💪",
-      "Jede Übung bringt dich deinem Ziel näher! 🎯",
+      "Sie sind stärker als Sie denken! 💪",
+      "Jede Übung bringt Sie ihrem Ziel näher! 🎯",
       "Disziplin heute, Stolz morgen! 👑",
-      "Dein Körper dankt dir für jede Bewegung! 🌈",
+      "Ihr Körper dankt Ihnen für jede Bewegung! 🌈",
       "Fortschritt ist besser als Perfektion! ✨",
-      "Du investierst in deine beste Version! 🌟",
-      "Glaube an den Prozess! 🔥",
-      "Motivation bringt dich zum Start, Gewohnheit zum Ziel! ⚡",
+      "Sie investieren in Ihre beste Version! 🌟",
+      "Glauben Sie an den Prozess! 🔥",
+      "Motivation bringt Sie zum Start, Gewohnheit zum Ziel! ⚡",
       "Heute ist der perfekte Tag zum Trainieren! 💎"
     ];
 
