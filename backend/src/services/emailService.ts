@@ -29,6 +29,10 @@ const ensureTransporter = () => {
     port,
     secure,
     requireTLS: !secure,
+    connectionTimeout: 15000,
+    greetingTimeout: 15000,
+    logger: true,
+    debug: true,
     auth: {
       user,
       pass,
@@ -75,6 +79,13 @@ export const sendPasswordResetEmail = async (recipientEmail: string, token: stri
   }
 
   try {
+    console.info('[emailService] SMTP-Verbindung wird verifiziert...');
+    const verifyStart = Date.now();
+    await transporter.verify();
+    console.info('[emailService] SMTP-Verifizierung erfolgreich', {
+      durationMs: Date.now() - verifyStart,
+    });
+
     const result = await transporter.sendMail(message);
     console.info('[emailService] Passwort-Reset-E-Mail erfolgreich versendet.', {
       messageId: result.messageId,
