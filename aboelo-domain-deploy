@@ -1,0 +1,28 @@
+Recommended Actions
+[Use a shared domain]
+Point a custom apex/domain (e.g. aboelo-fitness.de) at Vercel and a subdomain (e.g. api.aboelo-fitness.de) at Render.
+In Render, set COOKIE_DOMAIN=.aboelo-fitness.de, CORS_ORIGIN=https://aboelo-fitness.de (and any preview hosts), COOKIE_SAMESITE=none, COOKIE_SECURE=true.
+In Vercel, set REACT_APP_API_URL=https://api.aboelo-fitness.de/api.
+[Redeploy] After configuring DNS and TLS (both platforms automate cert issuance), redeploy backend and frontend so they pick up the new env values.
+[Browser reset] Clear site data or open an incognito window, load https://aboelo-fitness.de/login, and confirm cookies appear under Application → Cookies → https://api.aboelo-fitness.de.
+[Fallback] If you can’t set up a shared domain yet, proxy API requests through the Vercel app (e.g. using Next.js rewrites or a simple Cloudflare worker) so the browser sees same-origin requests and can keep cookies.
+
+ecommended Actions
+[DNS setup]
+Log into your domain registrar/DNS host.
+Create CNAME records:
+fitness → Vercel’s provided target (e.g., cname.vercel-dns.com).
+api → Render’s CNAME target for your service (shown under Custom Domains).
+[Platform configuration]
+In Vercel project settings → Domains, add fitness.aboelo.de. Follow the verification steps; Vercel will automatically provision TLS once DNS propagates.
+In Render → your web service → Custom Domains, add api.aboelo.de and complete verification.
+[Environment variables]
+Render: CORS_ORIGIN=https://fitness.aboelo.de, COOKIE_DOMAIN=.aboelo.de, COOKIE_SAMESITE=none, COOKIE_SECURE=true.
+Vercel: REACT_APP_API_URL=https://api.aboelo.de/api.
+[Deployment]
+Redeploy backend and frontend after updating env vars.
+Clear browser storage or use an incognito window, then test https://fitness.aboelo.de/login.
+Testing
+Run curl -I https://api.aboelo.de/api/auth/csrf -H "Origin: https://fitness.aboelo.de" and ensure the response contains the CORS header and Set-Cookie.
+In the browser, confirm cookies (aboelo_csrf_secret, aboelo_csrf_token, aboelo_auth_token) appear under Application → Cookies for https://api.aboelo.de.
+Complete the login flow to verify 200 responses and persistent auth.

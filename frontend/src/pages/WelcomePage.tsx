@@ -8,18 +8,18 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { Link as RouterLink } from 'react-router-dom';
 
 const palette = {
-  background: '#f4f6fb',
-  heroGradient: 'linear-gradient(135deg, #0b1d51 0%, #1446a0 55%, #45c4b0 100%)',
-  heroOverlay: 'rgba(11, 29, 81, 0.35)',
-  cardBorder: 'rgba(255,255,255,0.35)',
+  background: '#f0f7f7',
+  heroGradient: 'linear-gradient(140deg, #1f5f5f 0%, #2d7d7d 50%, #3fa3a3 100%)',
+  heroOverlay: 'rgba(31, 95, 95, 0.35)',
+  cardBorder: 'rgba(255,255,255,0.32)',
   neutralSurface: 'rgba(255,255,255,0.85)',
-  neutralGradient: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(238,242,255,0.9) 100%)',
-  darkSurface: 'linear-gradient(155deg, rgba(13,34,75,0.9) 0%, rgba(9,23,54,0.85) 100%)',
-  accent: '#45c4b0',
-  accentSoft: 'rgba(69, 196, 176, 0.16)',
-  primaryText: '#0b1d51',
-  secondaryText: '#4f5d75',
-  glassShadow: '0 24px 48px rgba(12, 28, 61, 0.25)'
+  neutralGradient: 'linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(224,242,241,0.9) 100%)',
+  darkSurface: 'linear-gradient(155deg, rgba(22,69,69,0.92) 0%, rgba(15,56,56,0.9) 100%)',
+  accent: '#3fa3a3',
+  accentSoft: 'rgba(63, 163, 163, 0.16)',
+  primaryText: '#1f5f5f',
+  secondaryText: '#3a6a6a',
+  glassShadow: '0 24px 48px rgba(22, 69, 69, 0.25)'
 };
 
 const WelcomePage: React.FC = () => {
@@ -335,7 +335,7 @@ const WelcomePage: React.FC = () => {
                   to={selectedContent.heroCtaHref}
                   size="large"
                   variant="contained"
-                  color="secondary"
+                  color="primary"
                   endIcon={<ArrowForwardIcon />}
                   sx={{ fontSize: '1.15rem', py: 1.6, px: 4.25, borderRadius: 999, boxShadow: palette.glassShadow }}
                 >
@@ -367,12 +367,12 @@ const WelcomePage: React.FC = () => {
                       borderRadius: 4,
                       p: 3,
                       minHeight: 170,
-                      boxShadow: '0 18px 38px rgba(5,16,41,0.12)',
+                      boxShadow: '0 18px 38px rgba(22,69,69,0.12)',
                       border: '1px solid rgba(255,255,255,0.35)'
                     }}
                   >
                     <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, color: palette.primaryText }}>{item.value}</Typography>
-                    <Typography variant="body1" sx={{ color: 'rgba(11,29,81,0.72)', lineHeight: 1.6 }}>{item.label}</Typography>
+                    <Typography variant="body1" sx={{ color: 'rgba(31,95,95,0.75)', lineHeight: 1.6 }}>{item.label}</Typography>
                   </Box>
                 ))}
               </Box>
@@ -380,7 +380,7 @@ const WelcomePage: React.FC = () => {
             <Card sx={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(18px)', borderRadius: 5, border: '1px solid rgba(255,255,255,0.28)', boxShadow: palette.glassShadow }}>
               <CardMedia
                 component="img"
-                image="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1200&q=80"
+                image="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
                 alt={selectedContent.seniorImageAlt}
                 sx={{ height: { xs: 280, md: 420 }, objectFit: 'cover', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
               />
@@ -439,7 +439,7 @@ const WelcomePage: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={selectedContent.seniorsId} sx={{ background: 'linear-gradient(135deg, #ffffff 0%, #f1f4ff 100%)' }}>
+      <Box id={selectedContent.seniorsId} sx={{ background: 'linear-gradient(135deg, #ffffff 0%, #e3f4f2 100%)' }}>
         <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
           <Box
             sx={{
@@ -453,7 +453,7 @@ const WelcomePage: React.FC = () => {
               component="img"
               image="https://images.unsplash.com/photo-1573497491208-6b1acb260507?auto=format&fit=crop&w=1200&q=80"
               alt={selectedContent.officeImageAlt}
-              sx={{ borderRadius: 4, boxShadow: '0 28px 52px rgba(12,28,61,0.2)' }}
+              sx={{ borderRadius: 4, boxShadow: '0 28px 52px rgba(22,69,69,0.2)' }}
             />
             <Stack spacing={3}>
               <Chip label={language === 'de' ? 'Senioren' : 'Seniors'} color="primary" sx={{ alignSelf: 'flex-start', fontWeight: 600 }} />
@@ -576,7 +576,7 @@ const WelcomePage: React.FC = () => {
         </Container>
       </Box>
 
-      <Box sx={{ backgroundColor: '#f6f8ff' }}>
+      <Box sx={{ backgroundColor: '#f1f9f8' }}>
         <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
           <Stack spacing={6}>
             <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 800, color: palette.primaryText }}>{selectedContent.testimonialHeading}</Typography>
@@ -628,7 +628,7 @@ const WelcomePage: React.FC = () => {
         </Container>
       </Box>
 
-      <Box sx={{ background: 'linear-gradient(140deg, #0b1d51 0%, #1446a0 50%, #45c4b0 100%)', color: '#fff' }}>
+      <Box sx={{ background: 'linear-gradient(140deg, #1f5f5f 0%, #2d7d7d 50%, #3fa3a3 100%)', color: '#fff' }}>
         <Container maxWidth="md" sx={{ py: { xs: 8, md: 10 } }}>
           <Stack spacing={4.5} alignItems="center" textAlign="center">
             <Typography variant="h3" sx={{ fontWeight: 800 }}>{selectedContent.finalCtaHeading}</Typography>
