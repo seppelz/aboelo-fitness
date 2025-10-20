@@ -28,6 +28,7 @@ const ensureTransporter = () => {
     host,
     port,
     secure,
+    requireTLS: !secure,
     auth: {
       user,
       pass,
