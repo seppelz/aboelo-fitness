@@ -58,6 +58,7 @@ const AdminDashboard: React.FC = () => {
   const [analyticsLoading, setAnalyticsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [analyticsError, setAnalyticsError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [analytics, setAnalytics] = useState<DailyAnalyticsEntry[]>([]);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -65,11 +66,13 @@ const AdminDashboard: React.FC = () => {
   const [analyticsRange, setAnalyticsRange] = useState(7);
   const [formState, setFormState] = useState<UserFormState>(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
 
   const loadUsers = useCallback(async () => {
     try {
       setUsersLoading(true);
       setError(null);
+      setSuccessMessage(null);
       const data = await adminApi.getUsers();
       setUsers(data);
     } catch (err: any) {
@@ -147,6 +150,7 @@ const AdminDashboard: React.FC = () => {
       };
       await adminApi.createUser(payload);
       await loadUsers();
+      setSuccessMessage('Benutzer wurde erstellt.');
       handleCloseDialogs();
     } catch (err: any) {
       setError(err?.response?.data?.message ?? 'Benutzer konnte nicht erstellt werden.');
@@ -172,6 +176,7 @@ const AdminDashboard: React.FC = () => {
       }
       await adminApi.updateUser(selectedUser._id, payload);
       await loadUsers();
+      setSuccessMessage('Benutzer wurde aktualisiert.');
       handleCloseDialogs();
     } catch (err: any) {
       setError(err?.response?.data?.message ?? 'Benutzer konnte nicht aktualisiert werden.');
@@ -181,15 +186,17 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleDeleteUser = async (user: User) => {
-    const confirmed = window.confirm(`Soll der Benutzer "${user.name}" wirklich gelöscht werden?`);
-    if (!confirmed) {
-      return;
-    }
     try {
+      setError(null);
+      setSuccessMessage(null);
+      setDeletingUserId(user._id);
       await adminApi.deleteUser(user._id);
+      setSuccessMessage(`Benutzer "${user.name}" wurde gelöscht.`);
       await loadUsers();
     } catch (err: any) {
       setError(err?.response?.data?.message ?? 'Benutzer konnte nicht gelöscht werden.');
+    } finally {
+      setDeletingUserId(null);
     }
   };
 
@@ -239,6 +246,11 @@ const AdminDashboard: React.FC = () => {
           {error}
         </Alert>
       )}
+      {successMessage && (
+        <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSuccessMessage(null)}>
+          {successMessage}
+        </Alert>
+      )}
 
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 7 }}>
@@ -282,8 +294,16 @@ const AdminDashboard: React.FC = () => {
                           <IconButton aria-label="Bearbeiten" onClick={() => handleOpenEdit(userItem)}>
                             <EditIcon />
                           </IconButton>
-                          <IconButton aria-label="Löschen" onClick={() => handleDeleteUser(userItem)}>
-                            <DeleteIcon />
+                          <IconButton
+                            aria-label="Löschen"
+                            onClick={() => handleDeleteUser(userItem)}
+                            disabled={deletingUserId === userItem._id}
+                          >
+                            {deletingUserId === userItem._id ? (
+                              <CircularProgress size={20} />
+                            ) : (
+                              <DeleteIcon />
+                            )}
                           </IconButton>
                         </Box>
                       </Box>
