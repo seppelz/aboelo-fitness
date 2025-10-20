@@ -10,6 +10,7 @@ import fs from 'fs';
 import http from 'http';
 import https from 'https';
 import userRoutes from './routes/userRoutes';
+import authRoutes from './routes/authRoutes';
 import exerciseRoutes from './routes/exerciseRoutes';
 import progressRoutes from './routes/progressRoutes';
 import analyticsRoutes from './routes/analyticsRoutes';
@@ -108,6 +109,7 @@ app.get('/api/auth/csrf', (req: Request, res: Response) => {
 
 // Routen
 app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/exercises', exerciseRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/analytics', analyticsRoutes);

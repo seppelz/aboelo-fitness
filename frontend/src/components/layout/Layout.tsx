@@ -3,6 +3,7 @@ import { Container, Box, Paper } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 import Navigation from './Navigation';
 import Footer from './Footer';
+import WelcomeTutorialDialog from '../onboarding/WelcomeTutorialDialog';
 
 // Keine Props mehr nötig, da wir Outlet verwenden
 
@@ -35,6 +36,7 @@ const Layout: React.FC = () => {
           <Outlet />
         </Paper>
       </Container>
+      <WelcomeTutorialDialog />
       <Footer />
     </Box>
   );

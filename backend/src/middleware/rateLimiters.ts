@@ -10,3 +10,13 @@ export const loginLimiter = rateLimit({
     message: 'Zu viele Login-Versuche. Bitte versuchen Sie es später erneut.',
   },
 });
+
+export const passwordResetLimiter = rateLimit({
+  windowMs: rateLimitConfig.passwordReset.windowMs,
+  max: rateLimitConfig.passwordReset.max,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    message: 'Zu viele Passwort-Reset-Anfragen. Bitte versuchen Sie es später erneut.',
+  },
+});

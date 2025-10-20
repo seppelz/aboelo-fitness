@@ -45,6 +45,8 @@ export interface IUser extends Document {
     enabled: boolean;
     intervalMinutes: number;
   };
+  passwordResetToken?: string;
+  passwordResetExpires?: Date;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -145,6 +147,12 @@ const userSchema = new mongoose.Schema(
     reminderSettings: {
       enabled: { type: Boolean, default: true },
       intervalMinutes: { type: Number, default: 60 }
+    },
+    passwordResetToken: {
+      type: String,
+    },
+    passwordResetExpires: {
+      type: Date,
     }
   },
   {

@@ -1,16 +1,106 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import crypto from 'crypto';
 import User, { IUser } from '../models/User';
 import Progress from '../models/Progress';
 import { jwtConfig } from '../config/env';
 import { clearAuthCookie, setAuthCookie } from '../utils/authCookies';
+import { sendPasswordResetEmail } from '../services/emailService';
 
 // JWT Token generieren
 const generateToken = (id: string) => {
   return jwt.sign({ id }, jwtConfig.secret, {
     expiresIn: jwtConfig.expiresIn,
   });
+};
+
+const PASSWORD_RESET_EXPIRATION_MS = 60 * 60 * 1000;
+
+export const requestPasswordReset = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
+
+  try {
+    if (!normalizedEmail) {
+      return res.status(400).json({
+        success: false,
+        message: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
+      });
+    }
+
+    const user = await User.findOne({ email: normalizedEmail });
+
+    if (user) {
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+      user.passwordResetToken = hashedToken;
+      user.passwordResetExpires = new Date(Date.now() + PASSWORD_RESET_EXPIRATION_MS);
+
+      await user.save({ validateBeforeSave: false });
+
+      try {
+        await sendPasswordResetEmail(user.email, resetToken);
+      } catch (emailError) {
+        user.passwordResetToken = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save({ validateBeforeSave: false });
+        console.error('Fehler beim Senden der Passwort-Reset-E-Mail:', emailError);
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Falls ein Konto gefunden wurde, wurde eine E-Mail zum Zurücksetzen versendet.',
+    });
+  } catch (error: any) {
+    console.error('Passwort-Reset-Anfrage fehlgeschlagen:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Serverfehler bei der Passwort-Reset-Anfrage',
+    });
+  }
+};
+
+export const resetPassword = async (req: Request, res: Response) => {
+  const { token, password } = req.body;
+
+  try {
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    const user = await User.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: new Date() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Reset-Token ist ungültig oder abgelaufen.',
+      });
+    }
+
+    user.password = password;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+
+    await user.save();
+
+    const refreshedToken = generateToken(formatObjectId(user._id) ?? '');
+    setAuthCookie(res, refreshedToken);
+
+    res.status(200).json({
+      success: true,
+      user: formatUserResponse(user as IUser),
+    });
+  } catch (error: any) {
+    console.error('Passwort-Zurücksetzung fehlgeschlagen:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Serverfehler bei der Passwort-Zurücksetzung',
+    });
+  }
 };
 
 export const logoutUser = async (_req: Request, res: Response) => {

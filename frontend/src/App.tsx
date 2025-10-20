@@ -15,6 +15,8 @@ import WelcomePage from './pages/WelcomePage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import ExerciseListPage from './pages/ExerciseListPage';
 import ExerciseDetailPage from './pages/ExerciseDetailPage';
 import ProgressPage from './pages/ProgressPage';
@@ -175,6 +177,8 @@ function App() {
 
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/help" element={<HelpPage />} />
               <Route path="/datenschutz" element={<DatenschutzPage />} />
               <Route path="/impressum" element={<ImpressumPage />} />

@@ -73,3 +73,22 @@ export const resetUserProgress = async (): Promise<any> => {
   }
   return response.data;
 };
+
+export const requestPasswordReset = async (email: string): Promise<void> => {
+  await api.post('/auth/forgot-password', { email });
+};
+
+export const resetPasswordWithToken = async (token: string, password: string, passwordConfirmation: string): Promise<User> => {
+  const response = await api.post('/auth/reset-password', {
+    token,
+    password,
+    passwordConfirmation,
+  });
+
+  if (response.data?.user) {
+    localStorage.setItem('userData', JSON.stringify(response.data.user));
+    return response.data.user;
+  }
+
+  return response.data;
+};

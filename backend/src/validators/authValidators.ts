@@ -43,3 +43,30 @@ export const loginValidationRules = [
     .isLength({ min: 1 })
     .withMessage('Passwort ist erforderlich.'),
 ];
+
+export const forgotPasswordValidationRules = [
+  body('email')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Eine gültige E-Mail-Adresse ist erforderlich.'),
+];
+
+export const resetPasswordValidationRules = [
+  body('token')
+    .isString()
+    .trim()
+    .isLength({ min: 10 })
+    .withMessage('Reset-Token ist ungültig.'),
+  body('password')
+    .isLength({ min: 8 })
+    .withMessage('Passwort muss mindestens 8 Zeichen lang sein.')
+    .matches(/[A-Z]/)
+    .withMessage('Passwort muss mindestens einen Großbuchstaben enthalten.')
+    .matches(/[a-z]/)
+    .withMessage('Passwort muss mindestens einen Kleinbuchstaben enthalten.')
+    .matches(/[0-9]/)
+    .withMessage('Passwort muss mindestens eine Zahl enthalten.'),
+  body('passwordConfirmation')
+    .custom((value, { req }) => value === req.body.password)
+    .withMessage('Passwörter stimmen nicht überein.'),
+];

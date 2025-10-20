@@ -40,6 +40,10 @@ export const rateLimitConfig = {
     windowMs: Number(process.env.RATE_LIMIT_GENERAL_WINDOW_MS) || 15 * 60 * 1000,
     max: Number(process.env.RATE_LIMIT_GENERAL_MAX) || 500,
   },
+  passwordReset: {
+    windowMs: Number(process.env.RATE_LIMIT_PASSWORD_RESET_WINDOW_MS) || 60 * 60 * 1000,
+    max: Number(process.env.RATE_LIMIT_PASSWORD_RESET_MAX) || 5,
+  },
 };
 
 export const cookieConfig = {
@@ -62,4 +66,17 @@ export const httpsConfig = {
   keyPath: process.env.HTTPS_KEY_PATH?.trim(),
   certPath: process.env.HTTPS_CERT_PATH?.trim(),
   passphrase: process.env.HTTPS_PASSPHRASE?.trim(),
+};
+
+export const emailConfig = {
+  host: process.env.EMAIL_HOST?.trim(),
+  port: process.env.EMAIL_PORT ? Number(process.env.EMAIL_PORT) : 587,
+  secure: process.env.EMAIL_SECURE === 'true',
+  user: process.env.EMAIL_USER?.trim(),
+  pass: process.env.EMAIL_PASSWORD?.trim(),
+  from: process.env.EMAIL_FROM?.trim() || 'no-reply@aboelo-fitness.de',
+};
+
+export const appConfig = {
+  frontendBaseUrl: process.env.FRONTEND_BASE_URL?.trim() || 'https://fitness.aboelo.de',
 };
