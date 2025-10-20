@@ -30,6 +30,7 @@ const RegisterPage: React.FC = () => {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const passwordGuidance = 'Mindestens 8 Zeichen, ein Groß- und Kleinbuchstabe sowie eine Zahl.';
   
   const validateForm = () => {
     // Überprüfung der Eingaben
@@ -43,11 +44,26 @@ const RegisterPage: React.FC = () => {
       return false;
     }
     
-    if (password.length < 6) {
-      setError('Das Passwort muss mindestens 6 Zeichen lang sein.');
+    if (password.length < 8) {
+      setError('Das Passwort muss mindestens 8 Zeichen lang sein.');
       return false;
     }
-    
+
+    if (!/[A-Z]/.test(password)) {
+      setError('Das Passwort muss mindestens einen Großbuchstaben enthalten.');
+      return false;
+    }
+
+    if (!/[a-z]/.test(password)) {
+      setError('Das Passwort muss mindestens einen Kleinbuchstaben enthalten.');
+      return false;
+    }
+
+    if (!/[0-9]/.test(password)) {
+      setError('Das Passwort muss mindestens eine Zahl enthalten.');
+      return false;
+    }
+
     // Einfache E-Mail-Validierung
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -85,10 +101,14 @@ const RegisterPage: React.FC = () => {
       navigate('/');
     } catch (error: any) {
       console.error('Registrierungsfehler:', error);
-      setError(
-        error.response?.data?.message || 
-        'Registrierung fehlgeschlagen. Bitte versuchen Sie es später erneut.'
-      );
+      const backendErrors = error.response?.data?.errors;
+      if (Array.isArray(backendErrors) && backendErrors.length > 0) {
+        const uniqueMessages = Array.from(new Set(backendErrors.map((entry: any) => entry?.message).filter(Boolean)));
+        setError(uniqueMessages.join(' '));
+        return;
+      }
+
+      setError(error.response?.data?.message || 'Registrierung fehlgeschlagen. Bitte versuchen Sie es später erneut.');
     } finally {
       setLoading(false);
     }
@@ -172,6 +192,7 @@ const RegisterPage: React.FC = () => {
                   InputLabelProps={{
                     sx: { fontSize: '1.1rem' }
                   }}
+                  helperText={passwordGuidance}
                 />
               </Grid>
               
