@@ -56,19 +56,19 @@ const formatDuration = (seconds?: number): string => {
 const getMotivationalQuote = (): string => {
   const quotes = [
     "Jeder Schritt zählt!",
-    "Du schaffst das!",
-    "Bleib dran und glaub an dich!",
+    "Sie schaffen das!",
+    "Bleiben Sie dran und glauben Sie an sich!",
     "Heute ist ein neuer Tag für neue Erfolge!",
-    "Deine Gesundheit ist das wertvollste Gut!",
+    "Ihre Gesundheit ist das wertvollste Gut!",
     "Kleine Schritte führen zu großen Veränderungen!",
-    "Du bist stärker als du denkst!",
-    "Jede Übung bringt dich deinem Ziel näher!",
+    "Sie sind stärker als Sie denken!",
+    "Jede Übung bringt Sie Ihrem Ziel näher!",
     "Disziplin heute, Stolz morgen!",
-    "Dein Körper dankt dir für jede Bewegung!",
+    "Ihr Körper dankt Ihnen für jede Bewegung!",
     "Fortschritt ist besser als Perfektion!",
-    "Du investierst in deine beste Version!",
-    "Glaube an den Prozess!",
-    "Motivation bringt dich zum Start, Gewohnheit zum Ziel!",
+    "Sie investieren in Ihre beste Version!",
+    "Glauben Sie an den Prozess!",
+    "Motivation bringt Sie zum Start, Gewohnheit zum Ziel!",
     "Heute ist der perfekte Tag zum Trainieren!"
   ];
 
@@ -236,8 +236,8 @@ const HomePage: React.FC = () => {
                 currentStreak: user.dailyStreak,
                 longestStreak: user.longestStreak || user.dailyStreak,
                 message: user.dailyStreak > 0 ? 
-                  `Fantastisch! Du trainierst seit ${user.dailyStreak} Tagen kontinuierlich!` :
-                  "Starte heute deine Streak! Jeder Tag zählt.",
+                  `Fantastisch! Sie trainieren seit ${user.dailyStreak} Tagen kontinuierlich!` :
+                  "Starten Sie heute Ihren Streak! Jeder Tag zählt.",
                 streakBroken: false
               }}
             />

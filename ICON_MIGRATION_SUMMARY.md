@@ -38,7 +38,7 @@ After:
 
 **HomePage.tsx:**
 - ~~"🎯 Tägliche Muskelgruppen-Challenge"~~ → "Tägliche Muskelgruppen-Challenge"
-- ~~"🏆 Fantastisch! Alle Muskelgruppen trainiert!"~~ → "Fantastisch! Alle Muskelgruppen trainiert!"
+- ~~"🏆 isch! Alle Muskelgruppen trainiert!"~~ → "Fantastisch! Alle Muskelgruppen trainiert!"
 - ~~"🎯 Empfohlene Übungen für Sie"~~ → "Empfohlene Übungen für Sie"
 - ~~"🏃‍♂️ Unsere Übungen"~~ → "Unsere Übungen"
 - ~~"🎯 Mit Theraband"~~ → "Mit Theraband"
