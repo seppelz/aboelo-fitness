@@ -4,8 +4,7 @@ import { LoginCredentials, RegisterData, User } from '../types';
 // Benutzer anmelden
 export const loginUser = async (credentials: LoginCredentials): Promise<User> => {
   const response = await api.post('/users/login', credentials);
-  if (response.data && response.data.token) {
-    localStorage.setItem('userToken', response.data.token);
+  if (response.data && response.data.user) {
     localStorage.setItem('userData', JSON.stringify(response.data.user));
   }
   return response.data.user;
@@ -14,8 +13,7 @@ export const loginUser = async (credentials: LoginCredentials): Promise<User> =>
 // Benutzer registrieren
 export const registerUser = async (userData: RegisterData): Promise<User> => {
   const response = await api.post('/users/register', userData);
-  if (response.data && response.data.token) {
-    localStorage.setItem('userToken', response.data.token);
+  if (response.data && response.data.user) {
     localStorage.setItem('userData', JSON.stringify(response.data.user));
   }
   return response.data.user;
@@ -23,7 +21,6 @@ export const registerUser = async (userData: RegisterData): Promise<User> => {
 
 // Benutzer ausloggen
 export const logoutUser = (): void => {
-  localStorage.removeItem('userToken');
   localStorage.removeItem('userData');
 };
 
@@ -47,10 +44,6 @@ export const updateProfile = async (userData: any): Promise<User> => {
   const response = await api.put('/users/profile', userData);
   const { token, ...updatedUserData } = response.data;
 
-  if (token) {
-    localStorage.setItem('userToken', token);
-  }
-
   const currentUser = getCurrentUser();
   if (currentUser) {
     const mergedUser = { ...currentUser, ...updatedUserData } as User;
@@ -64,7 +57,7 @@ export const updateProfile = async (userData: any): Promise<User> => {
 
 // Prüfen, ob der Benutzer angemeldet ist
 export const isAuthenticated = (): boolean => {
-  return localStorage.getItem('userToken') !== null;
+  return localStorage.getItem('userData') !== null;
 };
 
 // Reset user progress data (for testing/cleaning)

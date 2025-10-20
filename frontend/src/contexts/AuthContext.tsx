@@ -59,17 +59,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const syncUser = async () => {
       try {
-        const token = typeof window !== 'undefined' ? localStorage.getItem('userToken') : null;
-
-        if (!token) {
-          setUser(null);
-          return;
-        }
-
         const freshUserData = await fetchUserFromServer();
         setUser(freshUserData);
       } catch (error) {
         console.error('Fehler beim Synchronisieren des Benutzers:', error);
+        setUser(null);
+        localStorage.removeItem('userData');
       } finally {
         setLoading(false);
       }
