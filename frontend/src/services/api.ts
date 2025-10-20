@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'https://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'https://api.aboelo.de/api';
 const CSRF_COOKIE_NAME = 'aboelo_csrf_token';
 const CSRF_HEADER_NAME = 'x-csrf-token';
 
