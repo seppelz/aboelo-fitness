@@ -831,7 +831,7 @@ const HomePage: React.FC = () => {
         <Box sx={{ textAlign: 'center', mt: 4 }}>
           <Button 
             variant="outlined" 
-            onClick={() => navigate('/exercises')}
+            onClick={() => navigate('/app/exercises')}
             size="large"
             sx={{ 
               fontSize: { xs: '1.2rem', sm: '1.1rem' },

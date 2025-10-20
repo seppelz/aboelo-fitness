@@ -42,11 +42,24 @@ const allowedOrigins = configuredOrigins && configuredOrigins.length > 0
   : fallbackOrigins;
 
 const corsOptions: CorsOptions = {
-  origin: allowedOrigins.length > 0 ? allowedOrigins : false,
-  credentials: allowedOrigins.length > 0,
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.warn(`CORS blocked request from origin: ${origin}`);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
 };
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(cookieParser());
 
 // Rate limiting
