@@ -23,6 +23,10 @@ Vercel: REACT_APP_API_URL=https://api.aboelo.de/api.
 Redeploy backend and frontend after updating env vars.
 Clear browser storage or use an incognito window, then test https://fitness.aboelo.de/login.
 Testing
-Run curl -I https://api.aboelo.de/api/auth/csrf -H "Origin: https://fitness.aboelo.de" and ensure the response contains the CORS header and Set-Cookie.
+$headers = @{
+    "Origin" = "https://fitness.aboelo.de"
+}
+Invoke-WebRequest -Uri "https://api.aboelo.de/api/auth/csrf" -Headers $headers | Select-Object -ExpandProperty Headers
+
 In the browser, confirm cookies (aboelo_csrf_secret, aboelo_csrf_token, aboelo_auth_token) appear under Application → Cookies for https://api.aboelo.de.
 Complete the login flow to verify 200 responses and persistent auth.

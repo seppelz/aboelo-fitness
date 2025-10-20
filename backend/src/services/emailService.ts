@@ -1,12 +1,28 @@
 import nodemailer from 'nodemailer';
 import { emailConfig, appConfig } from '../config/env';
 
+const logEmailConfig = () => {
+  console.info('[emailService] Aktuelle E-Mail-Konfiguration:', {
+    host: emailConfig.host,
+    port: emailConfig.port,
+    secure: emailConfig.secure,
+    userDefined: Boolean(emailConfig.user),
+    fromAddress: emailConfig.from,
+  });
+};
+
 const ensureTransporter = () => {
   const { host, port, secure, user, pass } = emailConfig;
   if (!host || !user || !pass) {
-    console.warn('[emailService] E-Mail-Konfiguration unvollständig. E-Mails werden nicht versendet.');
+    console.error('[emailService] E-Mail-Konfiguration unvollständig. Host/User/Pass müssen gesetzt sein.', {
+      host,
+      userDefined: Boolean(user),
+      passDefined: Boolean(pass),
+    });
     return null;
   }
+
+  logEmailConfig();
 
   return nodemailer.createTransport({
     host,
@@ -33,6 +49,12 @@ export const sendPasswordResetEmail = async (recipientEmail: string, token: stri
   const transporter = getTransporter();
   const resetUrl = `${appConfig.frontendBaseUrl.replace(/\/?$/, '')}/reset-password?token=${encodeURIComponent(token)}`;
 
+  console.info('[emailService] Versand Passwort-Reset-Link vorbereitet', {
+    recipientEmail,
+    resetUrl,
+    transporterAvailable: Boolean(transporter),
+  });
+
   const message = {
     from: emailConfig.from,
     to: recipientEmail,
@@ -46,9 +68,21 @@ export const sendPasswordResetEmail = async (recipientEmail: string, token: stri
   };
 
   if (!transporter) {
+    console.error('[emailService] Kein Transporter verfügbar, E-Mail wird nicht versendet. Passwort-Reset-Link folgt im Log.');
     console.info('[emailService] Passwort-Reset-Link (nur Log):', resetUrl);
-    return;
+    throw new Error('EMAIL_TRANSPORTER_NOT_INITIALISED');
   }
 
-  await transporter.sendMail(message);
+  try {
+    const result = await transporter.sendMail(message);
+    console.info('[emailService] Passwort-Reset-E-Mail erfolgreich versendet.', {
+      messageId: result.messageId,
+      accepted: result.accepted,
+      rejected: result.rejected,
+      response: result.response,
+    });
+  } catch (error) {
+    console.error('[emailService] Versand der Passwort-Reset-E-Mail fehlgeschlagen.', error);
+    throw error;
+  }
 };
