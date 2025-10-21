@@ -292,7 +292,7 @@ const AdminDashboard: React.FC = () => {
                         <Box component="td" sx={{ p: 1.5 }}>{userItem.level}</Box>
                         <Box component="td" sx={{ p: 1.5 }}>{userItem.points}</Box>
                         <Box component="td" sx={{ p: 1.5 }}>
-                          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} justifyContent="center">
+                          <Stack direction="row" spacing={1} justifyContent="center" alignItems="center">
                             <MuiTooltip title="Benutzer bearbeiten">
                               <span>
                                 <Button
@@ -307,16 +307,19 @@ const AdminDashboard: React.FC = () => {
                             </MuiTooltip>
                             <MuiTooltip title="Benutzer löschen">
                               <span>
-                                <Button
+                                <IconButton
                                   size="small"
-                                  variant="contained"
                                   color="error"
-                                  startIcon={deletingUserId === userItem._id ? undefined : <DeleteIcon />}
                                   onClick={() => handleDeleteUser(userItem)}
                                   disabled={deletingUserId === userItem._id}
+                                  sx={{ width: 36, height: 36 }}
                                 >
-                                  {deletingUserId === userItem._id ? <CircularProgress size={18} color="inherit" /> : 'Löschen'}
-                                </Button>
+                                  {deletingUserId === userItem._id ? (
+                                    <CircularProgress size={18} color="inherit" />
+                                  ) : (
+                                    <DeleteIcon fontSize="small" />
+                                  )}
+                                </IconButton>
                               </span>
                             </MuiTooltip>
                           </Stack>
