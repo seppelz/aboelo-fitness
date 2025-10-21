@@ -444,64 +444,126 @@ export const getMonthlyProgress = async (req: Request, res: Response) => {
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
-    const progress = await Progress.find({
+    const defaultResponse = {
+      month: now.getMonth() + 1,
+      year: now.getFullYear(),
+      totalExercisesThisMonth: 0,
+      totalPointsThisMonth: 0,
+      daysWithActivityThisMonth: 0,
+      activityByDate: [] as {
+        date: string;
+        exercisesCompleted: number;
+        pointsEarned: number;
+        muscleGroupsTrained: string[];
+      }[],
+      mostTrainedMuscleGroups: [] as { muscleGroup: string; count: number }[]
+    };
+
+    const progressDocs = await Progress.find({
       user: userId,
       date: { $gte: startOfMonth, $lt: endOfMonth }
-    }).populate('exercise', 'title muscleGroup type category');
-    
-    // Tägliche Aktivität für den Monat
-    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    const activityByDate = Array(daysInMonth).fill(0).map((_, index) => {
-      const date = new Date(now.getFullYear(), now.getMonth(), index + 1);
-      const dayStart = new Date(date);
-      const dayEnd = new Date(date);
-      dayEnd.setDate(date.getDate() + 1);
-      
-      // Übungen für diesen Tag filtern
-      const dayProgress = progress.filter(
-        p => p.date >= dayStart && p.date < dayEnd
-      );
+    })
+      .populate('exercise', 'title muscleGroup type category')
+      .lean();
 
-      const completedDayProgress = dayProgress.filter(p => p.completed);
-      const completedDayProgressWithExercise = completedDayProgress.filter(p => p.exercise);
-      
-      // Trainierte Muskelgruppen an diesem Tag
-      const muscleGroups = new Set(
-        completedDayProgressWithExercise
-          .map(p => (p.exercise as any).muscleGroup)
-          .filter(Boolean)
-      );
-      
+    if (!progressDocs.length) {
+      const daysInMonthEmpty = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      defaultResponse.activityByDate = Array.from({ length: daysInMonthEmpty }, (_, index) => {
+        const date = new Date(now.getFullYear(), now.getMonth(), index + 1);
+        return {
+          date: date.toISOString().split('T')[0],
+          exercisesCompleted: 0,
+          pointsEarned: 0,
+          muscleGroupsTrained: []
+        };
+      });
+      return res.json(defaultResponse);
+    }
+
+    const sanitizedProgress = progressDocs.map((doc) => {
+      const rawDate = doc.date instanceof Date ? doc.date : doc.date ? new Date(doc.date) : null;
+      const points = typeof doc.pointsEarned === 'number'
+        ? doc.pointsEarned
+        : Number(doc.pointsEarned) || 0;
+      const completed = doc.completed === true;
+      const muscleGroup = doc.exercise && typeof doc.exercise === 'object'
+        ? (doc.exercise as any).muscleGroup
+        : undefined;
       return {
-        date: date.toISOString().split('T')[0],
-        exercisesCompleted: completedDayProgressWithExercise.length,
-        pointsEarned: dayProgress.reduce((sum, p) => sum + (p.pointsEarned || 0), 0),
-        muscleGroupsTrained: Array.from(muscleGroups)
+        completed,
+        date: rawDate,
+        pointsEarned: points,
+        muscleGroup: typeof muscleGroup === 'string' ? muscleGroup : undefined
       };
     });
 
-    // Meisttrainierte Muskelgruppen
+    const activityByDateMap = new Map<string, {
+      exercisesCompleted: number;
+      pointsEarned: number;
+      muscleGroups: Set<string>;
+    }>();
     const muscleGroupCounts = new Map<string, number>();
-    progress
-      .filter(p => p.completed && p.exercise)
-      .forEach(p => {
-        const muscleGroup = ((p.exercise as any)?.muscleGroup) as string | undefined;
-        if (!muscleGroup) {
-          return;
+    let totalExercises = 0;
+    let totalPoints = 0;
+
+    sanitizedProgress.forEach((entry) => {
+      if (!entry.date) {
+        return;
+      }
+      const dateKey = entry.date.toISOString().split('T')[0];
+      if (!activityByDateMap.has(dateKey)) {
+        activityByDateMap.set(dateKey, {
+          exercisesCompleted: 0,
+          pointsEarned: 0,
+          muscleGroups: new Set<string>()
+        });
+      }
+
+      const summary = activityByDateMap.get(dateKey)!;
+      summary.pointsEarned += entry.pointsEarned;
+      totalPoints += entry.pointsEarned;
+
+      if (entry.completed) {
+        summary.exercisesCompleted += 1;
+        totalExercises += 1;
+        if (entry.muscleGroup) {
+          summary.muscleGroups.add(entry.muscleGroup);
+          muscleGroupCounts.set(
+            entry.muscleGroup,
+            (muscleGroupCounts.get(entry.muscleGroup) || 0) + 1
+          );
         }
-        muscleGroupCounts.set(muscleGroup, (muscleGroupCounts.get(muscleGroup) || 0) + 1);
-      });
+      }
+    });
+
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    const activityByDate = Array.from({ length: daysInMonth }, (_, index) => {
+      const date = new Date(now.getFullYear(), now.getMonth(), index + 1);
+      const dateKey = date.toISOString().split('T')[0];
+      const summary = activityByDateMap.get(dateKey);
+      return {
+        date: dateKey,
+        exercisesCompleted: summary ? summary.exercisesCompleted : 0,
+        pointsEarned: summary ? summary.pointsEarned : 0,
+        muscleGroupsTrained: summary ? Array.from(summary.muscleGroups) : []
+      };
+    });
 
     const mostTrainedMuscleGroups = Array.from(muscleGroupCounts.entries())
       .map(([muscleGroup, count]) => ({ muscleGroup, count }))
       .sort((a, b) => b.count - a.count);
 
+    const daysWithActivity = activityByDate.reduce(
+      (count, day) => (day.exercisesCompleted > 0 ? count + 1 : count),
+      0
+    );
+
     res.json({
       month: now.getMonth() + 1,
       year: now.getFullYear(),
-      totalExercisesThisMonth: progress.filter(p => p.completed).length,
-      totalPointsThisMonth: progress.reduce((sum, p) => sum + p.pointsEarned, 0),
-      daysWithActivityThisMonth: activityByDate.filter(day => day.exercisesCompleted > 0).length,
+      totalExercisesThisMonth: totalExercises,
+      totalPointsThisMonth: totalPoints,
+      daysWithActivityThisMonth: daysWithActivity,
       activityByDate,
       mostTrainedMuscleGroups
     });
