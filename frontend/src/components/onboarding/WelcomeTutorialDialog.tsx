@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState, useCallback } from 'react';
 import {
   Alert,
   Box,
@@ -22,9 +22,12 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import AirlineSeatReclineNormalIcon from '@mui/icons-material/AirlineSeatReclineNormal';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
+import InstallMobileIcon from '@mui/icons-material/InstallMobile';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { updateProfile } from '../../services/authService';
+import { useActivityReminder } from '../../hooks/useActivityReminder';
+import { useInstallPrompt } from '../../hooks/useInstallPrompt';
 
 const WelcomeTutorialDialog: React.FC = () => {
   const { user, loading, updateUserLocally, refreshUser } = useContext(AuthContext);
@@ -32,9 +35,25 @@ const WelcomeTutorialDialog: React.FC = () => {
   const [showOnLaunch, setShowOnLaunch] = useState(true);
   const [reminderState, setReminderState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [reminderError, setReminderError] = useState<string | null>(null);
+  const [installFeedback, setInstallFeedback] = useState<{ type: 'success' | 'info' | 'error'; message: string } | null>(null);
   const navigate = useNavigate();
 
   const storageKey = useMemo(() => (user ? `aboelo_show_welcome_${user._id}` : null), [user]);
+
+  const reminderEnabled = Boolean(user?.reminderSettings?.enabled);
+  const reminderInterval = user?.reminderSettings?.intervalMinutes ?? 60;
+
+  const {
+    supportsNotifications,
+    requestPermission,
+    subscribeToPush,
+    isSubscribed,
+  } = useActivityReminder({
+    enabled: reminderEnabled,
+    intervalMinutes: reminderInterval,
+  });
+
+  const { canInstall, promptInstall, isInstalled } = useInstallPrompt();
 
   useEffect(() => {
     if (!user || loading) {
@@ -62,23 +81,59 @@ const WelcomeTutorialDialog: React.FC = () => {
     if (!user) {
       return;
     }
+
+    if (!supportsNotifications) {
+      setReminderState('error');
+      setReminderError('Push-Benachrichtigungen werden von diesem Gerät oder Browser nicht unterstützt.');
+      return;
+    }
+
     setReminderState('loading');
     setReminderError(null);
     try {
+      const permissionResult = await requestPermission();
+      if (permissionResult !== 'granted') {
+        setReminderState('error');
+        setReminderError('Bitte erlaube Browser-Benachrichtigungen im angezeigten Dialog, um Erinnerungen zu aktivieren.');
+        return;
+      }
+
+      const subscribed = await subscribeToPush();
+      if (!subscribed) {
+        setReminderState('error');
+        setReminderError('Push-Benachrichtigungen konnten nicht aktiviert werden. Bitte versuche es erneut.');
+        return;
+      }
+
       const updatedUser = await updateProfile({
         reminderSettings: {
           enabled: true,
-          intervalMinutes: 60,
+          intervalMinutes: reminderInterval,
         },
       });
       updateUserLocally(updatedUser);
       await refreshUser();
       setReminderState('success');
+      setReminderError(null);
     } catch (error: any) {
       setReminderState('error');
       setReminderError(error?.response?.data?.message || 'Erinnerung konnte nicht aktiviert werden. Bitte versuchen Sie es erneut.');
     }
   };
+
+  const handleInstallApp = useCallback(async () => {
+    setInstallFeedback(null);
+    try {
+      const result = await promptInstall();
+      if (result) {
+        setInstallFeedback({ type: 'success', message: 'Installation gestartet. Folge den Browser-Hinweisen, um die App hinzuzufügen.' });
+      } else {
+        setInstallFeedback({ type: 'info', message: 'Installation wurde abgebrochen. Du kannst sie später jederzeit erneut starten.' });
+      }
+    } catch (error: any) {
+      setInstallFeedback({ type: 'error', message: error?.message || 'Installation konnte nicht gestartet werden.' });
+    }
+  }, [promptInstall]);
 
   const reminderAlreadyActive = Boolean(user?.reminderSettings?.enabled && user.reminderSettings.intervalMinutes === 60);
 
@@ -136,18 +191,28 @@ const WelcomeTutorialDialog: React.FC = () => {
                 variant="outlined"
                 startIcon={<AccessTimeIcon />}
                 onClick={handleEnableReminder}
-                disabled={reminderState === 'loading' || reminderAlreadyActive}
+                disabled={reminderState === 'loading' || (reminderAlreadyActive && isSubscribed)}
               >
                 {reminderAlreadyActive ? '60-Minuten-Erinnerung aktiv' : '60-Minuten-Erinnerung aktivieren'}
               </Button>
               <Button variant="contained" onClick={() => navigate('/app/settings')}>
                 Zu Profil & Einstellungen
               </Button>
+              {canInstall && !isInstalled && (
+                <Button
+                  variant="outlined"
+                  startIcon={<InstallMobileIcon />}
+                  onClick={handleInstallApp}
+                >
+                  App installieren
+                </Button>
+              )}
             </Stack>
             {reminderState === 'success' && (
               <Alert severity="success">Erinnerung ist aktiviert. Sie können sie jederzeit in den Einstellungen anpassen.</Alert>
             )}
             {reminderState === 'error' && reminderError && <Alert severity="error">{reminderError}</Alert>}
+            {installFeedback && <Alert severity={installFeedback.type}>{installFeedback.message}</Alert>}
           </Stack>
         </Stack>
       </DialogContent>

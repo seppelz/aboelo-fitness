@@ -1,0 +1,21 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2d7d7d" />
+      <stop offset="100%" stop-color="#1f5f5f" />
+    </linearGradient>
+    <linearGradient id="accentGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff8a65" />
+      <stop offset="100%" stop-color="#ffbb93" />
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="220" fill="url(#bgGradient)" />
+  <g transform="translate(192, 192)">
+    <rect x="120" y="120" width="600" height="250" rx="80" fill="rgba(255,255,255,0.15)" />
+    <circle cx="320" cy="320" r="220" fill="rgba(255,255,255,0.1)" />
+    <path d="M320 80c132 0 240 108 240 240s-108 240-240 240S80 452 80 320 188 80 320 80z" fill="url(#accentGradient)" opacity="0.85" />
+    <path d="M320 190c73 0 132 59 132 132s-59 132-132 132-132-59-132-132 59-132 132-132z" fill="#ffffff" opacity="0.95" />
+    <path d="M320 250c39 0 72 33 72 72s-33 72-72 72-72-33-72-72 33-72 72-72z" fill="url(#bgGradient)" />
+  </g>
+  <text x="512" y="860" text-anchor="middle" font-family="'Poppins', 'Segoe UI', sans-serif" font-size="140" font-weight="600" fill="#ffffff" opacity="0.9">aboelo</text>
+</svg>

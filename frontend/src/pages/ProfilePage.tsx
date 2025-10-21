@@ -1,13 +1,14 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Paper, 
-  Grid, 
-  Avatar, 
-  Button, 
-  TextField, 
+import {
+  Box,
+  Typography,
+  Paper,
+  Grid,
+  Avatar,
+  Button,
+  TextField,
   Alert,
+  Snackbar,
   CircularProgress,
   Divider,
   Card,
@@ -61,7 +62,9 @@ const ProfilePage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [reminderFeedback, setReminderFeedback] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
   const [isResetting, setIsResetting] = useState(false);
+  const [isReminderUpdating, setIsReminderUpdating] = useState(false);
 
   const fetchNextExerciseForReminder = useCallback(async () => {
     try {
@@ -267,25 +270,64 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleReminderToggle = async (checked: boolean) => {
+    setReminderFeedback(null);
+    setIsReminderUpdating(true);
     if (checked) {
-      const result = await requestPermission();
-      if (result !== 'granted') {
-        setReminderEnabled(false);
-        return;
-      }
+      try {
+        const result = await requestPermission();
+        if (result !== 'granted') {
+          setReminderEnabled(false);
+          setReminderFeedback({ type: 'error', message: 'Benachrichtigungen wurden blockiert. Bitte erlaube sie in den Browser-Einstellungen.' });
+          return;
+        }
 
-      const subscribed = await subscribeToPush();
-      if (!subscribed) {
-        setReminderEnabled(false);
-        return;
-      }
+        const subscribed = await subscribeToPush();
+        if (!subscribed) {
+          setReminderEnabled(false);
+          setReminderFeedback({ type: 'error', message: 'Push-Benachrichtigungen konnten nicht aktiviert werden. Bitte versuche es später erneut.' });
+          return;
+        }
 
-      setReminderEnabled(true);
+        const updatedUser = await updateProfile({
+          reminderSettings: {
+            enabled: true,
+            intervalMinutes: reminderInterval,
+          },
+        });
+        updateUserLocally(updatedUser);
+        await refreshUser();
+
+        setReminderEnabled(true);
+        setReminderFeedback({ type: 'success', message: 'Push-Benachrichtigungen aktiviert. Du erhältst Erinnerungen auch ohne offenen Tab.' });
+      } catch (error: any) {
+        console.error('[Reminder] Failed to enable reminders', error);
+        setReminderEnabled(false);
+        setReminderFeedback({ type: 'error', message: error?.response?.data?.message || 'Aktivierung fehlgeschlagen. Bitte später erneut versuchen.' });
+      } finally {
+        setIsReminderUpdating(false);
+      }
       return;
     }
 
-    await unsubscribeFromPush();
-    setReminderEnabled(false);
+    try {
+      await unsubscribeFromPush();
+      const updatedUser = await updateProfile({
+        reminderSettings: {
+          enabled: false,
+          intervalMinutes: reminderInterval,
+        },
+      });
+      updateUserLocally(updatedUser);
+      await refreshUser();
+
+      setReminderEnabled(false);
+      setReminderFeedback({ type: 'info', message: 'Push-Benachrichtigungen wurden deaktiviert.' });
+    } catch (error: any) {
+      console.error('[Reminder] Failed to disable reminders', error);
+      setReminderFeedback({ type: 'error', message: error?.response?.data?.message || 'Deaktivierung fehlgeschlagen. Bitte versuche es erneut.' });
+    } finally {
+      setIsReminderUpdating(false);
+    }
   };
 
   const handleReminderIntervalChange = (value: string) => {
@@ -309,12 +351,22 @@ const ProfilePage: React.FC = () => {
     );
   }
   
+  const dismissReminderFeedback = () => setReminderFeedback(null);
+
   return (
-    <Container maxWidth="lg">
-      <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', mb: 4 }}>
-        Mein Profil
-      </Typography>
-      
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      {reminderFeedback && (
+        <Snackbar
+          open={!!reminderFeedback}
+          autoHideDuration={6000}
+          onClose={dismissReminderFeedback}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert severity={reminderFeedback.type} sx={{ width: '100%' }}>
+            {reminderFeedback.message}
+          </Alert>
+        </Snackbar>
+      )}
       <Grid container spacing={4}>
         {/* Profil-Informationen */}
         <Grid size={{ xs: 12, md: 8 }}>
@@ -459,7 +511,7 @@ const ProfilePage: React.FC = () => {
                     <Switch
                       checked={reminderEnabled}
                       onChange={(e) => handleReminderToggle(e.target.checked)}
-                      disabled={!isEditing || isSubmitting}
+                      disabled={isSubmitting || isReminderUpdating}
                       color="primary"
                     />
                   }
@@ -483,7 +535,7 @@ const ProfilePage: React.FC = () => {
                     variant="outlined"
                     value={reminderInterval}
                     onChange={(e) => handleReminderIntervalChange(e.target.value)}
-                    disabled={!isEditing || isSubmitting || !reminderEnabled}
+                    disabled={!isEditing || isSubmitting || !reminderEnabled || isReminderUpdating}
                     InputProps={{
                       inputProps: { min: 1 },
                       sx: { fontSize: '1.1rem' }
@@ -496,7 +548,7 @@ const ProfilePage: React.FC = () => {
                   <Button
                     variant="outlined"
                     onClick={handleTestReminder}
-                    disabled={!reminderEnabled || isSubmitting || subscriptionStatus === 'missing-key' || subscriptionStatus === 'unsupported'}
+                    disabled={!reminderEnabled || isSubmitting || isReminderUpdating || subscriptionStatus === 'missing-key' || subscriptionStatus === 'unsupported'}
                   >
                     Erinnerung testen
                   </Button>
@@ -516,13 +568,10 @@ const ProfilePage: React.FC = () => {
                   </Typography>
                 )}
               </Box>
-              
+
               {/* Passwort-Änderung (nur im Bearbeitungsmodus) */}
               {isEditing && (
                 <Box sx={{ mt: 3 }}>
-                  <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
-                    Passwort ändern (optional)
-                  </Typography>
                   <Grid container spacing={2}>
                     <Grid size={{ xs: 12 }}>
                       <TextField

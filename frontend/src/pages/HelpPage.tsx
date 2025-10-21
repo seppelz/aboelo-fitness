@@ -26,6 +26,8 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import InstallMobileIcon from '@mui/icons-material/InstallMobile';
 
 const HelpPage: React.FC = () => {
   return (
@@ -265,7 +267,65 @@ const HelpPage: React.FC = () => {
           </AccordionDetails>
         </Accordion>
 
-        {/* Section 4: Levels */}
+        {/* Section 4: Erinnerungen & Installation */}
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
+              <NotificationsActiveIcon color="primary" /> Aktivpausen-Erinnerungen & App-Installation
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography variant="body1" paragraph>
+              Damit Sie auch ohne geöffneten Browser an Ihre Aktivpausen erinnert werden, aktivieren Sie die Push-Benachrichtigungen.
+            </Typography>
+            <List>
+              <ListItem>
+                <ListItemIcon><NotificationsActiveIcon color="success" /></ListItemIcon>
+                <ListItemText
+                  primary="Push-Erinnerungen aktivieren"
+                  secondary={'Öffnen Sie das Willkommensfenster oder die Profilseite und tippen Sie auf "Erinnerungen aktivieren". Bestätigen Sie anschließend die Browser-Abfrage.'}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon><NotificationsActiveIcon color="success" /></ListItemIcon>
+                <ListItemText
+                  primary="Rhythmus anpassen"
+                  secondary="Im Profil können Sie das Intervall jederzeit ändern oder Erinnerungen vorübergehend deaktivieren."
+                />
+              </ListItem>
+            </List>
+            <Divider sx={{ my: 2 }} />
+            <Typography variant="body1" paragraph>
+              Installieren Sie die App auf Ihrem Startbildschirm, um schneller darauf zuzugreifen und Push-Benachrichtigungen auf Mobilgeräten freizuschalten.
+            </Typography>
+            <List>
+              <ListItem>
+                <ListItemIcon><InstallMobileIcon color="primary" /></ListItemIcon>
+                <ListItemText
+                  primary="Installation aus dem Willkommensdialog"
+                  secondary={'Im Willkommensdialog finden Sie die Schaltfläche "App installieren". Folgen Sie anschließend den Browser-Hinweisen.'}
+                />
+              </ListItem>
+              <ListItem>
+                <ListItemIcon><InstallMobileIcon color="primary" /></ListItemIcon>
+                <ListItemText
+                  primary="Installation über Browser-Menü"
+                  secondary={'Alternativ können Sie über das Browser-Menü (z. B. Chrome: Drei-Punkte-Menü → "App installieren") die Anwendung hinzufügen.'}
+                />
+              </ListItem>
+            </List>
+            <Box sx={{ mt: 3, p: 2, bgcolor: 'info.light', borderRadius: 2 }}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 'bold', mb: 1 }}>
+                💡 Tipp
+              </Typography>
+              <Typography variant="body2">
+                Sobald die App installiert und Benachrichtigungen erlaubt sind, erreichen Sie Ihre Aktivpausen-Erinnerungen auch mit geschlossenem Tab – sowohl auf dem Desktop als auch auf dem Smartphone.
+              </Typography>
+            </Box>
+          </AccordionDetails>
+        </Accordion>
+
+        {/* Section 5: Levels */}
         <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="h5" sx={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 1 }}>
