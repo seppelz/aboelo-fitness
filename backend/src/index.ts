@@ -16,6 +16,7 @@ import progressRoutes from './routes/progressRoutes';
 import analyticsRoutes from './routes/analyticsRoutes';
 import adminRoutes from './routes/adminRoutes';
 import contactRoutes from './routes/contactRoutes';
+import pushRoutes from './routes/pushRoutes';
 import { cookieConfig, csrfConfig, httpsConfig, rateLimitConfig } from './config/env';
 
 // Umgebungsvariablen laden
@@ -131,6 +132,7 @@ app.use('/api/progress', progressRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/push', pushRoutes);
 
 // CSRF error handler
 app.use((err: any, _req: Request, res: Response, next: NextFunction) => {

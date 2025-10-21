@@ -21,6 +21,15 @@ const ensureEnv = (key: string, fallback?: string): string => {
   throw new Error(`Environment variable ${key} is required but was not provided.`);
 };
 
+const getOptionalEnv = (key: string): string | undefined => {
+  const value = process.env[key];
+  if (typeof value !== 'string') {
+    return undefined;
+  }
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+};
+
 export const jwtConfig: {
   secret: Secret;
   expiresIn: SignOptions['expiresIn'];
@@ -79,4 +88,10 @@ export const emailConfig = {
 
 export const appConfig = {
   frontendBaseUrl: process.env.FRONTEND_BASE_URL?.trim() || 'https://fitness.aboelo.de',
+};
+
+export const pushConfig = {
+  publicKey: getOptionalEnv('PUSH_VAPID_PUBLIC_KEY'),
+  privateKey: getOptionalEnv('PUSH_VAPID_PRIVATE_KEY'),
+  mailto: getOptionalEnv('PUSH_VAPID_MAILTO') || 'mailto:info@aboelo.de',
 };

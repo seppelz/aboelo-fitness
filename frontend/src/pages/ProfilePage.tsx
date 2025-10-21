@@ -109,13 +109,17 @@ const ProfilePage: React.FC = () => {
     }
   }, []);
 
-  const { 
-    supportsNotifications, 
-    permission, 
-    requestPermission, 
+  const {
+    supportsNotifications,
+    permission,
+    requestPermission,
     triggerTestReminder,
     permissionRequested,
-    permissionMessage
+    permissionMessage,
+    subscriptionStatus,
+    isSubscribed,
+    subscribeToPush,
+    unsubscribeFromPush,
   } = useActivityReminder({ enabled: reminderEnabled, intervalMinutes: reminderInterval, fetchNextExercise: fetchNextExerciseForReminder });
   
   // Benutzerdaten in das Formular laden
@@ -263,14 +267,25 @@ const ProfilePage: React.FC = () => {
   };
 
   const handleReminderToggle = async (checked: boolean) => {
-    if (checked && permission !== 'granted') {
+    if (checked) {
       const result = await requestPermission();
       if (result !== 'granted') {
         setReminderEnabled(false);
         return;
       }
+
+      const subscribed = await subscribeToPush();
+      if (!subscribed) {
+        setReminderEnabled(false);
+        return;
+      }
+
+      setReminderEnabled(true);
+      return;
     }
-    setReminderEnabled(checked);
+
+    await unsubscribeFromPush();
+    setReminderEnabled(false);
   };
 
   const handleReminderIntervalChange = (value: string) => {
@@ -481,7 +496,7 @@ const ProfilePage: React.FC = () => {
                   <Button
                     variant="outlined"
                     onClick={handleTestReminder}
-                    disabled={reminderEnabled === false || isSubmitting}
+                    disabled={!reminderEnabled || isSubmitting || subscriptionStatus === 'missing-key' || subscriptionStatus === 'unsupported'}
                   >
                     Erinnerung testen
                   </Button>
@@ -489,11 +504,12 @@ const ProfilePage: React.FC = () => {
                 <Typography variant="body2" color={permission === 'granted' ? 'success.main' : 'text.secondary'}>
                   {permissionMessage}
                 </Typography>
-                {permission === 'granted' && (
-                  <Typography variant="body2" color="success.main" sx={{ mt: 1 }}>
-                    🎉 Du wirst jetzt an deine Aktivpausen erinnert. Du kannst den Rhythmus jederzeit anpassen.
-                  </Typography>
-                )}
+                <Typography variant="body2" sx={{ mt: 1 }} color={isSubscribed ? 'success.main' : 'text.secondary'}>
+                  {subscriptionStatus === 'missing-key' && 'Push-Benachrichtigungen sind derzeit nicht konfiguriert. Bitte versuche es später erneut.'}
+                  {subscriptionStatus === 'unsupported' && 'Dieser Browser unterstützt keine Push-Benachrichtigungen.'}
+                  {subscriptionStatus === 'ready' && isSubscribed && '🎉 Push-Benachrichtigungen sind aktiv. Du erhältst Erinnerungen auch ohne geöffneten Tab.'}
+                  {subscriptionStatus === 'ready' && !isSubscribed && permission === 'granted' && 'Benachrichtigungen erlaubt. Klicke auf "Erinnerungen aktivieren", um Push-Benachrichtigungen zu starten.'}
+                </Typography>
                 {permissionRequested && permission === 'default' && (
                   <Typography variant="body2" color="warning.main" sx={{ mt: 1 }}>
                     Bitte bestätige das Browser-Popup, um Benachrichtigungen zu erlauben.
