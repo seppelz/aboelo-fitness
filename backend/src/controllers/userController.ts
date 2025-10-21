@@ -32,6 +32,7 @@ export const requestPasswordReset = async (req: Request, res: Response) => {
     const user = await User.findOne({ email: normalizedEmail });
 
     if (user) {
+      console.info('[requestPasswordReset] Benutzer gefunden, erstelle Reset-Token für:', user.email);
       const resetToken = crypto.randomBytes(32).toString('hex');
       const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
 
@@ -39,15 +40,28 @@ export const requestPasswordReset = async (req: Request, res: Response) => {
       user.passwordResetExpires = new Date(Date.now() + PASSWORD_RESET_EXPIRATION_MS);
 
       await user.save({ validateBeforeSave: false });
+      console.info('[requestPasswordReset] Reset-Token in Datenbank gespeichert');
 
       try {
+        console.info('[requestPasswordReset] Versuche E-Mail zu senden...');
         await sendPasswordResetEmail(user.email, resetToken);
-      } catch (emailError) {
+        console.info('[requestPasswordReset] E-Mail erfolgreich versendet');
+      } catch (emailError: any) {
+        console.error('[requestPasswordReset] ❌ FEHLER beim E-Mail-Versand');
+        console.error('[requestPasswordReset] Error type:', emailError?.constructor?.name);
+        console.error('[requestPasswordReset] Error message:', emailError?.message);
+        console.error('[requestPasswordReset] Error stack:', emailError?.stack);
+        
         user.passwordResetToken = undefined;
         user.passwordResetExpires = undefined;
         await user.save({ validateBeforeSave: false });
-        console.error('Fehler beim Senden der Passwort-Reset-E-Mail:', emailError);
+        console.error('[requestPasswordReset] Reset-Token aus Datenbank entfernt wegen E-Mail-Fehler');
+        
+        // Important: Don't reveal to user that email failed (security)
+        // But log it extensively for debugging
       }
+    } else {
+      console.info('[requestPasswordReset] Kein Benutzer mit dieser E-Mail gefunden:', normalizedEmail);
     }
 
     res.status(200).json({
