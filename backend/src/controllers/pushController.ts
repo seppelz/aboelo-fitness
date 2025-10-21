@@ -128,7 +128,7 @@ export const sendTestPush = async (req: Request, res: Response) => {
             {
               endpoint: subscription.endpoint,
               keys: subscription.keys,
-              expirationTime: subscription.expirationTime ?? undefined,
+              expirationTime: subscription.expirationTime ? subscription.expirationTime.getTime() : undefined,
             },
             {
               ...testNotificationPayload,
