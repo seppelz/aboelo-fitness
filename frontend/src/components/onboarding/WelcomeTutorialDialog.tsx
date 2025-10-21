@@ -27,7 +27,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { updateProfile } from '../../services/authService';
 import { useActivityReminder } from '../../hooks/useActivityReminder';
-import { useInstallPrompt } from '../../hooks/useInstallPrompt';
+import { useInstallPromptContext } from '../../contexts/InstallPromptContext';
 
 const WelcomeTutorialDialog: React.FC = () => {
   const { user, loading, updateUserLocally, refreshUser } = useContext(AuthContext);
@@ -53,7 +53,7 @@ const WelcomeTutorialDialog: React.FC = () => {
     intervalMinutes: reminderInterval,
   });
 
-  const { canInstall, promptInstall, isInstalled } = useInstallPrompt();
+  const { canInstall, promptInstall, isInstalled } = useInstallPromptContext();
 
   useEffect(() => {
     if (!user || loading) {

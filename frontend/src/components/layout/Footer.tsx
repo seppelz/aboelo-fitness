@@ -1,10 +1,28 @@
-import React from 'react';
-import { Box, Container, Typography, Link, useTheme } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Container, Typography, Link, useTheme, Button } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
+import InstallMobileIcon from '@mui/icons-material/InstallMobile';
+import { useInstallPromptContext } from '../../contexts/InstallPromptContext';
 
 const Footer: React.FC = () => {
   const theme = useTheme();
   const currentYear = new Date().getFullYear();
+  const { canInstall, promptInstall, isInstalled } = useInstallPromptContext();
+  const [installing, setInstalling] = useState(false);
+
+  const handleInstall = async () => {
+    if (!canInstall || installing) {
+      return;
+    }
+    setInstalling(true);
+    try {
+      await promptInstall();
+    } catch (error) {
+      console.error('[PWA] Footer install prompt failed', error);
+    } finally {
+      setInstalling(false);
+    }
+  };
 
   return (
     <Box 
@@ -21,7 +39,7 @@ const Footer: React.FC = () => {
         <Box
           sx={{
             display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
+            flexDirection: { xs: 'column', md: 'row' },
             justifyContent: 'space-between',
             alignItems: 'center',
             gap: 2
@@ -42,6 +60,19 @@ const Footer: React.FC = () => {
           >
             Fitness für Senioren
           </Typography>
+
+          {canInstall && !isInstalled && (
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleInstall}
+              startIcon={<InstallMobileIcon />}
+              disabled={installing}
+              sx={{ fontWeight: 600 }}
+            >
+              App installieren
+            </Button>
+          )}
 
           <Typography 
             variant="body2" 

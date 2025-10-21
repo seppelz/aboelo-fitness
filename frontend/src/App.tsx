@@ -6,6 +6,7 @@ import { createTheme } from '@mui/material/styles';
 // Contexts
 import { AuthProvider, AuthContext } from './contexts/AuthContext';
 import { ThemeProvider as CustomThemeProvider } from './contexts/ThemeContext';
+import { InstallPromptProvider } from './contexts/InstallPromptContext';
 
 // Layout Components
 import Layout from './components/layout/Layout';
@@ -170,8 +171,9 @@ function App() {
       <CssBaseline />
       <CustomThemeProvider>
         <AuthProvider>
-          <Router>
-            <Routes>
+          <InstallPromptProvider>
+            <Router>
+              <Routes>
               <Route path="/" element={<LandingRoute />} />
               <Route path="/willkommen" element={<WelcomePage />} />
 
@@ -215,9 +217,10 @@ function App() {
                 <Route path="settings" element={<ProfilePage />} />
               </Route>
 
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </Router>
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </Router>
+          </InstallPromptProvider>
         </AuthProvider>
       </CustomThemeProvider>
     </ThemeProvider>

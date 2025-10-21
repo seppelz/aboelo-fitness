@@ -20,8 +20,10 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import HelpIcon from '@mui/icons-material/Help';
+import InstallMobileIcon from '@mui/icons-material/InstallMobile';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
+import { useInstallPromptContext } from '../../contexts/InstallPromptContext';
 
 // Navigationslinks für eingeloggte Nutzer
 const baseNavItems = [
@@ -37,6 +39,7 @@ const Navigation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout, isAdmin } = useContext(AuthContext);
+  const { canInstall, promptInstall, isInstalled } = useInstallPromptContext();
 
   const appNavItems = React.useMemo(() => {
     if (!isAdmin) {
@@ -51,6 +54,7 @@ const Navigation = () => {
   
   const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+  const [installing, setInstalling] = useState(false);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -77,6 +81,21 @@ const Navigation = () => {
     logout();
     navigate('/login');
     handleCloseUserMenu();
+  };
+
+  const handleInstallClick = async () => {
+    if (!canInstall || installing) {
+      return;
+    }
+    setInstalling(true);
+    try {
+      await promptInstall();
+    } catch (error) {
+      console.error('[PWA] Install prompt failed', error);
+    } finally {
+      setInstalling(false);
+      handleCloseNavMenu();
+    }
   };
 
   return (
@@ -141,6 +160,20 @@ const Navigation = () => {
                   </Box>
                 </MenuItem>
               ))}
+              {canInstall && !isInstalled && (
+                <MenuItem 
+                  onClick={handleInstallClick}
+                  disabled={installing}
+                  sx={{ py: 1.5, minHeight: '60px' }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <InstallMobileIcon fontSize="large" />
+                    <Typography textAlign="center" sx={{ fontSize: '1.2rem' }}>
+                      App installieren
+                    </Typography>
+                  </Box>
+                </MenuItem>
+              )}
             </Menu>
           </Box>
 
@@ -197,6 +230,21 @@ const Navigation = () => {
               </Button>
             )}
           </Box>
+
+          {canInstall && !isInstalled && (
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 2 }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleInstallClick}
+                startIcon={<InstallMobileIcon />}
+                disabled={installing}
+                sx={{ fontWeight: 600 }}
+              >
+                App installieren
+              </Button>
+            </Box>
+          )}
 
           {/* Benutzermenü */}
           {user ? (
