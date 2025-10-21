@@ -272,63 +272,65 @@ const AdminDashboard: React.FC = () => {
               ) : users.length === 0 ? (
                 <Typography color="text.secondary">Keine Benutzer gefunden.</Typography>
               ) : (
-                <Box component="table" sx={{ width: '100%', borderCollapse: 'collapse' }}>
-                  <Box component="thead" sx={{ backgroundColor: 'grey.100' }}>
-                    <Box component="tr">
-                      <Box component="th" sx={{ textAlign: 'left', p: 1.5 }}>Name</Box>
-                      <Box component="th" sx={{ textAlign: 'left', p: 1.5 }}>E-Mail</Box>
-                      <Box component="th" sx={{ textAlign: 'left', p: 1.5 }}>Rolle</Box>
-                      <Box component="th" sx={{ textAlign: 'left', p: 1.5 }}>Level</Box>
-                      <Box component="th" sx={{ textAlign: 'left', p: 1.5 }}>Punkte</Box>
-                      <Box component="th" sx={{ textAlign: 'center', p: 1.5 }}>Aktionen</Box>
-                    </Box>
-                  </Box>
-                  <Box component="tbody">
-                    {users.map((userItem) => (
-                      <Box component="tr" key={userItem._id} sx={{ '&:nth-of-type(even)': { backgroundColor: 'grey.50' } }}>
-                        <Box component="td" sx={{ p: 1.5 }}>{userItem.name}</Box>
-                        <Box component="td" sx={{ p: 1.5 }}>{userItem.email}</Box>
-                        <Box component="td" sx={{ p: 1.5, textTransform: 'capitalize' }}>{userItem.role}</Box>
-                        <Box component="td" sx={{ p: 1.5 }}>{userItem.level}</Box>
-                        <Box component="td" sx={{ p: 1.5 }}>{userItem.points}</Box>
-                        <Box component="td" sx={{ p: 1.5 }}>
-                          <Stack direction="row" spacing={1} justifyContent="center" alignItems="center">
-                            <MuiTooltip title="Benutzer bearbeiten">
-                              <span>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  startIcon={<EditIcon />}
-                                  onClick={() => handleOpenEdit(userItem)}
-                                >
-                                  Bearbeiten
-                                </Button>
-                              </span>
-                            </MuiTooltip>
-                            <MuiTooltip title="Benutzer löschen">
-                              <span>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  color="error"
-                                  startIcon={
-                                    deletingUserId === userItem._id ? (
-                                      <CircularProgress size={18} color="inherit" />
-                                    ) : (
-                                      <DeleteIcon fontSize="small" />
-                                    )
-                                  }
-                                  onClick={() => handleDeleteUser(userItem)}
-                                  disabled={deletingUserId === userItem._id}
-                                >
-                                  Löschen
-                                </Button>
-                              </span>
-                            </MuiTooltip>
-                          </Stack>
-                        </Box>
+                <Box sx={{ width: '100%', maxHeight: 360, overflowX: 'auto', overflowY: 'auto' }}>
+                  <Box component="table" sx={{ width: '100%', minWidth: 720, borderCollapse: 'collapse' }}>
+                    <Box component="thead" sx={{ backgroundColor: 'grey.100' }}>
+                      <Box component="tr">
+                        <Box component="th" sx={{ textAlign: 'left', p: 1.5, minWidth: 160 }}>Name</Box>
+                        <Box component="th" sx={{ textAlign: 'left', p: 1.5, minWidth: 200 }}>E-Mail</Box>
+                        <Box component="th" sx={{ textAlign: 'left', p: 1.5, minWidth: 120 }}>Rolle</Box>
+                        <Box component="th" sx={{ textAlign: 'left', p: 1.5, minWidth: 80 }}>Level</Box>
+                        <Box component="th" sx={{ textAlign: 'left', p: 1.5, minWidth: 100 }}>Punkte</Box>
+                        <Box component="th" sx={{ textAlign: 'center', p: 1.5, minWidth: 180 }}>Aktionen</Box>
                       </Box>
-                    ))}
+                    </Box>
+                    <Box component="tbody">
+                      {users.map((userItem) => (
+                        <Box component="tr" key={userItem._id} sx={{ '&:nth-of-type(even)': { backgroundColor: 'grey.50' } }}>
+                          <Box component="td" sx={{ p: 1.5 }}>{userItem.name}</Box>
+                          <Box component="td" sx={{ p: 1.5 }}>{userItem.email}</Box>
+                          <Box component="td" sx={{ p: 1.5, textTransform: 'capitalize' }}>{userItem.role}</Box>
+                          <Box component="td" sx={{ p: 1.5 }}>{userItem.level}</Box>
+                          <Box component="td" sx={{ p: 1.5 }}>{userItem.points}</Box>
+                          <Box component="td" sx={{ p: 1.5, textAlign: 'center' }}>
+                            <Stack direction="row" spacing={1} justifyContent="center" alignItems="center">
+                              <MuiTooltip title="Benutzer bearbeiten">
+                                <span>
+                                  <Button
+                                    size="small"
+                                    variant="outlined"
+                                    startIcon={<EditIcon />}
+                                    onClick={() => handleOpenEdit(userItem)}
+                                  >
+                                    Bearbeiten
+                                  </Button>
+                                </span>
+                              </MuiTooltip>
+                              <MuiTooltip title="Benutzer löschen">
+                                <span>
+                                  <Button
+                                    size="small"
+                                    variant="outlined"
+                                    color="error"
+                                    startIcon={
+                                      deletingUserId === userItem._id ? (
+                                        <CircularProgress size={18} color="inherit" />
+                                      ) : (
+                                        <DeleteIcon fontSize="small" />
+                                      )
+                                    }
+                                    onClick={() => handleDeleteUser(userItem)}
+                                    disabled={deletingUserId === userItem._id}
+                                  >
+                                    Löschen
+                                  </Button>
+                                </span>
+                              </MuiTooltip>
+                            </Stack>
+                          </Box>
+                        </Box>
+                      ))}
+                    </Box>
                   </Box>
                 </Box>
               )}
