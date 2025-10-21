@@ -79,7 +79,7 @@ dotenv.config();
 // MongoDB-Verbindung herstellen
 const connectDB = async () => {
   try {
-    const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb+srv://sebastiansoecker:WSdj83HqSmKrv04B@cluster0.slnc9kk.mongodb.net/aboelo-fitness?retryWrites=true&w=majority';
+    const mongoUri = process.env.MONGODB_URI;
     console.log(`Verbindung zu MongoDB wird hergestellt...`);
     
     const conn = await mongoose.connect(mongoUri);

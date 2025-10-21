@@ -1,0 +1,15 @@
+name: reminder-job
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  trigger_reminder_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call reminder endpoint
+        run: |
+          curl --fail --silent --show-error -X POST "${{ secrets.RENDER_REMINDER_ENDPOINT }}" \
+            -H "X-Job-Token: ${{ secrets.RENDER_PUSH_JOB_TOKEN }}"

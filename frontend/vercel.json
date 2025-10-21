@@ -4,11 +4,5 @@
       "source": "/sw.js",
       "destination": "/service-worker.js"
     }
-  ],
-  "crons": [
-    {
-      "path": "/api/run-reminder-job",
-      "schedule": "*/15 * * * *"
-    }
   ]
 }
