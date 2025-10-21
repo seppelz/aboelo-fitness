@@ -99,7 +99,7 @@ const csrfProtection = csrf({
   },
 });
 
-app.use(csrfProtection);
+app.use(csrfProtection as any);
 
 // Issue CSRF token cookie for clients
 app.use((req: Request, res: Response, next: NextFunction) => {
