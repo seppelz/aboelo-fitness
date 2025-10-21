@@ -13,6 +13,7 @@ import {
   Container,
   LinearProgress,
   CardMedia,
+  Stack,
   useMediaQuery,
   useTheme
 } from '@mui/material';
@@ -36,6 +37,7 @@ import { getThumbnailUrl, preloadThumbnails } from '../components/exercises/exer
 import StreakDisplay from '../components/gamification/StreakDisplay';
 import MotivationalQuote from '../components/gamification/MotivationalQuote';
 import MorningMotivation from '../components/gamification/MorningMotivation';
+import { alpha } from '@mui/material/styles';
 
 // Dauer formatieren - show seconds if under 1 minute  
 const formatDuration = (seconds?: number): string => {
@@ -180,46 +182,91 @@ const HomePage: React.FC = () => {
       <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3, mb: 3 }}>
         {/* User Stats Overview */}
         <Box sx={{ flex: 1 }}>
-          <Card sx={{ height: '100%' }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Card
+            sx={{
+              height: '100%',
+              background: `linear-gradient(165deg, ${alpha('#0d1b1b', 0.82)} 0%, ${alpha('#133333', 0.94)} 100%)`,
+              border: `1px solid ${alpha('#3fa3a3', 0.4)}`,
+              boxShadow: '0 16px 32px rgba(5, 20, 20, 0.55)',
+              color: '#e6f7f7',
+              backdropFilter: 'blur(8px)'
+            }}
+          >
+            <CardContent sx={{ pb: 3 }}>
+              <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1, letterSpacing: 0.5 }}>
                 <EmojiEventsIcon color="primary" />
                 Deine Fortschritte
               </Typography>
               
               <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2 }}>
-                <Box sx={{ textAlign: 'center', p: 2, backgroundColor: 'primary.light', borderRadius: 2 }}>
-                  <Typography variant="h4" fontWeight="bold" color="primary.contrastText">
+                <Box
+                  sx={{
+                    textAlign: 'center',
+                    p: 2,
+                    borderRadius: 3,
+                    background: `linear-gradient(140deg, ${alpha('#2d7d7d', 0.75)} 0%, ${alpha('#3fa3a3', 0.45)} 100%)`,
+                    border: `1px solid ${alpha('#ffffff', 0.15)}`,
+                    boxShadow: '0 6px 16px rgba(21, 56, 56, 0.45)'
+                  }}
+                >
+                  <Typography variant="h4" fontWeight="bold" sx={{ color: '#f4ffff' }}>
                     {user?.points || 0}
                   </Typography>
-                  <Typography variant="caption" color="primary.contrastText">
+                  <Typography variant="caption" sx={{ color: alpha('#ffffff', 0.8), letterSpacing: 1 }}>
                     Punkte
                   </Typography>
                 </Box>
                 
-                <Box sx={{ textAlign: 'center', p: 2, backgroundColor: 'secondary.light', borderRadius: 2 }}>
-                  <Typography variant="h4" fontWeight="bold" color="secondary.contrastText">
+                <Box
+                  sx={{
+                    textAlign: 'center',
+                    p: 2,
+                    borderRadius: 3,
+                    background: `linear-gradient(140deg, ${alpha('#ff8a65', 0.65)} 0%, ${alpha('#f06292', 0.55)} 100%)`,
+                    border: `1px solid ${alpha('#ffffff', 0.18)}`,
+                    boxShadow: '0 6px 16px rgba(88, 26, 26, 0.38)'
+                  }}
+                >
+                  <Typography variant="h4" fontWeight="bold" sx={{ color: '#fff8f3' }}>
                     {user?.level || 1}
                   </Typography>
-                  <Typography variant="caption" color="secondary.contrastText">
+                  <Typography variant="caption" sx={{ color: alpha('#ffffff', 0.8), letterSpacing: 1 }}>
                     Level
                   </Typography>
                 </Box>
                 
-                <Box sx={{ textAlign: 'center', p: 2, backgroundColor: 'success.light', borderRadius: 2 }}>
-                  <Typography variant="h4" fontWeight="bold" color="success.contrastText">
+                <Box
+                  sx={{
+                    textAlign: 'center',
+                    p: 2,
+                    borderRadius: 3,
+                    background: `linear-gradient(140deg, ${alpha('#4caf50', 0.7)} 0%, ${alpha('#81c784', 0.48)} 100%)`,
+                    border: `1px solid ${alpha('#ffffff', 0.12)}`,
+                    boxShadow: '0 6px 16px rgba(26, 58, 34, 0.45)'
+                  }}
+                >
+                  <Typography variant="h4" fontWeight="bold" sx={{ color: '#f0fff3' }}>
                     {user?.completedExercises?.length || 0}
                   </Typography>
-                  <Typography variant="caption" color="success.contrastText">
+                  <Typography variant="caption" sx={{ color: alpha('#ffffff', 0.8), letterSpacing: 1 }}>
                     Übungen
                   </Typography>
                 </Box>
                 
-                <Box sx={{ textAlign: 'center', p: 2, backgroundColor: 'warning.light', borderRadius: 2 }}>
-                  <Typography variant="h4" fontWeight="bold" color="warning.contrastText">
+                <Box
+                  sx={{
+                    textAlign: 'center',
+                    p: 2,
+                    borderRadius: 3,
+                    background: `linear-gradient(140deg, ${alpha('#ffa726', 0.7)} 0%, ${alpha('#ffcc80', 0.48)} 100%)`,
+                    border: `1px solid ${alpha('#ffffff', 0.12)}`,
+                    boxShadow: '0 6px 16px rgba(79, 46, 4, 0.35)'
+                  }}
+                >
+                  <Typography variant="h4" fontWeight="bold" sx={{ color: '#fff5e6' }}>
                     {user?.achievements?.length || 0}
                   </Typography>
-                  <Typography variant="caption" color="warning.contrastText">
+                  <Typography variant="caption" sx={{ color: alpha('#ffffff', 0.8), letterSpacing: 1 }}>
                     Achievements
                   </Typography>
                 </Box>
@@ -345,51 +392,285 @@ const HomePage: React.FC = () => {
   );
 
   return (
-    <Container 
-      maxWidth="lg" 
-      sx={{ 
-        py: { xs: 2, sm: 4 },
-        px: { xs: 1, sm: 3 }
+    <Box
+      sx={{
+        minHeight: '100%',
+        background: `radial-gradient(120% 120% at 50% 0%, ${alpha(theme.palette.primary.main, 0.12)} 0%, transparent 55%), linear-gradient(180deg, ${alpha('#1f5f5f', 0.85)} 0%, ${alpha('#0f1f1f', 0.92)} 65%, ${alpha('#0a1414', 0.98)} 100%)`,
+        pt: { xs: 2, sm: 4 },
+        pb: { xs: 6, md: 10 },
       }}
     >
-      {/* Hero Section - Senior Optimized */}
-      <Paper
-        sx={{
-          background: 'linear-gradient(135deg, #2d7d7d 0%, #3fa3a3 100%)',
-          color: 'white',
-          p: { xs: 3, sm: 4 },
-          mb: { xs: 3, sm: 4 },
-          borderRadius: 3,
-          boxShadow: 3
+      <Container 
+        maxWidth="lg" 
+        sx={{ 
+          px: { xs: 1.5, sm: 3 },
+          display: 'flex',
+          flexDirection: 'column',
+          gap: { xs: 3, md: 4 }
         }}
       >
-        <Box sx={{ textAlign: 'center' }}>
-          <Typography 
-            variant={isMobile ? "h5" : "h4"} 
-            component="h1" 
-            sx={{ 
-              fontWeight: 'bold', 
-              mb: 2,
-              fontSize: { xs: '1.75rem', sm: '2.125rem' },
-              lineHeight: 1.3
+      {/* Hero Section - Gamified Experience */}
+      <Paper
+        sx={{
+          position: 'relative',
+          overflow: 'hidden',
+          color: 'white',
+          p: { xs: 3.5, sm: 5 },
+          borderRadius: 4,
+          background: 'linear-gradient(135deg, #1f5f5f 0%, #2d7d7d 55%, #3fa3a3 100%)',
+          boxShadow: '0 18px 40px rgba(15, 31, 31, 0.45)',
+          border: `1px solid ${alpha('#ffffff', 0.18)}`,
+        }}
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            pointerEvents: 'none',
+            background: 'radial-gradient(circle at 20% 20%, rgba(255,255,255,0.35) 0%, transparent 55%), radial-gradient(circle at 80% 10%, rgba(255,220,180,0.45) 0%, transparent 50%)'
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '-40%',
+            left: '-30%',
+            width: '80%',
+            height: '80%',
+            background: 'linear-gradient(120deg, rgba(255, 183, 77, 0.25) 0%, rgba(255, 138, 101, 0.45) 100%)',
+            transform: 'rotate(18deg)',
+            filter: 'blur(60px)',
+            pointerEvents: 'none',
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '-30%',
+            right: '-10%',
+            width: '55%',
+            height: '55%',
+            background: 'linear-gradient(120deg, rgba(63, 163, 163, 0.4) 0%, rgba(45, 125, 125, 0.7) 100%)',
+            transform: 'rotate(-14deg)',
+            filter: 'blur(50px)',
+            pointerEvents: 'none',
+          }}
+        />
+        {isAuthenticated && user && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: { xs: 20, sm: 24 },
+              right: { xs: 20, sm: 28 },
+              px: 2.5,
+              py: 1.2,
+              borderRadius: 999,
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.1) 100%)',
+              border: `1px solid ${alpha('#ffffff', 0.35)}`,
+              backdropFilter: 'blur(16px)',
+              boxShadow: '0 12px 24px rgba(0,0,0,0.22)',
+              textAlign: 'center',
             }}
           >
-            Willkommen bei aboelo-fitness
-          </Typography>
-          <Typography 
-            variant={isMobile ? "body1" : "h6"} 
-            sx={{ 
-              mb: 3, 
-              opacity: 0.95,
-              fontSize: { xs: '1.1rem', sm: '1.25rem' },
-              lineHeight: 1.4,
-              maxWidth: 500,
-              mx: 'auto'
-            }}
-          >
-            Ihr tägliches Fitness-Programm für mehr Beweglichkeit und Kraft
-          </Typography>
-        </Box>
+            <Typography sx={{ fontSize: '0.75rem', letterSpacing: 1.8, textTransform: 'uppercase', color: alpha('#ffffff', 0.75) }}>
+              Aktuelles Ziel
+            </Typography>
+            <Typography sx={{ fontSize: '1.05rem', fontWeight: 700, color: '#ffffff' }}>
+              {dailyProgress?.totalExercisesCompleted && dailyProgress.totalExercisesCompleted >= 3
+                ? 'Sprint: Bleib im Flow!'
+                : 'Warm-up: 3 Übungen abschließen'}
+            </Typography>
+          </Box>
+        )}
+        <Stack spacing={3.5} position="relative">
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} alignItems={{ xs: 'flex-start', sm: 'center' }}>
+            <Chip
+              icon={<StarIcon sx={{ color: '#ffd54f' }} />}
+              label="Tägliche Quest aktiv"
+              sx={{
+                bgcolor: alpha('#ffffff', 0.12),
+                color: 'white',
+                fontWeight: 600,
+                letterSpacing: 0.5,
+                px: 1.5,
+                py: 0.5,
+                borderRadius: 999,
+              }}
+            />
+            {isAuthenticated && user && (
+              <Chip
+                icon={<EmojiEventsIcon sx={{ color: '#ffab91' }} />}
+                label={`Level ${user.level} • ${user.points} Punkte`}
+                sx={{
+                  bgcolor: alpha('#ffffff', 0.12),
+                  color: 'white',
+                  fontWeight: 600,
+                  px: 1.5,
+                  py: 0.5,
+                  borderRadius: 999,
+                }}
+              />
+            )}
+          </Stack>
+
+          <Stack spacing={2}>
+            <Typography
+              variant={isMobile ? 'h4' : 'h3'}
+              component="h1"
+              sx={{
+                fontWeight: 800,
+                lineHeight: 1.15,
+                textTransform: 'uppercase',
+                letterSpacing: { xs: 1.5, sm: 2 },
+              }}
+            >
+              Willkommen zu deinem Trainingsabenteuer
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                maxWidth: 620,
+                lineHeight: 1.6,
+                color: alpha('#ffffff', 0.85),
+              }}
+            >
+              Sammle Punkte, meistere Quests und bleib mit motivierenden Aktivpausen in Bewegung. Jeder Tag bringt dich näher zu mehr Mobilität, Stabilität und Lebensfreude.
+            </Typography>
+          </Stack>
+
+          {isAuthenticated && user ? (
+            <Stack direction={{ xs: 'column', md: 'row' }} spacing={2.5} alignItems="stretch">
+              {[
+                {
+                  label: 'Aktiver Streak',
+                  value: `${user.dailyStreak} Tage`,
+                  icon: <TrendingUpIcon sx={{ fontSize: 36, color: '#fff8e1' }} />,
+                  description: 'Halte deinen Rhythmus für Bonus-Punkte',
+                },
+                {
+                  label: 'Freigeschaltete Erfolge',
+                  value: `${user.achievements?.length ?? 0}`,
+                  icon: <EmojiEventsIcon sx={{ fontSize: 36, color: '#ffe0b2' }} />,
+                  description: 'Neue Herausforderungen warten auf dich',
+                },
+                {
+                  label: 'Heute absolvierte Übungen',
+                  value: `${dailyProgress?.totalExercisesCompleted ?? 0}`,
+                  icon: <FitnessCenterIcon sx={{ fontSize: 36, color: '#b2ebf2' }} />,
+                  description: 'Sichere dir den Perfekten Tag mit 6 Muskelgruppen',
+                },
+              ].map((stat) => (
+                <Box
+                  key={stat.label}
+                  sx={{
+                    flex: 1,
+                    bgcolor: alpha('#0d1b1b', 0.35),
+                    border: `1px solid ${alpha('#ffffff', 0.18)}`,
+                    borderRadius: 3,
+                    px: 3,
+                    py: 2.5,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 2,
+                    boxShadow: '0 12px 28px rgba(8, 16, 16, 0.45)',
+                    backdropFilter: 'blur(12px)',
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 56,
+                      height: 56,
+                      borderRadius: '50%',
+                      bgcolor: alpha('#ffffff', 0.12),
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {stat.icon}
+                  </Box>
+                  <Box>
+                    <Typography sx={{ fontSize: '0.85rem', letterSpacing: 1.2, textTransform: 'uppercase', color: alpha('#ffffff', 0.65) }}>
+                      {stat.label}
+                    </Typography>
+                    <Typography sx={{ fontSize: '1.6rem', fontWeight: 800, color: 'white', lineHeight: 1.2 }}>
+                      {stat.value}
+                    </Typography>
+                    <Typography sx={{ fontSize: '0.9rem', color: alpha('#ffffff', 0.7) }}>
+                      {stat.description}
+                    </Typography>
+                  </Box>
+                </Box>
+              ))}
+            </Stack>
+          ) : (
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <Button
+                variant="contained"
+                size="large"
+                onClick={() => navigate('/register')}
+                sx={{
+                  background: 'linear-gradient(135deg, #ff8a65 0%, #ff7043 100%)',
+                  color: '#fff',
+                  fontWeight: 700,
+                  px: 4,
+                  py: 1.5,
+                  borderRadius: 3,
+                  boxShadow: '0 12px 24px rgba(255, 138, 101, 0.45)',
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #ff7043 0%, #ff5722 100%)',
+                    boxShadow: '0 14px 28px rgba(255, 112, 67, 0.45)',
+                  },
+                }}
+              >
+                Jetzt kostenlos starten
+              </Button>
+              <Button
+                variant="outlined"
+                size="large"
+                onClick={() => navigate('/login')}
+                sx={{
+                  borderColor: alpha('#ffffff', 0.45),
+                  color: '#fff',
+                  fontWeight: 600,
+                  px: 4,
+                  py: 1.5,
+                  borderWidth: 2,
+                  borderRadius: 3,
+                  '&:hover': {
+                    borderColor: '#fff',
+                    backgroundColor: alpha('#ffffff', 0.12),
+                  },
+                }}
+              >
+                Bereits Mitglied? Anmelden
+              </Button>
+            </Stack>
+          )}
+
+          {isAuthenticated && (
+            <Button
+              variant="contained"
+              color="secondary"
+              size="large"
+              onClick={() => navigate('/app/exercises')}
+              sx={{
+                alignSelf: { xs: 'stretch', sm: 'flex-start' },
+                fontWeight: 700,
+                px: { xs: 3, sm: 4 },
+                py: 1.4,
+                borderRadius: 3,
+                textTransform: 'none',
+                boxShadow: '0 12px 20px rgba(255, 138, 101, 0.35)',
+                '&:hover': {
+                  boxShadow: '0 16px 26px rgba(255, 138, 101, 0.4)',
+                },
+              }}
+            >
+              Training starten
+            </Button>
+          )}
+        </Stack>
       </Paper>
 
       {/* Morning Motivation */}
@@ -398,18 +679,27 @@ const HomePage: React.FC = () => {
       {/* Weekly Training Plan Guidance */}
       {isAuthenticated && dailyProgress && (
         <Paper
-          elevation={2}
+          elevation={0}
           sx={{
-            p: 3,
-            mb: 3,
-            borderRadius: 3,
-            border: '2px solid',
-            borderColor: 'primary.light',
-            background: 'linear-gradient(to right, #f8f9fa 0%, #ffffff 100%)'
+            position: 'relative',
+            overflow: 'hidden',
+            p: { xs: 3, md: 4 },
+            borderRadius: 4,
+            border: `1px solid ${alpha('#3fa3a3', 0.35)}`,
+            background: `linear-gradient(135deg, ${alpha('#123333', 0.92)} 0%, ${alpha('#1f5f5f', 0.88)} 70%, ${alpha('#224747', 0.95)} 100%)`,
+            boxShadow: '0 18px 32px rgba(9, 18, 18, 0.45)'
           }}
         >
-          <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', mb: 2 }}>
-            📅 Ihr Trainingsplan
+          <Box
+            sx={{
+              position: 'absolute',
+              inset: 0,
+              pointerEvents: 'none',
+              background: 'radial-gradient(circle at 15% 20%, rgba(63, 163, 163, 0.35) 0%, transparent 45%), radial-gradient(circle at 85% 15%, rgba(255, 138, 101, 0.3) 0%, transparent 55%)'
+            }}
+          />
+          <Typography variant="h5" gutterBottom sx={{ fontWeight: 700, color: '#e0f7f9', mb: 2, letterSpacing: 0.6 }}>
+            📅 Dein Trainingsplan
           </Typography>
           <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.6 }}>
             <strong>Basis-Training:</strong> Trainieren Sie jede Muskelgruppe mindestens einmal pro Tag. 
@@ -419,9 +709,9 @@ const HomePage: React.FC = () => {
             <strong>Fokus-Training:</strong> Danach können Sie zusätzliche Übungen für Ihre Lieblingsmuskelgruppen machen 
             und erhalten Bonus-Punkte!
           </Typography>
-          <Box sx={{ mt: 2, p: 2, bgcolor: 'success.light', borderRadius: 2, color: 'white' }}>
-            <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-              💡 Tipp: Trainieren Sie alle 6 Muskelgruppen für einen "Perfekten Tag" und erhalten Sie +50 Bonus-Punkte!
+          <Box sx={{ mt: 2, p: 2.5, borderRadius: 3, background: alpha('#4caf50', 0.16), border: `1px dashed ${alpha('#81c784', 0.6)}`, color: '#c8f8d2' }}>
+            <Typography variant="body1" sx={{ fontWeight: 700 }}>
+              💡 Tipp: Trainiere alle 6 Muskelgruppen für einen "Perfekten Tag" und kassiere +50 Bonus-Punkte!
             </Typography>
           </Box>
         </Paper>
@@ -853,7 +1143,8 @@ const HomePage: React.FC = () => {
         </Box>
       </Box>
     </Container>
-  );
+  </Box>
+);
 };
 
 export default HomePage;
