@@ -28,7 +28,6 @@ const ensureTransporter = () => {
     host,
     port,
     secure,
-    requireTLS: !secure,
     connectionTimeout: 15000,
     greetingTimeout: 15000,
     logger: true,
