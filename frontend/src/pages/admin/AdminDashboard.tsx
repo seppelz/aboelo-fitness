@@ -307,19 +307,22 @@ const AdminDashboard: React.FC = () => {
                             </MuiTooltip>
                             <MuiTooltip title="Benutzer löschen">
                               <span>
-                                <IconButton
+                                <Button
                                   size="small"
+                                  variant="outlined"
                                   color="error"
+                                  startIcon={
+                                    deletingUserId === userItem._id ? (
+                                      <CircularProgress size={18} color="inherit" />
+                                    ) : (
+                                      <DeleteIcon fontSize="small" />
+                                    )
+                                  }
                                   onClick={() => handleDeleteUser(userItem)}
                                   disabled={deletingUserId === userItem._id}
-                                  sx={{ width: 36, height: 36 }}
                                 >
-                                  {deletingUserId === userItem._id ? (
-                                    <CircularProgress size={18} color="inherit" />
-                                  ) : (
-                                    <DeleteIcon fontSize="small" />
-                                  )}
-                                </IconButton>
+                                  Löschen
+                                </Button>
                               </span>
                             </MuiTooltip>
                           </Stack>
