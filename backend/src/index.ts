@@ -101,7 +101,21 @@ const csrfProtection = csrf({
   },
 });
 
-app.use(csrfProtection as any);
+const csrfExcludedRoutes: { method: string; path: string }[] = [
+  { method: 'POST', path: '/api/push/run-reminder-job' },
+];
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const isExcluded = csrfExcludedRoutes.some(
+    (route) => route.method === req.method && route.path === req.path
+  );
+
+  if (isExcluded) {
+    return next();
+  }
+
+  return (csrfProtection as any)(req, res, next);
+});
 
 // Issue CSRF token cookie for clients
 app.use((req: Request, res: Response, next: NextFunction) => {
