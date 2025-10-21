@@ -94,4 +94,5 @@ export const pushConfig = {
   publicKey: getOptionalEnv('PUSH_VAPID_PUBLIC_KEY'),
   privateKey: getOptionalEnv('PUSH_VAPID_PRIVATE_KEY'),
   mailto: getOptionalEnv('PUSH_VAPID_MAILTO') || 'mailto:info@aboelo.de',
+  jobToken: getOptionalEnv('PUSH_JOB_TOKEN'),
 };

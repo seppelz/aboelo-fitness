@@ -45,6 +45,7 @@ export interface IUser extends Document {
   reminderSettings: {
     enabled: boolean;
     intervalMinutes: number;
+    lastSentAt?: Date;
   };
   passwordResetToken?: string;
   passwordResetExpires?: Date;
@@ -150,7 +151,8 @@ const userSchema = new mongoose.Schema(
     },
     reminderSettings: {
       enabled: { type: Boolean, default: true },
-      intervalMinutes: { type: Number, default: 60 }
+      intervalMinutes: { type: Number, default: 60 },
+      lastSentAt: { type: Date, default: null }
     },
     passwordResetToken: {
       type: String,

@@ -2,12 +2,54 @@ import { Request, Response } from 'express';
 import PushSubscription from '../models/PushSubscription';
 import { pushConfig } from '../config/env';
 import { sendNotification, testNotificationPayload } from '../services/pushService';
+import { runReminderJob } from '../services/reminderService';
 
 const ensurePushConfigured = () => {
   if (!pushConfig.publicKey || !pushConfig.privateKey) {
     return false;
   }
   return true;
+};
+
+const extractJobToken = (req: Request): string | undefined => {
+  const headerToken = typeof req.headers['x-job-token'] === 'string' ? req.headers['x-job-token'].trim() : undefined;
+
+  if (headerToken) {
+    return headerToken;
+  }
+
+  const authHeader = req.headers.authorization;
+  if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
+    return authHeader.substring('Bearer '.length).trim();
+  }
+
+  if (typeof req.query.jobToken === 'string') {
+    return req.query.jobToken.trim();
+  }
+
+  return undefined;
+};
+
+export const runReminderJobHandler = async (req: Request, res: Response) => {
+  if (!pushConfig.jobToken) {
+    return res.status(503).json({
+      success: false,
+      message: 'Reminder-Job ist nicht konfiguriert.',
+    });
+  }
+
+  const providedToken = extractJobToken(req);
+  if (!providedToken || providedToken !== pushConfig.jobToken) {
+    return res.status(401).json({ success: false, message: 'Nicht autorisiert.' });
+  }
+
+  try {
+    const result = await runReminderJob();
+    return res.status(200).json({ success: true, result });
+  } catch (error) {
+    console.error('[runReminderJobHandler] Reminder job failed', error);
+    return res.status(500).json({ success: false, message: 'Reminder-Job fehlgeschlagen.' });
+  }
 };
 
 const normalizeSubscription = (subscription: any) => {
