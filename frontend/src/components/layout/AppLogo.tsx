@@ -26,7 +26,7 @@ const AppLogo: React.FC<AppLogoProps> = ({ compact = false }) => {
           boxShadow: '0 6px 12px rgba(45, 125, 125, 0.25)',
         }}
       >
-        AF
+        A
       </Box>
       <Box>
         <Typography
@@ -52,7 +52,7 @@ const AppLogo: React.FC<AppLogoProps> = ({ compact = false }) => {
               fontSize,
             }}
           >
-            Aktivpausen &amp; Vitalität im Büroalltag
+            Aktivpausen &amp; Vitalität
           </Typography>
         )}
       </Box>
