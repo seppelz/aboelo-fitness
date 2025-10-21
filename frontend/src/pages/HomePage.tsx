@@ -395,7 +395,7 @@ const HomePage: React.FC = () => {
     <Box
       sx={{
         minHeight: '100%',
-        background: `radial-gradient(120% 120% at 50% 0%, ${alpha(theme.palette.primary.main, 0.12)} 0%, transparent 55%), linear-gradient(180deg, ${alpha('#1f5f5f', 0.85)} 0%, ${alpha('#0f1f1f', 0.92)} 65%, ${alpha('#0a1414', 0.98)} 100%)`,
+        background: `radial-gradient(120% 120% at 50% -10%, ${alpha('#3fa3a3', 0.25)} 0%, transparent 55%), linear-gradient(180deg, #1f5f5f 0%, #123333 70%, #0d1f1f 100%)`,
         pt: { xs: 2, sm: 4 },
         pb: { xs: 6, md: 10 },
       }}
@@ -414,12 +414,12 @@ const HomePage: React.FC = () => {
         sx={{
           position: 'relative',
           overflow: 'hidden',
-          color: 'white',
+          color: '#f4fcfc',
           p: { xs: 3.5, sm: 5 },
           borderRadius: 4,
-          background: 'linear-gradient(135deg, #1f5f5f 0%, #2d7d7d 55%, #3fa3a3 100%)',
-          boxShadow: '0 18px 40px rgba(15, 31, 31, 0.45)',
-          border: `1px solid ${alpha('#ffffff', 0.18)}`,
+          background: 'linear-gradient(135deg, #245f5f 0%, #2d7d7d 60%, #359494 100%)',
+          boxShadow: '0 18px 36px rgba(12, 30, 30, 0.45)',
+          border: `1px solid ${alpha('#ffffff', 0.14)}`,
         }}
       >
         <Box
@@ -433,26 +433,26 @@ const HomePage: React.FC = () => {
         <Box
           sx={{
             position: 'absolute',
-            top: '-40%',
-            left: '-30%',
-            width: '80%',
-            height: '80%',
-            background: 'linear-gradient(120deg, rgba(255, 183, 77, 0.25) 0%, rgba(255, 138, 101, 0.45) 100%)',
-            transform: 'rotate(18deg)',
-            filter: 'blur(60px)',
+            top: '-45%',
+            left: '-20%',
+            width: '70%',
+            height: '70%',
+            background: 'linear-gradient(120deg, rgba(63, 163, 163, 0.28) 0%, rgba(45, 125, 125, 0.35) 100%)',
+            transform: 'rotate(16deg)',
+            filter: 'blur(70px)',
             pointerEvents: 'none',
           }}
         />
         <Box
           sx={{
             position: 'absolute',
-            bottom: '-30%',
-            right: '-10%',
-            width: '55%',
-            height: '55%',
-            background: 'linear-gradient(120deg, rgba(63, 163, 163, 0.4) 0%, rgba(45, 125, 125, 0.7) 100%)',
-            transform: 'rotate(-14deg)',
-            filter: 'blur(50px)',
+            bottom: '-28%',
+            right: '-6%',
+            width: '48%',
+            height: '48%',
+            background: 'linear-gradient(135deg, rgba(47, 112, 112, 0.32) 0%, rgba(29, 77, 77, 0.55) 100%)',
+            transform: 'rotate(-12deg)',
+            filter: 'blur(60px)',
             pointerEvents: 'none',
           }}
         />
@@ -485,29 +485,31 @@ const HomePage: React.FC = () => {
         <Stack spacing={3.5} position="relative">
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} alignItems={{ xs: 'flex-start', sm: 'center' }}>
             <Chip
-              icon={<StarIcon sx={{ color: '#ffd54f' }} />}
+              icon={<StarIcon sx={{ color: '#ffc94d' }} />}
               label="Tägliche Quest aktiv"
               sx={{
-                bgcolor: alpha('#ffffff', 0.12),
-                color: 'white',
+                bgcolor: alpha('#123333', 0.35),
+                color: '#f8fbfb',
                 fontWeight: 600,
                 letterSpacing: 0.5,
                 px: 1.5,
                 py: 0.5,
                 borderRadius: 999,
+                border: `1px solid ${alpha('#ffffff', 0.18)}`,
               }}
             />
             {isAuthenticated && user && (
               <Chip
-                icon={<EmojiEventsIcon sx={{ color: '#ffab91' }} />}
+                icon={<EmojiEventsIcon sx={{ color: '#ffd1b3' }} />}
                 label={`Level ${user.level} • ${user.points} Punkte`}
                 sx={{
-                  bgcolor: alpha('#ffffff', 0.12),
-                  color: 'white',
+                  bgcolor: alpha('#123333', 0.35),
+                  color: '#f8fbfb',
                   fontWeight: 600,
                   px: 1.5,
                   py: 0.5,
                   borderRadius: 999,
+                  border: `1px solid ${alpha('#ffffff', 0.18)}`,
                 }}
               />
             )}
@@ -531,7 +533,7 @@ const HomePage: React.FC = () => {
               sx={{
                 maxWidth: 620,
                 lineHeight: 1.6,
-                color: alpha('#ffffff', 0.85),
+                color: alpha('#eef9f9', 0.9),
               }}
             >
               Sammle Punkte, meistere Quests und bleib mit motivierenden Aktivpausen in Bewegung. Jeder Tag bringt dich näher zu mehr Mobilität, Stabilität und Lebensfreude.
@@ -564,16 +566,16 @@ const HomePage: React.FC = () => {
                   key={stat.label}
                   sx={{
                     flex: 1,
-                    bgcolor: alpha('#0d1b1b', 0.35),
-                    border: `1px solid ${alpha('#ffffff', 0.18)}`,
+                    bgcolor: alpha('#0d1f1f', 0.55),
+                    border: `1px solid ${alpha('#3fa3a3', 0.35)}`,
                     borderRadius: 3,
                     px: 3,
                     py: 2.5,
                     display: 'flex',
                     alignItems: 'center',
                     gap: 2,
-                    boxShadow: '0 12px 28px rgba(8, 16, 16, 0.45)',
-                    backdropFilter: 'blur(12px)',
+                    boxShadow: '0 10px 24px rgba(8, 22, 22, 0.4)',
+                    backdropFilter: 'blur(10px)',
                   }}
                 >
                   <Box
@@ -581,7 +583,7 @@ const HomePage: React.FC = () => {
                       width: 56,
                       height: 56,
                       borderRadius: '50%',
-                      bgcolor: alpha('#ffffff', 0.12),
+                      bgcolor: alpha('#1f5f5f', 0.5),
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -590,13 +592,13 @@ const HomePage: React.FC = () => {
                     {stat.icon}
                   </Box>
                   <Box>
-                    <Typography sx={{ fontSize: '0.85rem', letterSpacing: 1.2, textTransform: 'uppercase', color: alpha('#ffffff', 0.65) }}>
+                    <Typography sx={{ fontSize: '0.85rem', letterSpacing: 1.2, textTransform: 'uppercase', color: alpha('#f2fbfb', 0.82) }}>
                       {stat.label}
                     </Typography>
-                    <Typography sx={{ fontSize: '1.6rem', fontWeight: 800, color: 'white', lineHeight: 1.2 }}>
+                    <Typography sx={{ fontSize: '1.6rem', fontWeight: 800, color: '#fdfefe', lineHeight: 1.2 }}>
                       {stat.value}
                     </Typography>
-                    <Typography sx={{ fontSize: '0.9rem', color: alpha('#ffffff', 0.7) }}>
+                    <Typography sx={{ fontSize: '0.9rem', color: alpha('#e6fefe', 0.76) }}>
                       {stat.description}
                     </Typography>
                   </Box>
@@ -705,7 +707,7 @@ const HomePage: React.FC = () => {
             <strong>Basis-Training:</strong> Trainieren Sie jede Muskelgruppe mindestens einmal pro Tag. 
             Das gibt Ihrem Körper eine ausgewogene Grundlage.
           </Typography>
-          <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.6 }}>
+          <Typography variant="body1" paragraph sx={{ fontSize: '1.1rem', lineHeight: 1.6, color: alpha('#f1fbfb', 0.88) }}>
             <strong>Fokus-Training:</strong> Danach können Sie zusätzliche Übungen für Ihre Lieblingsmuskelgruppen machen 
             und erhalten Bonus-Punkte!
           </Typography>
