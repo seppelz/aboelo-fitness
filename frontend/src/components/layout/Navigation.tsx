@@ -10,7 +10,8 @@ import {
   Container, 
   Button, 
   MenuItem,
-  useTheme
+  useTheme,
+  Divider,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
@@ -24,6 +25,7 @@ import InstallMobileIcon from '@mui/icons-material/InstallMobile';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useInstallPromptContext } from '../../contexts/InstallPromptContext';
+import AppLogo from './AppLogo';
 
 // Navigationslinks für eingeloggte Nutzer
 const baseNavItems = [
@@ -99,21 +101,18 @@ const Navigation = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ mb: 3 }}>
+    <AppBar
+      position="static"
+      sx={{
+        mb: 3,
+        background: 'linear-gradient(135deg, #1f5f5f 0%, #2d7d7d 40%, #3fa3a3 100%)',
+        boxShadow: '0 8px 18px rgba(31, 95, 95, 0.35)',
+      }}
+    >
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
-          {/* Logo für große Bildschirme */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ mr: 2, display: { xs: 'none', md: 'flex' }, fontSize: '1.5rem', fontWeight: 'bold' }}
-          >
-            aboelo-fitness
-          </Typography>
-
+        <Toolbar disableGutters sx={{ minHeight: { xs: 70, md: 88 } }}>
           {/* Mobile Navigation */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1 }}>
             <IconButton
               size="large"
               aria-label="Navigationsmenü"
@@ -124,87 +123,47 @@ const Navigation = () => {
             >
               <MenuIcon fontSize="large" />
             </IconButton>
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
-            >
-              {appNavItems.map((item) => (
-                <MenuItem 
-                  key={item.path} 
-                  onClick={() => handleNavigation(item.path)}
-                  selected={location.pathname === item.path}
-                  sx={{ 
-                    py: 1.5,
-                    minHeight: '60px'
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    {item.icon}
-                    <Typography textAlign="center" sx={{ fontSize: '1.2rem' }}>
-                      {item.name}
-                    </Typography>
-                  </Box>
-                </MenuItem>
-              ))}
-              {canInstall && !isInstalled && (
-                <MenuItem 
-                  onClick={handleInstallClick}
-                  disabled={installing}
-                  sx={{ py: 1.5, minHeight: '60px' }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <InstallMobileIcon fontSize="large" />
-                    <Typography textAlign="center" sx={{ fontSize: '1.2rem' }}>
-                      App installieren
-                    </Typography>
-                  </Box>
-                </MenuItem>
-              )}
-            </Menu>
+            <AppLogo compact />
           </Box>
 
-          {/* Logo für mobile Ansicht */}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' }, fontSize: '1.2rem', fontWeight: 'bold' }}
-          >
-            aboelo-fitness
-          </Typography>
+          {/* Logo für große Bildschirme */}
+          <Box sx={{ mr: 3, display: { xs: 'none', md: 'flex' } }}>
+            <AppLogo />
+          </Box>
 
           {/* Desktop Navigation */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', gap: 2 }}>
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: 'none', md: 'flex' },
+              justifyContent: 'center',
+              gap: 1.5,
+              px: 2,
+              py: 1,
+              borderRadius: 999,
+              backgroundColor: 'rgba(255,255,255,0.1)',
+              boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.15)',
+            }}
+          >
             {user ? appNavItems.map((item) => (
               <Button
                 key={item.path}
                 onClick={() => handleNavigation(item.path)}
                 sx={{ 
-                  my: 2, 
-                  color: 'white', 
-                  display: 'flex', 
+                  my: 0.5,
+                  color: 'white',
+                  display: 'flex',
                   flexDirection: 'column',
                   alignItems: 'center',
                   textTransform: 'none',
-                  fontSize: '1rem',
-                  padding: '10px 20px',
-                  backgroundColor: location.pathname === item.path ? 'rgba(255,255,255,0.2)' : 'transparent',
+                  fontSize: '0.95rem',
+                  px: 2.2,
+                  py: 1.2,
+                  borderRadius: 2,
+                  backgroundColor: location.pathname === item.path ? 'rgba(255,255,255,0.25)' : 'transparent',
                   '&:hover': {
-                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    backgroundColor: 'rgba(255,255,255,0.2)',
+                    boxShadow: '0 6px 14px rgba(31, 95, 95, 0.25)',
                   }
                 }}
               >
@@ -239,12 +198,21 @@ const Navigation = () => {
                 onClick={handleInstallClick}
                 startIcon={<InstallMobileIcon />}
                 disabled={installing}
-                sx={{ fontWeight: 600 }}
+                sx={{
+                  fontWeight: 700,
+                  borderRadius: 2,
+                  boxShadow: '0 6px 16px rgba(255, 138, 101, 0.35)',
+                  '&:hover': {
+                    boxShadow: '0 8px 18px rgba(255, 138, 101, 0.4)',
+                  },
+                }}
               >
                 App installieren
               </Button>
             </Box>
           )}
+
+          <Divider orientation="vertical" flexItem sx={{ mx: 2, bgcolor: 'rgba(255,255,255,0.2)', display: { xs: 'none', md: 'block' } }} />
 
           {/* Benutzermenü */}
           {user ? (
@@ -257,7 +225,14 @@ const Navigation = () => {
                   alignItems: 'center',
                   gap: 1,
                   textTransform: 'none',
-                  fontSize: '1rem'
+                  fontSize: '1rem',
+                  px: 2,
+                  py: 1.2,
+                  borderRadius: 2,
+                  backgroundColor: 'rgba(255,255,255,0.08)',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255,255,255,0.18)',
+                  },
                 }}
               >
                 <PersonIcon fontSize="large" />
