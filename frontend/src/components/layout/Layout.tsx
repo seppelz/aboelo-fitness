@@ -7,7 +7,11 @@ import WelcomeTutorialDialog from '../onboarding/WelcomeTutorialDialog';
 
 // Keine Props mehr nötig, da wir Outlet verwenden
 
-const Layout: React.FC = () => {
+interface LayoutProps {
+  disableContainer?: boolean;
+}
+
+const Layout: React.FC<LayoutProps> = ({ disableContainer }) => {
   return (
     <Box sx={{ 
       display: 'flex',
@@ -15,27 +19,33 @@ const Layout: React.FC = () => {
       bgcolor: '#f5f5f5'
     }}>
       <Navigation />
-      <Container 
-        component="main" 
-        maxWidth="lg" 
-        sx={{ 
-          flexGrow: 1,
-          py: 4,
-          display: 'flex',
-          flexDirection: 'column'
-        }}
-      >
-        <Paper 
-          elevation={2} 
+      {disableContainer ? (
+        <Box component="main" sx={{ flexGrow: 1 }}>
+          <Outlet />
+        </Box>
+      ) : (
+        <Container 
+          component="main" 
+          maxWidth="lg" 
           sx={{ 
-            p: 3,
-            borderRadius: 2,
-            flexGrow: 1
+            flexGrow: 1,
+            py: 4,
+            display: 'flex',
+            flexDirection: 'column'
           }}
         >
-          <Outlet />
-        </Paper>
-      </Container>
+          <Paper 
+            elevation={2} 
+            sx={{ 
+              p: 3,
+              borderRadius: 2,
+              flexGrow: 1
+            }}
+          >
+            <Outlet />
+          </Paper>
+        </Container>
+      )}
       <WelcomeTutorialDialog />
       <Footer />
     </Box>

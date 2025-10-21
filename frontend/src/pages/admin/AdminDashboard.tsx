@@ -254,7 +254,7 @@ const AdminDashboard: React.FC = () => {
       )}
 
       <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 7 }}>
+        <Grid size={{ xs: 12 }}>
           <Card>
             <CardContent>
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>
@@ -279,6 +279,7 @@ const AdminDashboard: React.FC = () => {
                         <Box component="th" sx={{ textAlign: 'left', p: 1.5, minWidth: 160 }}>Name</Box>
                         <Box component="th" sx={{ textAlign: 'left', p: 1.5, minWidth: 200 }}>E-Mail</Box>
                         <Box component="th" sx={{ textAlign: 'left', p: 1.5, minWidth: 120 }}>Rolle</Box>
+                        <Box component="th" sx={{ textAlign: 'left', p: 1.5, minWidth: 80 }}>Alter</Box>
                         <Box component="th" sx={{ textAlign: 'left', p: 1.5, minWidth: 80 }}>Level</Box>
                         <Box component="th" sx={{ textAlign: 'left', p: 1.5, minWidth: 100 }}>Punkte</Box>
                         <Box component="th" sx={{ textAlign: 'center', p: 1.5, minWidth: 180 }}>Aktionen</Box>
@@ -290,6 +291,7 @@ const AdminDashboard: React.FC = () => {
                           <Box component="td" sx={{ p: 1.5 }}>{userItem.name}</Box>
                           <Box component="td" sx={{ p: 1.5 }}>{userItem.email}</Box>
                           <Box component="td" sx={{ p: 1.5, textTransform: 'capitalize' }}>{userItem.role}</Box>
+                          <Box component="td" sx={{ p: 1.5 }}>{userItem.age ?? '—'}</Box>
                           <Box component="td" sx={{ p: 1.5 }}>{userItem.level}</Box>
                           <Box component="td" sx={{ p: 1.5 }}>{userItem.points}</Box>
                           <Box component="td" sx={{ p: 1.5, textAlign: 'center' }}>
@@ -338,7 +340,7 @@ const AdminDashboard: React.FC = () => {
           </Card>
         </Grid>
 
-        <Grid size={{ xs: 12, md: 5 }}>
+        <Grid size={{ xs: 12 }}>
           <Card sx={{ mb: 3 }}>
             <CardContent>
               <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 2 }}>

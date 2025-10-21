@@ -15,6 +15,7 @@ import SendIcon from '@mui/icons-material/Send';
 import EmailIcon from '@mui/icons-material/Email';
 import PersonIcon from '@mui/icons-material/Person';
 import MessageIcon from '@mui/icons-material/Message';
+import { submitContactForm } from '../services/contactService';
 
 const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -24,8 +25,8 @@ const ContactPage: React.FC = () => {
     message: ''
   });
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -38,28 +39,22 @@ const ContactPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setSuccess(false);
+    setErrorMessage('');
+    setSuccessMessage('');
 
     try {
-      // Create mailto link
-      const mailtoLink = `mailto:info@aboelo.de?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
-        `Name: ${formData.name}\nE-Mail: ${formData.email}\n\nNachricht:\n${formData.message}`
-      )}`;
-
-      // Open default email client
-      window.location.href = mailtoLink;
-
-      // Show success message
-      setSuccess(true);
+      const response = await submitContactForm(formData);
+      const message = response?.message || 'Vielen Dank! Ihre Nachricht wurde erfolgreich versendet.';
+      setSuccessMessage(message);
       setFormData({
         name: '',
         email: '',
         subject: '',
         message: ''
       });
-    } catch (err) {
-      setError('Es gab ein Problem beim Senden Ihrer Nachricht. Bitte versuchen Sie es erneut.');
+    } catch (err: any) {
+      const message = err?.response?.data?.message || 'Es gab ein Problem beim Senden Ihrer Nachricht. Bitte versuchen Sie es erneut.';
+      setErrorMessage(message);
     } finally {
       setLoading(false);
     }
@@ -98,16 +93,16 @@ const ContactPage: React.FC = () => {
         </Box>
 
         {/* Success Message */}
-        {success && (
-          <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSuccess(false)}>
-            Ihr E-Mail-Programm wurde geöffnet. Bitte senden Sie die Nachricht ab.
+        {successMessage && (
+          <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSuccessMessage('')}>
+            {successMessage}
           </Alert>
         )}
 
         {/* Error Message */}
-        {error && (
-          <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError('')}>
-            {error}
+        {errorMessage && (
+          <Alert severity="error" sx={{ mb: 3 }} onClose={() => setErrorMessage('')}>
+            {errorMessage}
           </Alert>
         )}
 
@@ -223,9 +218,7 @@ const ContactPage: React.FC = () => {
             Hinweis
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            Durch Klicken auf "Nachricht senden" wird Ihr Standard-E-Mail-Programm geöffnet. 
-            Ihre Nachricht wird an <strong>info@aboelo.de</strong> gesendet. Bitte stellen Sie sicher, 
-            dass Ihr E-Mail-Programm korrekt konfiguriert ist.
+            Wir senden Ihre Nachricht direkt an das aboelo-fitness Team. Sie erhalten eine Bestätigung auf dieser Seite, sobald alles erfolgreich war.
           </Typography>
         </Box>
       </Paper>

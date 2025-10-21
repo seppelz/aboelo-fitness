@@ -179,11 +179,13 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/forgot-password" element={<ForgotPasswordPage />} />
               <Route path="/reset-password" element={<ResetPasswordPage />} />
-              <Route path="/help" element={<HelpPage />} />
-              <Route path="/datenschutz" element={<DatenschutzPage />} />
-              <Route path="/impressum" element={<ImpressumPage />} />
-              <Route path="/kontakt" element={<ContactPage />} />
-              <Route path="/barrierefreiheit" element={<AccessibilityPage />} />
+              <Route element={<Layout disableContainer />}>
+                <Route path="/help" element={<HelpPage />} />
+                <Route path="/datenschutz" element={<DatenschutzPage />} />
+                <Route path="/impressum" element={<ImpressumPage />} />
+                <Route path="/kontakt" element={<ContactPage />} />
+                <Route path="/barrierefreiheit" element={<AccessibilityPage />} />
+              </Route>
 
               <Route
                 path="/app"

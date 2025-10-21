@@ -17,6 +17,7 @@ import {
   SelectChangeEvent,
   Container,
   Paper,
+  Stack,
   useMediaQuery,
   useTheme
 } from '@mui/material';
@@ -166,11 +167,11 @@ const ExerciseList: React.FC = () => {
     if (isDynamic !== 'all') {
       result = result.filter(exercise => (exercise as any).isDynamic === isDynamic);
     }
-    
+
     if (isUnilateral !== 'all') {
       result = result.filter(exercise => (exercise as any).isUnilateral === isUnilateral);
     }
-    
+
     // Kompatibilitätsfilter für ältere Komponenten
     if (type !== 'all') {
       // Wenn type gesetzt ist, Mapping zur neuen isSitting-Eigenschaft
@@ -185,7 +186,7 @@ const ExerciseList: React.FC = () => {
     }
     
     setFilteredExercises(result);
-  }, [exercises, muscleGroup, category, isSitting, usesTheraband, isDynamic, isUnilateral, type, equipment, user]);
+  }, [exercises, muscleGroup, category, isSitting, usesTheraband, isDynamic, type, equipment, user]);
   
 
   // Laden oder Fehler anzeigen - Senior-friendly mit Beschreibung
@@ -289,11 +290,11 @@ const ExerciseList: React.FC = () => {
             color: 'text.secondary'
           }}
         >
-          Wähle aus <strong>{exercises.length} Übungen</strong> für verschiedene Muskelgruppen. 
-          Nutze die Filter, um die passenden Übungen zu finden.
+          {`Wähle aus ${exercises.length} Übungen für verschiedene Muskelgruppen.`}
+          {' Nutze die Filter, um die passenden Übungen zu finden.'}
         </Typography>
       </Box>
-      
+
       {/* Filter-Menü - Senior-friendly Design */}
       <Paper 
         elevation={2}
@@ -304,183 +305,192 @@ const ExerciseList: React.FC = () => {
           bgcolor: 'background.paper'
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
-          <FilterListIcon color="primary" sx={{ fontSize: '1.75rem' }} />
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              fontWeight: 'bold',
-              fontSize: { xs: '1.15rem', sm: '1.25rem' }
-            }}
-          >
-            Filter anwenden
-          </Typography>
-        </Box>
-        
-        <Grid container spacing={2}>
-          {/* Muskelgruppen-Filter */}
-          <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6', md: 'span 3' } }}>
-            <FormControl fullWidth size="medium" sx={{ mb: 2 }}>
-              <InputLabel id="muscle-group-label">Muskelgruppe</InputLabel>
-              <Select
-                labelId="muscle-group-label"
-                id="muscle-group"
-                value={muscleGroup}
-                label="Muskelgruppe"
-                onChange={(e: SelectChangeEvent<string>) => setMuscleGroup(e.target.value as MuscleGroup | 'all')}
-              >
-                <MenuItem value="all">Alle Muskelgruppen</MenuItem>
-                <MenuItem value="Bauch">Bauch</MenuItem>
-                <MenuItem value="Po">Po</MenuItem>
-                <MenuItem value="Schulter">Schulter</MenuItem>
-                
-                <MenuItem value="Brust">Brust</MenuItem>
-                <MenuItem value="Nacken">Nacken</MenuItem>
-                <MenuItem value="Rücken">Rücken</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          
-          {/* Kategorie-Filter */}
-          <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6', md: 'span 3' } }}>
-            <FormControl fullWidth size="medium" sx={{ mb: 2 }}>
-              <InputLabel id="category-label">Kategorie</InputLabel>
-              <Select
-                labelId="category-label"
-                id="category"
-                value={category}
-                label="Kategorie"
-                onChange={(e: SelectChangeEvent<string>) => setCategory(e.target.value as ExerciseCategory | 'all')}
-              >
-                <MenuItem value="all">Alle Kategorien</MenuItem>
-                <MenuItem value="Mobilisation">Mobilisierend</MenuItem>
-                <MenuItem value="Kraft">Kräftigend</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-        
-        {/* Advanced Filters Section */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 4, mb: 2 }}>
-          <TuneIcon color="action" sx={{ fontSize: '1.5rem' }} />
-          <Typography 
-            variant="subtitle1" 
-            sx={{ 
-              fontWeight: 600,
-              fontSize: { xs: '1.05rem', sm: '1.1rem' }
-            }}
-          >
-            Erweiterte Filter
-          </Typography>
-        </Box>
-        
-        <Grid container spacing={2}>
-          {/* Position (sitzend/stehend) */}
-          <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6', md: 'span 4' } }}>
-            <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
-              <InputLabel>Position</InputLabel>
-              <Select
-                value={getBooleanFilterValue(isSitting, 'sitzend', 'stehend')}
-                onChange={(e: SelectChangeEvent<string>) => {
-                  handleBooleanFilterChange(
-                    e.target.value,
-                    'sitzend',
-                    'stehend',
-                    setIsSitting
-                  );
-                  // Kompatibilität mit älterem type-Feld
-                  if (e.target.value === 'sitzend') {
-                    setType('sitting' as ExerciseType);
-                  } else if (e.target.value === 'stehend') {
-                    setType('standing' as ExerciseType);
-                  } else {
-                    setType('all');
-                  }
+        <Stack
+          direction={{ xs: 'column', lg: 'row' }}
+          spacing={{ xs: 3, lg: 4 }}
+          alignItems={{ xs: 'stretch', lg: 'flex-start' }}
+        >
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+              <FilterListIcon color="primary" sx={{ fontSize: '1.75rem' }} />
+              <Typography 
+                variant="h6" 
+                sx={{ 
+                  fontWeight: 'bold',
+                  fontSize: { xs: '1.15rem', sm: '1.25rem' }
                 }}
-                label="Position"
               >
-                <MenuItem value="all">Alle</MenuItem>
-                <MenuItem value="sitzend">Sitzend</MenuItem>
-                <MenuItem value="stehend">Stehend</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          
-          {/* Theraband */}
-          <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6', md: 'span 4' } }}>
-            <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
-              <InputLabel>Theraband</InputLabel>
-              <Select
-                value={getBooleanFilterValue(usesTheraband, 'mit', 'ohne')}
-                onChange={(e: SelectChangeEvent<string>) => {
-                  handleBooleanFilterChange(
-                    e.target.value,
-                    'mit',
-                    'ohne',
-                    setUsesTheraband
-                  );
-                  // Kompatibilität mit älterem equipment-Feld
-                  if (e.target.value === 'mit') {
-                    setEquipment('Theraband' as Equipment);
-                  } else {
-                    setEquipment('all');
-                  }
+                Filter anwenden
+              </Typography>
+            </Box>
+            
+            <Grid container spacing={2}>
+              {/* Muskelgruppen-Filter */}
+              <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6', md: 'span 6' } }}>
+                <FormControl fullWidth size="medium" sx={{ mb: 2 }}>
+                  <InputLabel id="muscle-group-label">Muskelgruppe</InputLabel>
+                  <Select
+                    labelId="muscle-group-label"
+                    id="muscle-group"
+                    value={muscleGroup}
+                    label="Muskelgruppe"
+                    onChange={(e: SelectChangeEvent<string>) => setMuscleGroup(e.target.value as MuscleGroup | 'all')}
+                  >
+                    <MenuItem value="all">Alle Muskelgruppen</MenuItem>
+                    <MenuItem value="Bauch">Bauch</MenuItem>
+                    <MenuItem value="Po">Po</MenuItem>
+                    <MenuItem value="Schulter">Schulter</MenuItem>
+                    
+                    <MenuItem value="Brust">Brust</MenuItem>
+                    <MenuItem value="Nacken">Nacken</MenuItem>
+                    <MenuItem value="Rücken">Rücken</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              
+              {/* Kategorie-Filter */}
+              <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6', md: 'span 6' } }}>
+                <FormControl fullWidth size="medium" sx={{ mb: 2 }}>
+                  <InputLabel id="category-label">Kategorie</InputLabel>
+                  <Select
+                    labelId="category-label"
+                    id="category"
+                    value={category}
+                    label="Kategorie"
+                    onChange={(e: SelectChangeEvent<string>) => setCategory(e.target.value as ExerciseCategory | 'all')}
+                  >
+                    <MenuItem value="all">Alle Kategorien</MenuItem>
+                    <MenuItem value="Mobilisation">Mobilisierend</MenuItem>
+                    <MenuItem value="Kraft">Kräftigend</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </Box>
+
+          <Box sx={{ flex: 1, minWidth: 0 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+              <TuneIcon color="action" sx={{ fontSize: '1.5rem' }} />
+              <Typography 
+                variant="subtitle1" 
+                sx={{ 
+                  fontWeight: 600,
+                  fontSize: { xs: '1.05rem', sm: '1.1rem' }
                 }}
-                label="Theraband"
               >
-                <MenuItem value="all">Alle</MenuItem>
-                <MenuItem value="mit">Mit Theraband</MenuItem>
-                <MenuItem value="ohne">Ohne Theraband</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          
-          {/* Bewegungstyp (dynamisch/statisch) */}
-          <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6', md: 'span 4' } }}>
-            <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
-              <InputLabel>Bewegungstyp</InputLabel>
-              <Select
-                value={getBooleanFilterValue(isDynamic, 'dynamisch', 'statisch')}
-                onChange={(e: SelectChangeEvent<string>) => {
-                  handleBooleanFilterChange(
-                    e.target.value,
-                    'dynamisch',
-                    'statisch',
-                    setIsDynamic
-                  );
-                }}
-                label="Bewegungstyp"
-              >
-                <MenuItem value="all">Alle</MenuItem>
-                <MenuItem value="dynamisch">Dynamisch</MenuItem>
-                <MenuItem value="statisch">Statisch</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          
-          {/* Ausführung (einseitig/beidseitig) */}
-          <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6', md: 'span 4' } }}>
-            <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
-              <InputLabel>Ausführung</InputLabel>
-              <Select
-                value={getBooleanFilterValue(isUnilateral, 'einseitig', 'beidseitig')}
-                onChange={(e: SelectChangeEvent<string>) => {
-                  handleBooleanFilterChange(
-                    e.target.value,
-                    'einseitig',
-                    'beidseitig',
-                    setIsUnilateral
-                  );
-                }}
-                label="Ausführung"
-              >
-                <MenuItem value="all">Alle</MenuItem>
-                <MenuItem value="einseitig">Einseitig</MenuItem>
-                <MenuItem value="beidseitig">Beidseitig</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
+                Erweiterte Filter
+              </Typography>
+            </Box>
+
+            <Grid container spacing={2}>
+              {/* Position (sitzend/stehend) */}
+              <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
+                <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+                  <InputLabel>Position</InputLabel>
+                  <Select
+                    value={getBooleanFilterValue(isSitting, 'sitzend', 'stehend')}
+                    onChange={(e: SelectChangeEvent<string>) => {
+                      handleBooleanFilterChange(
+                        e.target.value,
+                        'sitzend',
+                        'stehend',
+                        setIsSitting
+                      );
+                      // Kompatibilität mit älterem type-Feld
+                      if (e.target.value === 'sitzend') {
+                        setType('sitting' as ExerciseType);
+                      } else if (e.target.value === 'stehend') {
+                        setType('standing' as ExerciseType);
+                      } else {
+                        setType('all');
+                      }
+                    }}
+                    label="Position"
+                  >
+                    <MenuItem value="all">Alle</MenuItem>
+                    <MenuItem value="sitzend">Sitzend</MenuItem>
+                    <MenuItem value="stehend">Stehend</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              
+              {/* Theraband */}
+              <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
+                <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+                  <InputLabel>Theraband</InputLabel>
+                  <Select
+                    value={getBooleanFilterValue(usesTheraband, 'mit', 'ohne')}
+                    onChange={(e: SelectChangeEvent<string>) => {
+                      handleBooleanFilterChange(
+                        e.target.value,
+                        'mit',
+                        'ohne',
+                        setUsesTheraband
+                      );
+                      // Kompatibilität mit älterem equipment-Feld
+                      if (e.target.value === 'mit') {
+                        setEquipment('Theraband' as Equipment);
+                      } else {
+                        setEquipment('all');
+                      }
+                    }}
+                    label="Theraband"
+                  >
+                    <MenuItem value="all">Alle</MenuItem>
+                    <MenuItem value="mit">Mit Theraband</MenuItem>
+                    <MenuItem value="ohne">Ohne Theraband</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              
+              {/* Bewegungstyp (dynamisch/statisch) */}
+              <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
+                <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+                  <InputLabel>Bewegungstyp</InputLabel>
+                  <Select
+                    value={getBooleanFilterValue(isDynamic, 'dynamisch', 'statisch')}
+                    onChange={(e: SelectChangeEvent<string>) => {
+                      handleBooleanFilterChange(
+                        e.target.value,
+                        'dynamisch',
+                        'statisch',
+                        setIsDynamic
+                      );
+                    }}
+                    label="Bewegungstyp"
+                  >
+                    <MenuItem value="all">Alle</MenuItem>
+                    <MenuItem value="dynamisch">Dynamisch</MenuItem>
+                    <MenuItem value="statisch">Statisch</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              
+              {/* Ausführung (einseitig/beidseitig) */}
+              <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
+                <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+                  <InputLabel>Ausführung</InputLabel>
+                  <Select
+                    value={getBooleanFilterValue(isUnilateral, 'einseitig', 'beidseitig')}
+                    onChange={(e: SelectChangeEvent<string>) => {
+                      handleBooleanFilterChange(
+                        e.target.value,
+                        'einseitig',
+                        'beidseitig',
+                        setIsUnilateral
+                      );
+                    }}
+                    label="Ausführung"
+                  >
+                    <MenuItem value="all">Alle</MenuItem>
+                    <MenuItem value="einseitig">Einseitig</MenuItem>
+                    <MenuItem value="beidseitig">Beidseitig</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
+          </Box>
+        </Stack>
         
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
           <Button 

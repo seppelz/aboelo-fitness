@@ -123,3 +123,69 @@ export const sendPasswordResetEmail = async (recipientEmail: string, token: stri
     throw error;
   }
 };
+
+interface ContactEmailPayload {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+}
+
+export const sendContactEmail = async ({ name, email, subject, message }: ContactEmailPayload) => {
+  const transporter = getTransporter();
+  if (!transporter) {
+    console.error('[emailService] Kein Transporter verfügbar, Kontaktanfrage wird nicht versendet.');
+    throw new Error('EMAIL_TRANSPORTER_NOT_INITIALISED');
+  }
+
+  const recipient = process.env.CONTACT_FORM_TO?.trim() || emailConfig.from || emailConfig.user;
+  const sanitizedRecipient = recipient && recipient.trim().length > 0 ? recipient : 'info@aboelo.de';
+  const trimmedSubject = subject?.trim() ?? '';
+  const finalSubject = trimmedSubject.length > 0 ? trimmedSubject : 'Kontaktformular-Anfrage';
+  const textBody = `Kontaktformular-Eingang\n\nName: ${name}\nE-Mail: ${email}\n\nBetreff: ${finalSubject}\n\nNachricht:\n${message}`;
+  const htmlBody = `<p><strong>Kontaktformular-Eingang</strong></p>
+<p><strong>Name:</strong> ${name}<br/>
+<strong>E-Mail:</strong> ${email}</p>
+<p><strong>Betreff:</strong> ${finalSubject}</p>
+<p>${message.replace(/\n/g, '<br/>')}</p>`;
+
+  try {
+    console.info('[emailService] Sende Kontaktformular-E-Mail...', {
+      to: sanitizedRecipient,
+      replyTo: email,
+      subject: finalSubject,
+    });
+
+    const verifyStart = Date.now();
+    await transporter.verify();
+    console.info('[emailService] SMTP-Verifizierung für Kontaktformular erfolgreich', {
+      durationMs: Date.now() - verifyStart,
+    });
+
+    const result = await transporter.sendMail({
+      from: emailConfig.from,
+      to: sanitizedRecipient,
+      subject: `Kontaktformular | ${finalSubject}`,
+      replyTo: email,
+      text: textBody,
+      html: htmlBody,
+    });
+
+    console.info('[emailService] Kontaktformular-E-Mail erfolgreich versendet.', {
+      messageId: result.messageId,
+      accepted: result.accepted,
+      rejected: result.rejected,
+      response: result.response,
+    });
+
+    return result;
+  } catch (error: any) {
+    console.error('[emailService] Versand der Kontaktformular-E-Mail fehlgeschlagen.');
+    console.error('[emailService] Error name:', error?.name);
+    console.error('[emailService] Error message:', error?.message);
+    console.error('[emailService] Error code:', error?.code);
+    console.error('[emailService] Error command:', error?.command);
+    console.error('[emailService] Full error:', error);
+    throw error;
+  }
+};

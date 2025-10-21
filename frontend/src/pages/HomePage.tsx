@@ -471,7 +471,7 @@ const HomePage: React.FC = () => {
                   
                   <Button 
                     variant="outlined" 
-                    onClick={() => navigate('/profile')}
+                    onClick={() => navigate('/app/profile')}
                     sx={{ 
                       mt: 2, 
                       fontSize: { xs: '1.2rem', sm: '1.1rem' },

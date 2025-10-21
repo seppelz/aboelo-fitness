@@ -461,18 +461,21 @@ export const getMonthlyProgress = async (req: Request, res: Response) => {
       const dayProgress = progress.filter(
         p => p.date >= dayStart && p.date < dayEnd
       );
+
+      const completedDayProgress = dayProgress.filter(p => p.completed);
+      const completedDayProgressWithExercise = completedDayProgress.filter(p => p.exercise);
       
       // Trainierte Muskelgruppen an diesem Tag
       const muscleGroups = new Set(
-        dayProgress
-          .filter(p => p.completed)
+        completedDayProgressWithExercise
           .map(p => (p.exercise as any).muscleGroup)
+          .filter(Boolean)
       );
       
       return {
         date: date.toISOString().split('T')[0],
-        exercisesCompleted: dayProgress.filter(p => p.completed).length,
-        pointsEarned: dayProgress.reduce((sum, p) => sum + p.pointsEarned, 0),
+        exercisesCompleted: completedDayProgressWithExercise.length,
+        pointsEarned: dayProgress.reduce((sum, p) => sum + (p.pointsEarned || 0), 0),
         muscleGroupsTrained: Array.from(muscleGroups)
       };
     });
