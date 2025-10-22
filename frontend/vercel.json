@@ -4,5 +4,16 @@
       "source": "/sw.js",
       "destination": "/service-worker.js"
     }
+  ],
+  "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
   ]
 }
