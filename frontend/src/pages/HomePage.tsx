@@ -147,6 +147,25 @@ const HomePage: React.FC = () => {
     fetchData();
   }, [isAuthenticated]);
   
+  // Helper function to calculate current streak based on last activity
+  const calculateCurrentStreak = (user: any): { currentStreak: number; streakBroken: boolean } => {
+    if (!user.lastActivityDate || user.dailyStreak === 0) {
+      return { currentStreak: 0, streakBroken: false };
+    }
+
+    const today = new Date();
+    const lastActivity = new Date(user.lastActivityDate);
+    const daysSinceLastActivity = Math.floor((today.getTime() - lastActivity.getTime()) / (24 * 60 * 60 * 1000));
+
+    // Streak is valid if last activity was today (0 days) or yesterday (1 day)
+    if (daysSinceLastActivity <= 1) {
+      return { currentStreak: user.dailyStreak, streakBroken: false };
+    }
+
+    // Streak is broken if more than 1 day has passed
+    return { currentStreak: 0, streakBroken: daysSinceLastActivity > 1 && user.dailyStreak > 0 };
+  };
+
   // Helper function to get display name for muscle groups
   const getMuscleGroupDisplayName = (muscleGroup: MuscleGroup): string => {
     if (muscleGroup === 'Schulter') return 'Schulter/Arme';
@@ -230,18 +249,23 @@ const HomePage: React.FC = () => {
         
         {/* Streak Display */}
         <Box sx={{ flex: 1 }}>
-          {user?.dailyStreak !== undefined && (
-            <StreakDisplay 
-              streakInfo={{
-                currentStreak: user.dailyStreak,
-                longestStreak: user.longestStreak || user.dailyStreak,
-                message: user.dailyStreak > 0 ? 
-                  `Fantastisch! Sie trainieren seit ${user.dailyStreak} Tagen kontinuierlich!` :
-                  "Starten Sie heute Ihren Streak! Jeder Tag zählt.",
-                streakBroken: false
-              }}
-            />
-          )}
+          {user?.dailyStreak !== undefined && (() => {
+            const { currentStreak, streakBroken } = calculateCurrentStreak(user);
+            return (
+              <StreakDisplay 
+                streakInfo={{
+                  currentStreak: currentStreak,
+                  longestStreak: user.longestStreak || user.dailyStreak,
+                  message: currentStreak > 0 ? 
+                    `Fantastisch! Sie trainieren seit ${currentStreak} ${currentStreak === 1 ? 'Tag' : 'Tagen'} kontinuierlich!` :
+                    streakBroken ?
+                      "Ihr Streak wurde unterbrochen. Starten Sie heute neu! 💪" :
+                      "Starten Sie heute Ihren Streak! Jeder Tag zählt.",
+                  streakBroken: streakBroken
+                }}
+              />
+            );
+          })()}
         </Box>
       </Box>
       

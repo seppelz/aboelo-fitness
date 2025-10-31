@@ -53,7 +53,7 @@ const achievementSchema = new mongoose.Schema(
     requirements: {
       type: {
         type: String,
-        enum: ['first_exercise', 'exercises_count', 'streak_days', 'points_total', 'muscle_groups', 'weekly_goal', 'perfect_week', 'daily_muscle_groups', 'muscle_specialist', 'consistency_muscle_groups', 'perfect_days'],
+        enum: ['first_exercise', 'exercises_count', 'streak_days', 'points_total', 'muscle_groups', 'weekly_goal', 'perfect_week', 'daily_muscle_groups', 'muscle_specialist', 'consistency_muscle_groups', 'perfect_days', 'monthly_balance'],
         required: true,
       },
       value: {
@@ -136,6 +136,15 @@ export const ACHIEVEMENTS = [
     rarity: 'rare',
   },
   {
+    id: 'streak_14',
+    title: 'Wochenkrieger',
+    description: '14 Tage in Folge trainiert',
+    icon: '⚔️',
+    category: 'streak',
+    requirements: { type: 'streak_days', value: 14 },
+    rarity: 'epic',
+  },
+  {
     id: 'streak_30',
     title: 'Unaufhaltsam',
     description: '30 Tage in Folge trainiert',
@@ -177,10 +186,10 @@ export const ACHIEVEMENTS = [
   {
     id: 'perfect_week',
     title: 'Perfekte Woche',
-    description: 'Eine ganze Woche alle 6 täglichen Übungen abgeschlossen',
+    description: '5 von 7 Tagen alle 6 Muskelgruppen trainiert',
     icon: '🌈',
     category: 'weekly',
-    requirements: { type: 'perfect_week' },
+    requirements: { type: 'perfect_week', days: 7, perfectDays: 5 },
     rarity: 'epic',
   },
   // Daily Muscle Group Achievements
@@ -233,6 +242,42 @@ export const ACHIEVEMENTS = [
     rarity: 'rare',
   },
   {
+    id: 'muscle_specialist_po',
+    title: 'Po-Spezialist',
+    description: '5 Po-Übungen an einem Tag abgeschlossen',
+    icon: '🍑',
+    category: 'specialist',
+    requirements: { type: 'muscle_specialist', muscleGroup: 'Po', value: 5 },
+    rarity: 'rare',
+  },
+  {
+    id: 'muscle_specialist_schulter',
+    title: 'Schulter-Spezialist',
+    description: '5 Schulter-Übungen an einem Tag abgeschlossen',
+    icon: '💪',
+    category: 'specialist',
+    requirements: { type: 'muscle_specialist', muscleGroup: 'Schulter', value: 5 },
+    rarity: 'rare',
+  },
+  {
+    id: 'muscle_specialist_brust',
+    title: 'Brust-Spezialist',
+    description: '5 Brust-Übungen an einem Tag abgeschlossen',
+    icon: '🦸',
+    category: 'specialist',
+    requirements: { type: 'muscle_specialist', muscleGroup: 'Brust', value: 5 },
+    rarity: 'rare',
+  },
+  {
+    id: 'muscle_specialist_nacken',
+    title: 'Nacken-Spezialist',
+    description: '5 Nacken-Übungen an einem Tag abgeschlossen',
+    icon: '🦒',
+    category: 'specialist',
+    requirements: { type: 'muscle_specialist', muscleGroup: 'Nacken', value: 5 },
+    rarity: 'rare',
+  },
+  {
     id: 'consistency_champion',
     title: 'Beständigkeits-Champion',
     description: '7 Tage in Folge alle 6 Muskelgruppen trainiert',
@@ -241,15 +286,24 @@ export const ACHIEVEMENTS = [
     requirements: { type: 'consistency_muscle_groups', days: 7, minMuscleGroups: 6 },
     rarity: 'legendary',
   },
-  // Perfect Days Achievements
+  // Perfect Days Achievements - Removed duplicate 'Perfekter Tag', kept progressive achievements
   {
-    id: 'perfect_day_1',
-    title: 'Perfekter Tag',
-    description: 'Alle 6 Muskelgruppen an einem Tag trainiert',
-    icon: '✨',
-    category: 'special',
-    requirements: { type: 'perfect_days', value: 1 },
+    id: 'balanced_month',
+    title: 'Ausgewogener Monat',
+    description: 'Mindestens 3 Muskelgruppen an 20 Tagen im Monat trainiert',
+    icon: '⚖️',
+    category: 'consistency',
+    requirements: { type: 'monthly_balance', days: 30, targetDays: 20, minMuscleGroups: 3 },
     rarity: 'epic',
+  },
+  {
+    id: 'perfect_month',
+    title: 'Perfekter Monat',
+    description: 'Alle 6 Muskelgruppen an 20 Tagen im Monat trainiert',
+    icon: '🏅',
+    category: 'consistency',
+    requirements: { type: 'monthly_balance', days: 30, targetDays: 20, minMuscleGroups: 6 },
+    rarity: 'legendary',
   },
   {
     id: 'perfect_days_10',

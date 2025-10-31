@@ -20,6 +20,32 @@ export class AchievementService {
     const unlockedAchievements: AchievementUnlocked[] = [];
     const existingAchievementIds = user.achievements.map(a => a.achievementId);
 
+    // Track which daily muscle group achievement tier to award (only award the highest)
+    const dailyMuscleGroupAchievements = [
+      'daily_all_muscle_groups',  // 6 groups - highest tier
+      'daily_5_muscle_groups',     // 5 groups - mid tier
+      'daily_3_muscle_groups'      // 3 groups - lowest tier
+    ];
+    
+    let highestDailyMuscleGroupAchievement: string | null = null;
+
+    // First pass: Determine which daily muscle group achievement to award
+    for (const achievementId of dailyMuscleGroupAchievements) {
+      if (existingAchievementIds.includes(achievementId)) {
+        // User already has this achievement, check if we need to consider it
+        continue;
+      }
+      
+      const achievementDef = ACHIEVEMENTS.find(a => a.id === achievementId);
+      if (achievementDef) {
+        const meetsRequirements = await this.checkAchievementRequirements(user, achievementDef);
+        if (meetsRequirements && !highestDailyMuscleGroupAchievement) {
+          highestDailyMuscleGroupAchievement = achievementId;
+          break; // Found the highest tier, stop checking
+        }
+      }
+    }
+
     for (const achievementDef of ACHIEVEMENTS) {
       // Skip if user already has this achievement
       if (existingAchievementIds.includes(achievementDef.id)) {
@@ -27,6 +53,13 @@ export class AchievementService {
         if (existing) {
           unlockedAchievements.push({ achievement: existing, isNew: false });
         }
+        continue;
+      }
+
+      // Skip lower-tier daily muscle group achievements if a higher one is being awarded
+      if (dailyMuscleGroupAchievements.includes(achievementDef.id) && 
+          highestDailyMuscleGroupAchievement && 
+          achievementDef.id !== highestDailyMuscleGroupAchievement) {
         continue;
       }
 
@@ -76,7 +109,7 @@ export class AchievementService {
         return await this.checkMuscleGroupsCompleted(user, requirements.muscleGroups);
 
       case 'perfect_week':
-        return await this.checkPerfectWeek(user);
+        return await this.checkPerfectWeek(user, requirements);
 
       case 'daily_muscle_groups':
         return await this.checkDailyMuscleGroups(user, requirements);
@@ -89,6 +122,9 @@ export class AchievementService {
 
       case 'perfect_days':
         return user.perfectDaysCount >= requirements.value;
+
+      case 'monthly_balance':
+        return await this.checkMonthlyBalance(user, requirements);
 
       default:
         return false;
@@ -116,16 +152,30 @@ export class AchievementService {
     return requiredGroups.every(group => trainedGroups.has(group));
   }
 
-  // Check if user had a perfect week (met daily goals every day)
-  private static async checkPerfectWeek(user: IUser): Promise<boolean> {
-    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    const dailyProgress = await Progress.aggregate([
+  // Check if user had a perfect week (5 out of 7 days with all 6 muscle groups)
+  private static async checkPerfectWeek(user: IUser, requirements?: any): Promise<boolean> {
+    const days = requirements?.days || 7;
+    const perfectDaysRequired = requirements?.perfectDays || 5;
+    const daysAgo = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    
+    const dailyStats = await Progress.aggregate([
       {
         $match: {
           user: user._id,
           completed: true,
-          date: { $gte: weekAgo }
+          date: { $gte: daysAgo }
         }
+      },
+      {
+        $lookup: {
+          from: 'exercises',
+          localField: 'exercise',
+          foreignField: '_id',
+          as: 'exerciseData'
+        }
+      },
+      {
+        $unwind: '$exerciseData'
       },
       {
         $group: {
@@ -134,13 +184,20 @@ export class AchievementService {
             month: { $month: '$date' },
             day: { $dayOfMonth: '$date' }
           },
-          count: { $sum: 1 }
+          muscleGroups: { $addToSet: '$exerciseData.muscleGroup' }
+        }
+      },
+      {
+        $addFields: {
+          muscleGroupCount: { $size: '$muscleGroups' },
+          isPerfectDay: { $eq: [{ $size: '$muscleGroups' }, 6] }
         }
       }
     ]);
 
-    // Check if user exercised for 7 consecutive days with at least 1 exercise per day
-    return dailyProgress.length >= 7 && dailyProgress.every(day => day.count >= 1);
+    // Count days with all 6 muscle groups
+    const perfectDaysCount = dailyStats.filter(day => day.isPerfectDay).length;
+    return perfectDaysCount >= perfectDaysRequired;
   }
 
   // Check daily muscle groups trained
@@ -245,6 +302,53 @@ export class AchievementService {
     // Check if we have stats for all required days and each day meets minimum muscle groups
     return dailyStats.length >= days && 
            dailyStats.every(day => day.muscleGroupCount >= minMuscleGroups);
+  }
+
+  // Check monthly balance achievement (e.g., train X muscle groups on Y days in a month)
+  private static async checkMonthlyBalance(user: IUser, requirements: any): Promise<boolean> {
+    const { days, targetDays, minMuscleGroups } = requirements;
+    const daysAgo = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+
+    // Get daily muscle group counts for the last 'days' period
+    const dailyStats = await Progress.aggregate([
+      {
+        $match: {
+          user: user._id,
+          completed: true,
+          date: { $gte: daysAgo }
+        }
+      },
+      {
+        $lookup: {
+          from: 'exercises',
+          localField: 'exercise',
+          foreignField: '_id',
+          as: 'exerciseData'
+        }
+      },
+      {
+        $unwind: '$exerciseData'
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$date' },
+            month: { $month: '$date' },
+            day: { $dayOfMonth: '$date' }
+          },
+          muscleGroups: { $addToSet: '$exerciseData.muscleGroup' }
+        }
+      },
+      {
+        $addFields: {
+          muscleGroupCount: { $size: '$muscleGroups' }
+        }
+      }
+    ]);
+
+    // Count days that meet the minimum muscle group requirement
+    const qualifyingDays = dailyStats.filter(day => day.muscleGroupCount >= minMuscleGroups).length;
+    return qualifyingDays >= targetDays;
   }
 
   // Update daily streak for user with streak protection
