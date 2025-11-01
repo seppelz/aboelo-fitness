@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/User';
 import { jwtConfig } from '../config/env';
+import { sendWelcomeEmail } from '../services/emailService';
 
 // Funktion zum Erstellen eines JWT Tokens
 const generateToken = (id: string): string => {
@@ -48,6 +49,11 @@ export const register = async (req: Request, res: Response) => {
       email,
       password,
       age,
+    });
+
+    // Send welcome email (don't await - let it happen in background)
+    sendWelcomeEmail(user.email, user.name).catch((error) => {
+      console.error('[register] Failed to send welcome email, but registration succeeded:', error);
     });
 
     // Token generieren und senden
