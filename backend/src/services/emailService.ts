@@ -3,12 +3,12 @@ import axios from 'axios';
 import { emailConfig, appConfig } from '../config/env';
 
 // Email sending methods
-type EmailMethod = 'mailerlite' | 'smtp';
+type EmailMethod = 'mailersend' | 'smtp';
 
 const getEmailMethod = (): EmailMethod => {
-  // Prefer MailerLite API if token is configured
-  if (emailConfig.mailerliteApiToken) {
-    return 'mailerlite';
+  // Prefer MailerSend API if token is configured
+  if (emailConfig.mailersendApiToken) {
+    return 'mailersend';
   }
   return 'smtp';
 };
@@ -23,7 +23,7 @@ const logEmailConfig = () => {
     userDefined: Boolean(emailConfig.user),
     passDefined: Boolean(emailConfig.pass),
     fromAddress: emailConfig.from,
-    mailerliteConfigured: Boolean(emailConfig.mailerliteApiToken),
+    mailersendConfigured: Boolean(emailConfig.mailersendApiToken),
     // Log environment variables directly for debugging
     envVars: {
       EMAIL_HOST: process.env.EMAIL_HOST ? 'SET' : 'NOT SET',
@@ -32,7 +32,7 @@ const logEmailConfig = () => {
       EMAIL_USER: process.env.EMAIL_USER ? 'SET' : 'NOT SET',
       EMAIL_PASSWORD: process.env.EMAIL_PASSWORD ? 'SET' : 'NOT SET',
       EMAIL_FROM: process.env.EMAIL_FROM ? 'SET' : 'NOT SET',
-      MAILERLITE_API_TOKEN: process.env.MAILERLITE_API_TOKEN ? 'SET' : 'NOT SET',
+      MAILERSEND_API_TOKEN: process.env.MAILERSEND_API_TOKEN ? 'SET' : 'NOT SET',
     }
   });
 };
@@ -78,43 +78,48 @@ const getTransporter = (() => {
   };
 })();
 
-// MailerLite API email sending
-const sendViaMailerLite = async (to: string, subject: string, htmlContent: string, textContent: string) => {
-  const { mailerliteApiToken, mailerliteApiUrl, from } = emailConfig;
+// MailerSend API email sending
+const sendViaMailerSend = async (to: string, subject: string, htmlContent: string, textContent: string) => {
+  const { mailersendApiToken, mailersendApiUrl, from } = emailConfig;
   
-  if (!mailerliteApiToken) {
-    throw new Error('MAILERLITE_API_TOKEN not configured');
+  if (!mailersendApiToken) {
+    throw new Error('MAILERSEND_API_TOKEN not configured');
   }
 
   try {
-    console.info('[emailService] Sende E-Mail via MailerLite API...', { to, subject });
+    console.info('[emailService] Sende E-Mail via MailerSend API...', { to, subject });
     
     const response = await axios.post(
-      `${mailerliteApiUrl}/email`,
+      `${mailersendApiUrl}/v1/email`,
       {
-        to: [{ email: to }],
-        from: { email: from || 'info@aboelo.de', name: 'Aboelo Fitness' },
-        subject,
-        html: htmlContent,
+        from: {
+          email: from || 'info@aboelo.de',
+          name: 'Aboelo Fitness'
+        },
+        to: [{
+          email: to
+        }],
+        subject: subject,
         text: textContent,
+        html: htmlContent,
       },
       {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': `Bearer ${mailerliteApiToken}`,
+          'Authorization': `Bearer ${mailersendApiToken}`,
         },
       }
     );
 
-    console.info('[emailService] E-Mail via MailerLite erfolgreich versendet', {
+    console.info('[emailService] E-Mail via MailerSend erfolgreich versendet', {
       status: response.status,
-      data: response.data,
+      messageId: response.headers['x-message-id'],
     });
 
     return response.data;
   } catch (error: any) {
-    console.error('[emailService] MailerLite API Fehler:', {
+    console.error('[emailService] MailerSend API Fehler:', {
       message: error?.message,
       response: error?.response?.data,
       status: error?.response?.status,
@@ -141,10 +146,10 @@ export const sendPasswordResetEmail = async (recipientEmail: string, token: stri
 <p>Wenn Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren.</p>
 <p>Viele Grüße<br/>Ihr aboelo-fitness Team</p>`;
 
-  // Use MailerLite API if configured
-  if (method === 'mailerlite') {
+  // Use MailerSend API if configured
+  if (method === 'mailersend') {
     try {
-      return await sendViaMailerLite(recipientEmail, subject, htmlContent, textContent);
+      return await sendViaMailerSend(recipientEmail, subject, htmlContent, textContent);
     } catch (error: any) {
       console.error('[emailService] Versand der Passwort-Reset-E-Mail fehlgeschlagen.');
       console.error('[emailService] Error:', error?.message);
@@ -227,10 +232,10 @@ export const sendWelcomeEmail = async (recipientEmail: string, userName: string)
       <p>Ihr aboelo-fitness Team</p>
     </div>`;
 
-  // Use MailerLite API if configured
-  if (method === 'mailerlite') {
+  // Use MailerSend API if configured
+  if (method === 'mailersend') {
     try {
-      return await sendViaMailerLite(recipientEmail, subject, htmlContent, textContent);
+      return await sendViaMailerSend(recipientEmail, subject, htmlContent, textContent);
     } catch (error: any) {
       console.error('[emailService] Versand der Willkommens-E-Mail fehlgeschlagen.');
       console.error('[emailService] Error:', error?.message);
@@ -292,15 +297,15 @@ export const sendContactEmail = async ({ name, email, subject, message }: Contac
 <p><strong>Betreff:</strong> ${finalSubject}</p>
 <p>${message.replace(/\n/g, '<br/>')}</p>`;
 
-  // Use MailerLite API if configured
-  if (method === 'mailerlite') {
+  // Use MailerSend API if configured
+  if (method === 'mailersend') {
     try {
-      console.info('[emailService] Sende Kontaktformular-E-Mail via MailerLite...', {
+      console.info('[emailService] Sende Kontaktformular-E-Mail via MailerSend...', {
         to: sanitizedRecipient,
         replyTo: email,
         subject: emailSubject,
       });
-      return await sendViaMailerLite(sanitizedRecipient, emailSubject, htmlBody, textBody);
+      return await sendViaMailerSend(sanitizedRecipient, emailSubject, htmlBody, textBody);
     } catch (error: any) {
       console.error('[emailService] Versand der Kontaktformular-E-Mail fehlgeschlagen.');
       console.error('[emailService] Error:', error?.message);

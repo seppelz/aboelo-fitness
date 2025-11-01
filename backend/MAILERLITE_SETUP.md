@@ -1,8 +1,10 @@
-# MailerLite Setup Guide for Aboelo Fitness
+# MailerSend Setup Guide for Aboelo Fitness
 
 ## ✅ What's Been Done
 
-Your email service has been upgraded to support **MailerLite API** alongside SMTP. The system automatically detects which method to use based on your configuration.
+Your email service has been upgraded to support **MailerSend API** alongside SMTP. The system automatically detects which method to use based on your configuration.
+
+**Note:** MailerSend is MailerLite's sister product specifically designed for transactional emails (password resets, welcome emails, etc.).
 
 ## 🚀 Setup Instructions
 
@@ -13,28 +15,30 @@ cd backend
 npm install
 ```
 
-This installs `axios` which is needed for MailerLite API calls.
+This installs `axios` which is needed for MailerSend API calls.
 
 ### Step 2: Configure Render.com Environment Variables
 
 Add these environment variables in your Render.com dashboard:
 
 ```bash
-MAILERLITE_API_TOKEN=your-api-token-from-mailerlite
+MAILERSEND_API_TOKEN=your-api-token-from-mailersend
+MAILERSEND_API_URL=https://api.mailersend.com
 EMAIL_FROM=info@aboelo.de
 FRONTEND_BASE_URL=https://fitness.aboelo.de
 ```
 
 **Where to get your API token:**
-1. Log in to MailerLite: https://dashboard.mailerlite.com/
-2. Go to **Integrations** → **Developer API**
-3. Find your **API token** labeled "aboelo" (or create a new one)
-4. Copy the token
-5. Paste it into `MAILERLITE_API_TOKEN` in Render.com
+1. Log in to MailerSend: https://www.mailersend.com/
+2. Go to **Email → Domains** (verify a domain or use sandbox)
+3. Go to **Settings** → **API Tokens**
+4. Click **Generate new token**
+5. Copy the token (starts with `mlsn_...`)
+6. Paste it into `MAILERSEND_API_TOKEN` in Render.com
 
 ### Step 3: Remove or Comment Out Old SMTP Variables (Optional)
 
-Since MailerLite API is being used, you can remove these (they won't be used):
+Since MailerSend API is being used, you can remove these (they won't be used):
 - `EMAIL_HOST`
 - `EMAIL_PORT`
 - `EMAIL_SECURE`
@@ -50,7 +54,7 @@ Since MailerLite API is being used, you can remove these (they won't be used):
 1. Commit the changes:
    ```bash
    git add .
-   git commit -m "Add MailerLite API support for email sending"
+   git commit -m "Update to MailerSend API for email sending"
    git push
    ```
 

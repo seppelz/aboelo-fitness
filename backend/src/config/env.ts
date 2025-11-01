@@ -84,9 +84,9 @@ export const emailConfig = {
   user: process.env.EMAIL_USER?.trim(),
   pass: process.env.EMAIL_PASSWORD?.trim(),
   from: process.env.EMAIL_FROM?.trim() || 'no-reply@aboelo-fitness.de',
-  // MailerLite API configuration
-  mailerliteApiToken: process.env.MAILERLITE_API_TOKEN?.trim(),
-  mailerliteApiUrl: process.env.MAILERLITE_API_URL?.trim() || 'https://connect.mailerlite.com/api',
+  // MailerSend API configuration
+  mailersendApiToken: process.env.MAILERSEND_API_TOKEN?.trim(),
+  mailersendApiUrl: process.env.MAILERSEND_API_URL?.trim() || 'https://api.mailersend.com',
 };
 
 export const appConfig = {
