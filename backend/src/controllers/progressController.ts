@@ -314,6 +314,9 @@ export const getDailyProgress = async (req: Request, res: Response) => {
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
+    // Get user for streak information
+    const user = await User.findById(userId);
+
     const progress = await Progress.find({
       user: userId,
       date: { $gte: startOfDay, $lt: endOfDay }
@@ -327,14 +330,15 @@ export const getDailyProgress = async (req: Request, res: Response) => {
         .filter(Boolean)
     );
 
-
-
     res.json({
       progress,
       muscleGroupsTrainedToday: Array.from(muscleGroupsTrainedToday),
       totalMuscleGroups: 6, // Bauch, Po, Schulter, Brust, Nacken und Rücken
       totalExercisesCompleted: progress.filter(p => p.completed).length,
-      targetExercisesPerDay: 6 // Goal: at least one exercise per muscle group
+      targetExercisesPerDay: 6, // Goal: at least one exercise per muscle group
+      dailyStreak: user?.dailyStreak || 0,
+      longestStreak: user?.longestStreak || 0,
+      lastActivityDate: user?.lastActivityDate
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });

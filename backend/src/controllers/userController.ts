@@ -327,6 +327,24 @@ export const updateUserProfile = async (req: Request, res: Response) => {
         }
       }
 
+      // Update weekly goal
+      if (req.body.weeklyGoal) {
+        const { exercisesTarget } = req.body.weeklyGoal;
+        if (!user.weeklyGoal) {
+          user.weeklyGoal = {
+            exercisesTarget: 5,
+            currentProgress: 0,
+            weekStartDate: new Date()
+          };
+        }
+        if (exercisesTarget !== undefined) {
+          const parsedTarget = parseInt(exercisesTarget, 10);
+          if (!Number.isNaN(parsedTarget)) {
+            user.weeklyGoal.exercisesTarget = Math.max(1, Math.min(50, parsedTarget));
+          }
+        }
+      }
+
       const updatedUser = await user.save();
 
       const refreshedToken = generateToken(formatObjectId(updatedUser._id) ?? '');

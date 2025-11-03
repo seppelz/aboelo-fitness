@@ -1,5 +1,7 @@
 import User, { IUser } from '../models/User';
 import PushSubscription from '../models/PushSubscription';
+import Exercise from '../models/Exercise';
+import Progress from '../models/Progress';
 import { sendNotification, PushPayload } from './pushService';
 import { appConfig } from '../config/env';
 
@@ -32,8 +34,71 @@ const isReminderDue = (user: IUser, referenceDate: Date): boolean => {
   return referenceDate.getTime() - new Date(settings.lastSentAt).getTime() >= intervalMs;
 };
 
-const buildReminderPayload = async (_user: IUser): Promise<PushPayload> => {
-  // Placeholder for future personalization (next exercise, etc.)
+const buildReminderPayload = async (user: IUser): Promise<PushPayload> => {
+  try {
+    // Get today's trained muscle groups
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
+    const todayProgress = await Progress.find({
+      user: user._id,
+      completed: true,
+      date: { $gte: startOfDay, $lt: endOfDay }
+    }).populate('exercise');
+
+    const trainedMuscleGroups = new Set<string>();
+    for (const progressEntry of todayProgress) {
+      const muscleGroup = ((progressEntry.exercise as any)?.muscleGroup) as string | undefined;
+      if (muscleGroup) {
+        trainedMuscleGroups.add(muscleGroup);
+      }
+    }
+
+    // Find next untrained muscle group
+    const allMuscleGroups = ['Bauch', 'Po', 'Schulter', 'Brust', 'Nacken', 'Rücken'];
+    const untrainedGroup = allMuscleGroups.find(group => !trainedMuscleGroups.has(group));
+
+    if (untrainedGroup) {
+      // Find an exercise for this muscle group
+      const exerciseQuery: any = { muscleGroup: untrainedGroup };
+      if (!user.hasTheraband) {
+        exerciseQuery.usesTheraband = false;
+      }
+
+      const exercises = await Exercise.find(exerciseQuery).limit(1);
+      if (exercises.length > 0) {
+        const exercise = exercises[0];
+        return {
+          title: `Zeit für ${untrainedGroup}!`,
+          body: `Probiere jetzt: ${exercise.title}`,
+          url: `${appConfig.frontendBaseUrl}/app/exercises/${exercise._id}`,
+          tag: 'aboelo-activity-reminder',
+        };
+      }
+    }
+
+    // Fallback: All muscle groups trained or no exercises found
+    const trainedCount = trainedMuscleGroups.size;
+    if (trainedCount === 6) {
+      return {
+        title: '🎉 Perfekter Tag!',
+        body: 'Alle Muskelgruppen trainiert! Du bist fantastisch!',
+        url: `${appConfig.frontendBaseUrl}/app/progress`,
+        tag: 'aboelo-activity-reminder',
+      };
+    } else if (trainedCount > 0) {
+      return {
+        title: `${trainedCount}/6 Muskelgruppen geschafft!`,
+        body: 'Weiter so! Zeit für die nächste Übung.',
+        url: `${appConfig.frontendBaseUrl}/app`,
+        tag: 'aboelo-activity-reminder',
+      };
+    }
+  } catch (error) {
+    console.error('[buildReminderPayload] Error building personalized payload:', error);
+  }
+
   return DEFAULT_REMINDER_PAYLOAD;
 };
 
