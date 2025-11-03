@@ -333,7 +333,8 @@ export const getDailyProgress = async (req: Request, res: Response) => {
       progress,
       muscleGroupsTrainedToday: Array.from(muscleGroupsTrainedToday),
       totalMuscleGroups: 6, // Bauch, Po, Schulter, Brust, Nacken und Rücken
-      totalExercisesCompleted: progress.filter(p => p.completed).length
+      totalExercisesCompleted: progress.filter(p => p.completed).length,
+      targetExercisesPerDay: 6 // Goal: at least one exercise per muscle group
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
