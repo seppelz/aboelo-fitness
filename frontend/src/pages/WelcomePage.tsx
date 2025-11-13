@@ -107,7 +107,7 @@ const pageContent: PageContent = {
     'In Kürze: Browser-Erinnerungen, die Teams automatisch an die nächste Pause erinnern',
     'Kompakte Ergonomie-Impulse, Schulteröffner und Augen-Reset für produktive Meetings'
   ],
-  medicalHeading: 'Für Ärzt:innen, Therapeut:innen und Pflegeeinrichtungen',
+  medicalHeading: 'Für Ärzte,Therapeuten und Pflegeeinrichtungen',
   medicalSubtitle: 'Strukturierte Aktivierung ohne Zusatzaufwand – ideal für Tagespflege, betreutes Wohnen und Ambulanz.',
   medicalBenefits: [
     'Automatisierte Dokumentation von Teilnahme und Fortschritt',
@@ -134,8 +134,8 @@ const pageContent: PageContent = {
     }
   ],
   finalCtaHeading: 'Bereit für gesunde Routinen?',
-  finalCtaText: 'aboelo Fitness motiviert zu sechs kurzen Aktivpausen pro Tag. Starten Sie jetzt Ihren kostenlosen Testzugang und erleben Sie die Plattform live.',
-  finalPrimaryCta: 'Kostenlosen Test starten',
+  finalCtaText: 'aboelo Fitness motiviert zu sechs kurzen Aktivpausen pro Tag. Starten Sie jetzt Ihren kostenlosen Zugang und erleben Sie die Plattform live.',
+  finalPrimaryCta: 'Kostenlos starten',
   finalSecondaryCta: undefined,
   faqId: 'faq',
   seniorsId: 'senioren',
@@ -273,28 +273,55 @@ const WelcomePage: React.FC = () => {
         />
         <Container maxWidth={false} sx={{ ...layout.section, position: 'relative' }}>
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 6, md: 10 }} alignItems="stretch">
-            <Stack spacing={3.5} flex={1} justifyContent="center">
+            <Stack spacing={{ xs: 3, md: 3.5 }} flex={1} justifyContent="center" sx={{ maxWidth: { md: 540 } }}>
               <Chip 
                 label={pageContent.heroBadge} 
                 color="default" 
                 sx={{ 
+                  alignSelf: { xs: 'flex-start', md: 'center' },
                   backgroundColor: palette.heroOverlay,
                   color: '#fff', 
-                  fontSize: '1rem', 
+                  fontSize: '0.95rem', 
+                  letterSpacing: 0.5,
                   px: 2.5, 
-                  py: 3, 
+                  py: 2,
                   borderRadius: 999,
                   backdropFilter: 'blur(12px)',
                   border: '1px solid rgba(255,255,255,0.25)'
                 }} 
               />
-              <Typography variant="h2" sx={{ fontWeight: 800, lineHeight: 1.05, fontSize: { xs: '2.9rem', md: '3.8rem' }, textShadow: '0 12px 30px rgba(0,0,0,0.25)' }}>
+              <Typography
+                variant="h2"
+                sx={{
+                  fontWeight: 800,
+                  lineHeight: 1.04,
+                  fontSize: { xs: '2.8rem', sm: '3.2rem', md: '3.75rem' },
+                  textAlign: { xs: 'left', md: 'center' },
+                  textShadow: '0 12px 30px rgba(0,0,0,0.25)'
+                }}
+              >
                 {pageContent.heroTitle}
               </Typography>
-              <Typography variant="h6" sx={{ opacity: 0.92, fontSize: { xs: '1.15rem', md: '1.28rem' }, maxWidth: 580, lineHeight: 1.65 }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  opacity: 0.9,
+                  fontWeight: 500,
+                  fontSize: { xs: '1.12rem', md: '1.22rem' },
+                  textAlign: { xs: 'left', md: 'center' },
+                  maxWidth: { md: 520 },
+                  mx: { md: 'auto' },
+                  lineHeight: 1.6
+                }}
+              >
                 {pageContent.heroSubtitle}
               </Typography>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ xs: 'stretch', sm: 'center' }}>
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={2}
+                alignItems={{ xs: 'stretch', sm: 'center' }}
+                justifyContent={{ sm: 'center' }}
+              >
                 <Button
                   component={RouterLink}
                   to={pageContent.heroCtaHref}
@@ -302,7 +329,7 @@ const WelcomePage: React.FC = () => {
                   variant="contained"
                   color="primary"
                   endIcon={<ArrowForwardIcon />}
-                  sx={{ fontSize: '1.15rem', py: 1.6, px: 4.25, borderRadius: 999, boxShadow: palette.glassShadow }}
+                  sx={{ fontSize: '1.08rem', py: 1.5, px: 4, borderRadius: 999, boxShadow: palette.glassShadow }}
                 >
                   {pageContent.heroPrimaryCta}
                 </Button>
@@ -311,7 +338,7 @@ const WelcomePage: React.FC = () => {
                   size="large"
                   variant="outlined"
                   endIcon={<ArrowDownwardIcon />}
-                  sx={{ fontSize: '1.05rem', py: 1.6, px: 4, borderColor: 'rgba(255,255,255,0.55)', color: '#fff', borderRadius: 999, backdropFilter: 'blur(6px)' }}
+                  sx={{ fontSize: '1.03rem', py: 1.5, px: 3.75, borderColor: 'rgba(255,255,255,0.55)', color: '#fff', borderRadius: 999, backdropFilter: 'blur(6px)', textAlign: 'center' }}
                 >
                   {pageContent.heroSecondaryCta}
                 </Button>
@@ -355,21 +382,46 @@ const WelcomePage: React.FC = () => {
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between',
-                backgroundColor: 'rgba(255,255,255,0.18)',
-                backdropFilter: 'blur(18px)',
                 borderRadius: 5,
                 overflow: 'hidden',
-                border: '1px solid rgba(255,255,255,0.28)',
-                boxShadow: palette.glassShadow
+                background: 'linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(31,95,95,0.18) 100%)',
+                border: '1px solid rgba(255,255,255,0.32)',
+                boxShadow: palette.glassShadow,
+                minHeight: { xs: 360, md: 500 }
               }}
             >
-              <CardMedia
-                component="img"
-                image="/buero-uebung-aboelo.png"
-                alt={pageContent.seniorImageAlt}
-                sx={{ height: { xs: 260, md: 420 }, objectFit: 'cover' }}
-              />
+              <Box
+                sx={{
+                  position: 'relative',
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  p: { xs: 3, md: 4 },
+                  background: 'linear-gradient(160deg, rgba(255,255,255,0.92) 0%, rgba(146,209,204,0.35) 65%, rgba(31,95,95,0.25) 100%)'
+                }}
+              >
+                <Box
+                  component="img"
+                  src="/aboelo-fitness-uebungen.png"
+                  alt={pageContent.seniorImageAlt}
+                  sx={{
+                    width: '100%',
+                    maxWidth: { xs: 260, md: 360 },
+                    height: 'auto',
+                    filter: 'drop-shadow(0 18px 28px rgba(22,69,69,0.25))'
+                  }}
+                />
+                <Box
+                  aria-hidden
+                  sx={{
+                    position: 'absolute',
+                    inset: 0,
+                    borderRadius: 5,
+                    border: '1px solid rgba(255,255,255,0.25)'
+                  }}
+                />
+              </Box>
               <CardContent sx={{ color: '#fff', p: { xs: 3, md: 4 } }}>
                 <Typography variant="subtitle1" sx={{ opacity: 0.85, lineHeight: 1.6 }}>
                   Geführte Video-Routinen, alltagstaugliche Übungen und motivierende Gamification.
