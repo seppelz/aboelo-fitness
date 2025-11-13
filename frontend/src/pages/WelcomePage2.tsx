@@ -41,10 +41,8 @@ const palette = {
 };
 
 const layout = {
+  maxWidth: 'lg' as const,
   section: {
-    width: '100%',
-    maxWidth: '1200px',
-    mx: 'auto',
     px: { xs: 2.5, md: 4 }
   }
 };
@@ -85,11 +83,11 @@ interface PageContent {
 }
 
 const pageContent: PageContent = {
-  metaTitle: 'aboelo Fitness | Digitale Bewegungslösungen für Senioren, Unternehmen und Gesundheitspartner',
+  metaTitle: 'aboelo Fitness | Bewegungslösungen für Senioren, Unternehmen und Gesundheitspartner',
   metaDescription:
     'aboelo Fitness kombiniert evidenzbasierte Trainingsprogramme, Videoanleitungen und Analytics für Senioren, Mitarbeitende und Pflegeeinrichtungen. Jetzt informieren und registrieren.',
   heroBadge: 'Ganzheitliche Bewegungslösungen',
-  heroTitle: 'Digitale Fitness, die Menschen bewegt – zuhause, im Büro und in der Pflege',
+  heroTitle: 'Fitness, die Menschen bewegt – zuhause, im Büro und in der Pflege',
   heroSubtitle:
     'aboelo Fitness verbindet evidenzbasierte Mikro-Pausen von 1–2 Minuten mit klaren Videoanleitungen und intelligenten Erinnerungen. Wir helfen dabei, alle 60 Minuten aufzustehen und das 6-Übungen-pro-Tag-Ziel locker zu erreichen – ganz ohne Live-Coachings.',
   heroPrimaryCta: 'Jetzt registrieren',
@@ -288,27 +286,40 @@ const WelcomePage2: React.FC = () => {
 
       <Box
         sx={{
-          position: 'relative',
-          overflow: 'hidden',
-          background: palette.heroGradient,
-          color: '#ffffff',
-          pb: { xs: 10, md: 12 },
-          pt: { xs: 12, md: 14 }
+          backgroundColor: palette.pageBackground,
+          pt: { xs: 10, md: 12 },
+          pb: { xs: 6, md: 8 },
+          px: { xs: 2.5, md: 4 }
         }}
       >
         <Box
           sx={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'radial-gradient(circle at 15% 20%, rgba(255,255,255,0.22) 0%, transparent 55%), radial-gradient(circle at 85% 30%, rgba(255,255,255,0.18) 0%, transparent 55%)'
+            position: 'relative',
+            overflow: 'hidden',
+            background: palette.heroGradient,
+            color: '#ffffff',
+            borderRadius: { xs: 4, md: 6 },
+            maxWidth: 1180,
+            mx: 'auto',
+            px: { xs: 3, sm: 4, md: 6 },
+            py: { xs: 6, md: 8 },
+            boxShadow: '0 40px 80px rgba(15,63,63,0.28)'
           }}
-        />
-        <Container maxWidth={false} sx={{ ...layout.section, position: 'relative' }}>
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'radial-gradient(circle at 15% 20%, rgba(255,255,255,0.22) 0%, transparent 55%), radial-gradient(circle at 85% 30%, rgba(255,255,255,0.18) 0%, transparent 55%)',
+              pointerEvents: 'none'
+            }}
+          />
           <Stack
             direction={{ xs: 'column', md: 'row' }}
             spacing={{ xs: 6, md: 10 }}
             alignItems={{ xs: 'flex-start', md: 'center' }}
+            sx={{ position: 'relative', zIndex: 1 }}
           >
             <Stack spacing={{ xs: 3.5, md: 4.5 }} flex={1} maxWidth={{ md: 520 }}>
               <Chip
@@ -332,7 +343,7 @@ const WelcomePage2: React.FC = () => {
                   sx={{
                     fontWeight: 800,
                     lineHeight: 1.05,
-                    fontSize: { xs: '2.75rem', sm: '3.15rem', md: '3.9rem' },
+                    fontSize: { xs: '2.7rem', sm: '3.1rem', md: '3.85rem' },
                     textShadow: '0 15px 40px rgba(0,0,0,0.3)'
                   }}
                 >
@@ -343,7 +354,7 @@ const WelcomePage2: React.FC = () => {
                   sx={{
                     opacity: 0.92,
                     fontWeight: 500,
-                    fontSize: { xs: '1.14rem', md: '1.24rem' },
+                    fontSize: { xs: '1.13rem', md: '1.24rem' },
                     lineHeight: 1.68
                   }}
                 >
@@ -359,7 +370,7 @@ const WelcomePage2: React.FC = () => {
                   color="primary"
                   endIcon={<ArrowForwardIcon />}
                   sx={{
-                    fontSize: '1.08rem',
+                    fontSize: '1.06rem',
                     py: 1.6,
                     px: 4.2,
                     borderRadius: 18,
@@ -374,7 +385,7 @@ const WelcomePage2: React.FC = () => {
                   variant="outlined"
                   endIcon={<ArrowDownwardIcon />}
                   sx={{
-                    fontSize: '1.05rem',
+                    fontSize: '1.03rem',
                     py: 1.6,
                     px: 3.9,
                     color: '#fff',
@@ -420,7 +431,7 @@ const WelcomePage2: React.FC = () => {
                   boxShadow: '0 38px 60px rgba(0,0,0,0.32)',
                   px: { xs: 3.2, sm: 3.8, md: 4.5 },
                   py: { xs: 3.2, sm: 3.8, md: 4.5 },
-                  maxWidth: { xs: 380, sm: 400, md: 440 },
+                  maxWidth: { xs: 360, sm: 380, md: 420 },
                   width: '100%',
                   zIndex: 1
                 }}
@@ -452,14 +463,14 @@ const WelcomePage2: React.FC = () => {
               </Box>
             </Box>
           </Stack>
-        </Container>
+        </Box>
       </Box>
 
       <Container
-        maxWidth={false}
+        maxWidth={layout.maxWidth}
         sx={{
           ...layout.section,
-          mt: { xs: -6, md: -8 },
+          mt: { xs: -4, md: -6 },
           position: 'relative',
           zIndex: 2
         }}
@@ -499,7 +510,7 @@ const WelcomePage2: React.FC = () => {
       </Container>
 
       <Box id="explore" sx={{ py: { xs: 8, md: 12 } }}>
-        <Container maxWidth={false} sx={{ ...layout.section }}>
+        <Container maxWidth={layout.maxWidth} sx={{ ...layout.section }}>
           <Stack spacing={{ xs: 4, md: 5 }} alignItems="center">
             <Typography
               variant="h4"
@@ -546,8 +557,11 @@ const WelcomePage2: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={pageContent.seniorsId} sx={{ background: 'linear-gradient(135deg, #f9fcfb 0%, #e4f3f0 100%)' }}>
-        <Container maxWidth={false} sx={{ ...layout.section, py: { xs: 8, md: 10 } }}>
+      <Box id={pageContent.seniorsId} sx={{ background: palette.pageBackground }}>
+        <Container
+          maxWidth={layout.maxWidth}
+          sx={{ ...layout.section, py: { xs: 8, md: 10 } }}
+        >
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 6, md: 8 }} alignItems="center">
             <CardMedia
               component="img"
@@ -591,19 +605,22 @@ const WelcomePage2: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={pageContent.corporateId} sx={{ background: '#0f3d3d', color: '#fff' }}>
-        <Container maxWidth={false} sx={{ ...layout.section, py: { xs: 8, md: 10 } }}>
+      <Box id={pageContent.corporateId} sx={{ backgroundColor: palette.pageBackground }}>
+        <Container
+          maxWidth={layout.maxWidth}
+          sx={{ ...layout.section, py: { xs: 8, md: 10 } }}
+        >
           <Stack direction={{ xs: 'column-reverse', md: 'row' }} spacing={{ xs: 6, md: 8 }} alignItems="center">
             <Stack spacing={3} flex={1}>
               <Chip
                 label="Unternehmen"
                 color="default"
-                sx={{ alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.18)', color: '#fff' }}
+                sx={{ alignSelf: 'flex-start', backgroundColor: 'rgba(45,125,125,0.1)', color: palette.textPrimary }}
               />
-              <Typography variant="h4" sx={{ fontWeight: 800 }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, color: palette.textPrimary }}>
                 {pageContent.corporateHeading}
               </Typography>
-              <Typography variant="h6" sx={{ opacity: 0.9 }}>
+              <Typography variant="h6" sx={{ color: palette.textSecondary }}>
                 {pageContent.corporateSubtitle}
               </Typography>
               <Stack spacing={2.5}>
@@ -635,10 +652,10 @@ const WelcomePage2: React.FC = () => {
             </Stack>
             <Card
               sx={{
-                background: 'linear-gradient(150deg, rgba(255,255,255,0.18) 0%, rgba(0,0,0,0.4) 100%)',
+                background: 'linear-gradient(150deg, rgba(255,255,255,0.92) 0%, rgba(211,239,235,0.7) 100%)',
                 borderRadius: 5,
                 overflow: 'hidden',
-                boxShadow: '0 32px 70px rgba(0,0,0,0.45)',
+                boxShadow: '0 28px 60px rgba(12,63,63,0.18)',
                 width: { xs: '100%', md: '52%' }
               }}
             >
@@ -648,7 +665,7 @@ const WelcomePage2: React.FC = () => {
                 alt="Team Session"
                 sx={{ height: { xs: 280, md: 360 }, objectFit: 'cover' }}
               />
-              <CardContent sx={{ color: '#fff' }}>
+              <CardContent sx={{ color: palette.textPrimary }}>
                 <Typography variant="subtitle1" sx={{ opacity: 0.88 }}>
                   Geführte Active Breaks steigern Produktivität und Wohlbefinden innerhalb weniger Wochen.
                 </Typography>
@@ -658,8 +675,11 @@ const WelcomePage2: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={pageContent.medicalId} sx={{ background: 'linear-gradient(140deg, #ffffff 0%, #f1f6ff 100%)' }}>
-        <Container maxWidth={false} sx={{ ...layout.section, py: { xs: 8, md: 10 } }}>
+      <Box id={pageContent.medicalId} sx={{ background: palette.pageBackground }}>
+        <Container
+          maxWidth={layout.maxWidth}
+          sx={{ ...layout.section, py: { xs: 8, md: 10 } }}
+        >
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 6, md: 8 }} alignItems="center">
             <Stack spacing={3} flex={1}>
               <Chip label="Medizin & Pflege" color="primary" sx={{ alignSelf: 'flex-start' }} />
@@ -713,13 +733,22 @@ const WelcomePage2: React.FC = () => {
 
       <Box
         sx={{
-          background: 'linear-gradient(120deg, #0f3d3d 0%, #2d7d7d 60%, #53b5b5 100%)',
-          color: '#fff'
+          backgroundColor: palette.pageBackground
         }}
       >
         <Container
-          maxWidth={false}
-          sx={{ ...layout.section, py: { xs: 8, md: 10 }, display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'center' }}
+          maxWidth={layout.maxWidth}
+          sx={{
+            ...layout.section,
+            py: { xs: 8, md: 10 },
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 4,
+            alignItems: 'center',
+            borderRadius: { xs: 4, md: 5 },
+            background: 'linear-gradient(120deg, rgba(15,61,61,0.95) 0%, rgba(45,125,125,0.95) 60%, rgba(83,181,181,0.92) 100%)',
+            boxShadow: '0 30px 60px rgba(12,63,63,0.22)'
+          }}
         >
           <Typography variant="h4" sx={{ fontWeight: 800, textAlign: 'center', maxWidth: 700 }}>
             {pageContent.finalCtaHeading}
@@ -741,8 +770,11 @@ const WelcomePage2: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={pageContent.faqId} sx={{ backgroundColor: '#ffffff' }}>
-        <Container maxWidth={false} sx={{ ...layout.section, maxWidth: '840px', py: { xs: 8, md: 10 } }}>
+      <Box id={pageContent.faqId} sx={{ backgroundColor: palette.pageBackground }}>
+        <Container
+          maxWidth={layout.maxWidth}
+          sx={{ ...layout.section, maxWidth: '840px', mx: 'auto', py: { xs: 8, md: 10 } }}
+        >
           <Stack spacing={4} alignItems="center">
             <Typography variant="h4" sx={{ fontWeight: 800, color: palette.textPrimary }}>
               {pageContent.faqHeading}
