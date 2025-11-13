@@ -22,6 +22,15 @@ const palette = {
   glassShadow: '0 24px 48px rgba(22, 69, 69, 0.25)'
 };
 
+const layout = {
+  section: {
+    width: '100%',
+    maxWidth: '1200px',
+    mx: 'auto',
+    px: { xs: 2.5, md: 4 }
+  }
+};
+
 interface PageContent {
   metaTitle: string;
   metaDescription: string;
@@ -68,7 +77,7 @@ const pageContent: PageContent = {
   stats: [
     { value: '6 Übungen', label: 'Kurze Aktivpausen pro Tag – flexibel abrufbar für jeden Alltag.' },
     { value: '1–2 Min.', label: 'Dauer je Einheit – ideal für Meetings, Pflege und Zuhause.' },
-    { value: '100+ Videos', label: 'Geführte Bewegungen für Arbeitsplatz, Wohnzimmer und Pflegeeinrichtungen.' }
+    { value: '60+ Videos', label: 'Geführte Bewegungen für Arbeitsplatz, Wohnzimmer und Pflegeeinrichtungen.' }
   ],
   featureHeading: 'Warum aboelo Fitness begeistert',
   features: [
@@ -251,8 +260,8 @@ const WelcomePage: React.FC = () => {
           overflow: 'hidden',
           background: palette.heroGradient,
           color: '#ffffff',
-          pt: { xs: 12, sm: 14 },
-          pb: { xs: 12, sm: 16 }
+          pt: { xs: 12, md: 14 },
+          pb: { xs: 10, md: 14 }
         }}
       >
         <Box
@@ -262,9 +271,9 @@ const WelcomePage: React.FC = () => {
             background: 'radial-gradient(circle at top right, rgba(255,255,255,0.18) 0%, transparent 55%)'
           }}
         />
-        <Container maxWidth="lg" sx={{ position: 'relative' }}>
-          <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 6, md: 8 }} alignItems="center">
-            <Stack spacing={3} flex={1}>
+        <Container maxWidth={false} sx={{ ...layout.section, position: 'relative' }}>
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 6, md: 10 }} alignItems="stretch">
+            <Stack spacing={3.5} flex={1} justifyContent="center">
               <Chip 
                 label={pageContent.heroBadge} 
                 color="default" 
@@ -279,10 +288,10 @@ const WelcomePage: React.FC = () => {
                   border: '1px solid rgba(255,255,255,0.25)'
                 }} 
               />
-              <Typography variant="h2" sx={{ fontWeight: 800, lineHeight: 1.05, fontSize: { xs: '2.7rem', md: '3.9rem' }, textShadow: '0 12px 30px rgba(0,0,0,0.25)' }}>
+              <Typography variant="h2" sx={{ fontWeight: 800, lineHeight: 1.05, fontSize: { xs: '2.9rem', md: '3.8rem' }, textShadow: '0 12px 30px rgba(0,0,0,0.25)' }}>
                 {pageContent.heroTitle}
               </Typography>
-              <Typography variant="h6" sx={{ opacity: 0.92, fontSize: { xs: '1.15rem', md: '1.32rem' }, maxWidth: 660, lineHeight: 1.6 }}>
+              <Typography variant="h6" sx={{ opacity: 0.92, fontSize: { xs: '1.15rem', md: '1.28rem' }, maxWidth: 580, lineHeight: 1.65 }}>
                 {pageContent.heroSubtitle}
               </Typography>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ xs: 'stretch', sm: 'center' }}>
@@ -311,8 +320,12 @@ const WelcomePage: React.FC = () => {
                 sx={{
                   pt: 4,
                   display: 'grid',
-                  gap: 3,
-                  gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }
+                  gap: { xs: 2.5, md: 3.5 },
+                  gridTemplateColumns: {
+                    xs: 'repeat(1, minmax(0, 1fr))',
+                    sm: 'repeat(2, minmax(0, 1fr))',
+                    md: 'repeat(3, minmax(0, 1fr))'
+                  }
                 }}
               >
                 {pageContent.stats.map((item) => (
@@ -320,28 +333,45 @@ const WelcomePage: React.FC = () => {
                     key={item.value} 
                     sx={{ 
                       background: palette.neutralSurface,
-                      borderRadius: 4,
-                      p: 3,
-                      minHeight: 170,
+                      borderRadius: 3,
+                      p: { xs: 2.5, md: 3 },
+                      minHeight: { xs: 140, md: 160 },
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      gap: 1,
                       boxShadow: '0 18px 38px rgba(22,69,69,0.12)',
-                      border: '1px solid rgba(255,255,255,0.35)'
+                      border: '1px solid rgba(255,255,255,0.28)'
                     }}
                   >
-                    <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, color: palette.primaryText }}>{item.value}</Typography>
-                    <Typography variant="body1" sx={{ color: 'rgba(31,95,95,0.75)', lineHeight: 1.6 }}>{item.label}</Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700, color: palette.primaryText }}>{item.value}</Typography>
+                    <Typography variant="body1" sx={{ color: 'rgba(31,95,95,0.78)', lineHeight: 1.65 }}>{item.label}</Typography>
                   </Box>
                 ))}
               </Box>
             </Stack>
-            <Card sx={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(18px)', borderRadius: 5, border: '1px solid rgba(255,255,255,0.28)', boxShadow: palette.glassShadow }}>
+            <Card
+              sx={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                backgroundColor: 'rgba(255,255,255,0.18)',
+                backdropFilter: 'blur(18px)',
+                borderRadius: 5,
+                overflow: 'hidden',
+                border: '1px solid rgba(255,255,255,0.28)',
+                boxShadow: palette.glassShadow
+              }}
+            >
               <CardMedia
                 component="img"
                 image="/buero-uebung-aboelo.png"
                 alt={pageContent.seniorImageAlt}
-                sx={{ height: { xs: 280, md: 420 }, objectFit: 'cover', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
+                sx={{ height: { xs: 260, md: 420 }, objectFit: 'cover' }}
               />
-              <CardContent sx={{ color: '#fff' }}>
-                <Typography variant="subtitle1" sx={{ opacity: 0.85 }}>
+              <CardContent sx={{ color: '#fff', p: { xs: 3, md: 4 } }}>
+                <Typography variant="subtitle1" sx={{ opacity: 0.85, lineHeight: 1.6 }}>
                   Geführte Video-Routinen, alltagstaugliche Übungen und motivierende Gamification.
                 </Typography>
               </CardContent>
@@ -351,7 +381,7 @@ const WelcomePage: React.FC = () => {
       </Box>
 
       <Box id="explore">
-        <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
+        <Container maxWidth={false} sx={{ ...layout.section, py: { xs: 8, md: 12 } }}>
           <Stack spacing={4} alignItems="center">
             <Typography variant="h4" sx={{ fontWeight: 800, textAlign: 'center', maxWidth: 720, color: palette.primaryText }}>
               {pageContent.featureHeading}
@@ -360,7 +390,7 @@ const WelcomePage: React.FC = () => {
               sx={{
                 display: 'grid',
                 gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
-                gap: 4,
+                gap: { xs: 3, md: 4 },
                 width: '100%'
               }}
             >
@@ -369,13 +399,15 @@ const WelcomePage: React.FC = () => {
                   key={feature.title} 
                   sx={{ 
                     height: '100%', 
+                    display: 'flex',
+                    flexDirection: 'column',
                     borderRadius: 4, 
                     boxShadow: '0 22px 40px rgba(12,28,61,0.12)',
                     background: palette.neutralGradient,
                     border: '1px solid rgba(12,28,61,0.05)'
                   }}
                 >
-                  <CardContent sx={{ p: 4 }}>
+                  <CardContent sx={{ p: { xs: 3, md: 4 }, display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <IconButton size="large" disabled sx={{ backgroundColor: palette.accentSoft, mb: 2 }}>
                       <CheckCircleOutlineIcon sx={{ color: palette.accent }} />
                     </IconButton>
@@ -394,7 +426,7 @@ const WelcomePage: React.FC = () => {
       </Box>
 
       <Box id={pageContent.seniorsId} sx={{ background: 'linear-gradient(135deg, #ffffff 0%, #e3f4f2 100%)' }}>
-        <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
+        <Container maxWidth={false} sx={{ ...layout.section, py: { xs: 8, md: 10 } }}>
           <Box
             sx={{
               display: 'grid',
@@ -435,7 +467,7 @@ const WelcomePage: React.FC = () => {
       </Box>
 
       <Box id={pageContent.corporateId} sx={{ background: palette.darkSurface, color: '#fff' }}>
-        <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
+        <Container maxWidth={false} sx={{ ...layout.section, py: { xs: 8, md: 10 } }}>
           <Box
             sx={{
               display: 'grid',
@@ -470,7 +502,7 @@ const WelcomePage: React.FC = () => {
             <Card sx={{ backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 4, boxShadow: '0 20px 40px rgba(0,0,0,0.35)' }}>
               <CardMedia
                 component="img"
-                image="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80"
+                image="/aboelo-fitness-uebungen.png"
                 alt="Team Session"
                 sx={{ borderTopLeftRadius: 16, borderTopRightRadius: 16, height: { xs: 260, md: 360 }, objectFit: 'cover' }}
               />
@@ -485,7 +517,7 @@ const WelcomePage: React.FC = () => {
       </Box>
 
       <Box id={pageContent.medicalId} sx={{ background: 'linear-gradient(135deg, #ffffff 0%, #f2f7ff 100%)' }}>
-        <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
+        <Container maxWidth={false} sx={{ ...layout.section, py: { xs: 8, md: 10 } }}>
           <Box
             sx={{
               display: 'grid',
@@ -533,7 +565,7 @@ const WelcomePage: React.FC = () => {
       </Box>
 
       <Box id={pageContent.faqId} sx={{ backgroundColor: '#ffffff' }}>
-        <Container maxWidth="md" sx={{ py: { xs: 8, md: 10 } }}>
+        <Container maxWidth={false} sx={{ ...layout.section, maxWidth: '840px', py: { xs: 8, md: 10 } }}>
           <Stack spacing={4} alignItems="center">
             <Typography variant="h4" sx={{ fontWeight: 800, color: palette.primaryText }}>{pageContent.faqHeading}</Typography>
             <Divider sx={{ width: '100%', maxWidth: 240 }} />
@@ -554,7 +586,7 @@ const WelcomePage: React.FC = () => {
       </Box>
 
       <Box sx={{ background: 'linear-gradient(140deg, #1f5f5f 0%, #2d7d7d 50%, #3fa3a3 100%)', color: '#fff' }}>
-        <Container maxWidth="md" sx={{ py: { xs: 8, md: 10 } }}>
+        <Container maxWidth={false} sx={{ ...layout.section, maxWidth: '840px', py: { xs: 8, md: 10 } }}>
           <Stack spacing={4.5} alignItems="center" textAlign="center">
             <Typography variant="h3" sx={{ fontWeight: 800 }}>{pageContent.finalCtaHeading}</Typography>
             <Typography variant="h6" sx={{ maxWidth: 640, opacity: 0.92, lineHeight: 1.7 }}>{pageContent.finalCtaText}</Typography>
@@ -578,7 +610,7 @@ const WelcomePage: React.FC = () => {
             <Stack direction="row" spacing={1.5} alignItems="center">
               <Box component="img" src="/aboeloLogo.png" alt="aboelo Logo" sx={{ height: 24, width: 'auto' }} />
               <Typography variant="body2" sx={{ opacity: 0.7 }}>
-                © {new Date().getFullYear()} aboelo-fitness
+                © {new Date().getFullYear()} aboelo Fitness
               </Typography>
             </Stack>
             <Stack direction="row" spacing={3}>
