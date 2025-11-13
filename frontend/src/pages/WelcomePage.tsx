@@ -91,7 +91,7 @@ const pageContent: PageContent = {
     },
     {
       title: 'Intelligente Erinnerungen',
-      description: 'In Kürze: individuell planbare Browser-Reminder, die an die nächste Aktivpause erinnern und Teams synchron aktiv halten.'
+      description: 'Individuell planbare Browser-Reminder, die an die nächste Aktivpause erinnern und Teams synchron aktiv halten.'
     }
   ],
   seniorsHeading: 'Aktiv & selbstbestimmt im besten Alter',
