@@ -55,6 +55,8 @@ const WelcomeTutorialDialog: React.FC = () => {
 
   const { canInstall, promptInstall, isInstalled } = useInstallPromptContext();
 
+  const actionButtonSx = { flexGrow: 1, minWidth: { xs: '100%', sm: 220 } };
+
   useEffect(() => {
     if (!user || loading) {
       return;
@@ -142,7 +144,13 @@ const WelcomeTutorialDialog: React.FC = () => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="md"
+      fullWidth
+      PaperProps={{ sx: { width: { xs: '100%', sm: 720 } } }}
+    >
       <DialogTitle sx={{ fontWeight: 700 }}>Willkommen bei aboelo-fitness</DialogTitle>
       <DialogContent dividers>
         <Stack spacing={3}>
@@ -186,16 +194,17 @@ const WelcomeTutorialDialog: React.FC = () => {
             <Typography>
               Bleiben Sie mit kurzen Aktivpausen am Ball. Aktivieren Sie bei Bedarf den standardmäßigen 60-Minuten-Reminder in den Einstellungen.
             </Typography>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ flexWrap: 'wrap', width: '100%' }}>
               <Button
                 variant="outlined"
                 startIcon={<AccessTimeIcon />}
                 onClick={handleEnableReminder}
                 disabled={reminderState === 'loading' || (reminderAlreadyActive && isSubscribed)}
+                sx={actionButtonSx}
               >
                 {reminderAlreadyActive ? '60-Minuten-Erinnerung aktiv' : '60-Minuten-Erinnerung aktivieren'}
               </Button>
-              <Button variant="contained" onClick={() => navigate('/app/settings')}>
+              <Button variant="contained" onClick={() => navigate('/app/settings')} sx={actionButtonSx}>
                 Zu Profil & Einstellungen
               </Button>
               {canInstall && !isInstalled && (
@@ -203,6 +212,7 @@ const WelcomeTutorialDialog: React.FC = () => {
                   variant="outlined"
                   startIcon={<InstallMobileIcon />}
                   onClick={handleInstallApp}
+                  sx={actionButtonSx}
                 >
                   App installieren
                 </Button>
