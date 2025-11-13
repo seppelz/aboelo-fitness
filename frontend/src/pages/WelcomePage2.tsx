@@ -84,6 +84,8 @@ interface PageContent {
   heroCtaHref: string;
   officeImageAlt: string;
   seniorImageAlt: string;
+  progressImageAlt: string;
+  corporateImageAlt: string;
   contactCta: string;
 }
 
@@ -176,6 +178,8 @@ const pageContent: PageContent = {
   heroCtaHref: '/register',
   officeImageAlt: 'Team macht aktive Pause im Büro',
   seniorImageAlt: 'Seniorin trainiert mit Tablet',
+  progressImageAlt: 'Dashboard mit Fortschrittsübersicht von aboelo Fitness',
+  corporateImageAlt: 'Mitarbeitende führen gemeinsam eine Aktivpause durch',
   contactCta: 'Kontakt aufnehmen'
 };
 
@@ -198,22 +202,39 @@ const WelcomePage2: React.FC = () => {
     const script = document.createElement('script');
     script.type = 'application/ld+json';
     script.id = 'aboelo-structured-data';
+    const faqEntities = pageContent.faqs.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer
+      }
+    }));
     const jsonLd = {
       '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      name: 'aboelo-fitness',
-      url: 'https://www.aboelo-fitness.de/',
-      inLanguage: 'de-DE',
-      description: pageContent.metaDescription,
-      potentialAction: {
-        '@type': 'RegisterAction',
-        target: 'https://www.aboelo-fitness.de/register',
-        name: 'Jetzt registrieren'
-      },
-      publisher: {
-        '@type': 'Organization',
-        name: 'aboelo-fitness'
-      }
+      '@graph': [
+        {
+          '@type': 'WebSite',
+          name: 'aboelo Fitness',
+          url: 'https://www.aboelo-fitness.de/',
+          inLanguage: 'de-DE',
+          description: pageContent.metaDescription,
+          potentialAction: {
+            '@type': 'RegisterAction',
+            target: 'https://www.aboelo-fitness.de/register',
+            name: 'Jetzt registrieren'
+          },
+          publisher: {
+            '@type': 'Organization',
+            name: 'aboelo Fitness'
+          }
+        },
+        {
+          '@type': 'FAQPage',
+          name: pageContent.faqHeading,
+          mainEntity: faqEntities
+        }
+      ]
     };
     script.textContent = JSON.stringify(jsonLd);
     const existingScript = document.getElementById('aboelo-structured-data');
@@ -622,7 +643,7 @@ const WelcomePage2: React.FC = () => {
             <CardMedia
               component="img"
               image="/aboelo-fitness-progress.png"
-              alt={pageContent.officeImageAlt}
+              alt={pageContent.progressImageAlt}
               sx={{ borderRadius: 5, boxShadow: '0 32px 60px rgba(22,69,69,0.22)', width: { xs: '100%', md: '48%' } }}
             />
             <Stack spacing={3} flex={1}>
@@ -718,7 +739,7 @@ const WelcomePage2: React.FC = () => {
               <CardMedia
                 component="img"
                 image="/aboelo-fitness-uebungen.png"
-                alt="Team Session"
+                alt={pageContent.corporateImageAlt}
                 sx={{ height: { xs: 280, md: 360 }, objectFit: 'cover' }}
               />
               <CardContent sx={{ color: '#fff' }}>
