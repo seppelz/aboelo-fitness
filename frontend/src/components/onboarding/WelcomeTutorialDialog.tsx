@@ -56,10 +56,9 @@ const WelcomeTutorialDialog: React.FC = () => {
   const { canInstall, promptInstall, isInstalled } = useInstallPromptContext();
 
   const baseActionButtonSx = {
-    flex: { xs: '1 1 100%', md: '1 1 240px' },
-    minWidth: { xs: '100%', md: 'auto' },
-    minHeight: 64,
-    px: { xs: 2.5, md: 3.5 },
+    width: '100%',
+    minHeight: 62,
+    px: { xs: 2.5, md: 3 },
     borderRadius: 2,
     fontWeight: 600,
     display: 'flex',
@@ -246,10 +245,16 @@ const WelcomeTutorialDialog: React.FC = () => {
             <Typography sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
               Bleiben Sie mit kurzen Aktivpausen am Ball. Aktivieren Sie bei Bedarf den standardmäßigen 60-Minuten-Reminder in den Einstellungen.
             </Typography>
-            <Stack
-              direction={{ xs: 'column', sm: 'row' }}
-              spacing={2.5}
-              sx={{ flexWrap: 'wrap', width: '100%', alignItems: 'stretch', justifyContent: { sm: 'space-between' } }}
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: {
+                  xs: '1fr',
+                  sm: 'repeat(auto-fit, minmax(220px, 1fr))',
+                },
+                gap: { xs: 1.5, md: 2 },
+                width: '100%',
+              }}
             >
               <Button
                 variant="outlined"
@@ -258,7 +263,7 @@ const WelcomeTutorialDialog: React.FC = () => {
                 disabled={reminderState === 'loading' || (reminderAlreadyActive && isSubscribed)}
                 sx={{
                   ...baseActionButtonSx,
-                  boxShadow: '0px 8px 16px rgba(45, 125, 125, 0.08)',
+                  boxShadow: '0px 6px 14px rgba(45, 125, 125, 0.08)',
                   borderWidth: 2,
                   borderColor: 'primary.main',
                   color: 'primary.main',
@@ -278,10 +283,10 @@ const WelcomeTutorialDialog: React.FC = () => {
                 onClick={() => navigate('/app/settings')}
                 sx={{
                   ...baseActionButtonSx,
-                  boxShadow: '0px 14px 28px rgba(45, 125, 125, 0.24)',
+                  boxShadow: '0px 12px 24px rgba(45, 125, 125, 0.22)',
                   '&:hover': {
                     ...baseActionButtonSx['&:hover'],
-                    boxShadow: '0px 18px 32px rgba(45, 125, 125, 0.28)',
+                    boxShadow: '0px 16px 28px rgba(45, 125, 125, 0.26)',
                   },
                 }}
               >
@@ -294,7 +299,7 @@ const WelcomeTutorialDialog: React.FC = () => {
                   onClick={handleInstallApp}
                   sx={{
                     ...baseActionButtonSx,
-                    boxShadow: '0px 8px 16px rgba(45, 125, 125, 0.08)',
+                    boxShadow: '0px 6px 14px rgba(45, 125, 125, 0.08)',
                     borderWidth: 2,
                     borderColor: 'primary.main',
                     color: 'primary.main',
@@ -310,7 +315,7 @@ const WelcomeTutorialDialog: React.FC = () => {
                   App installieren
                 </Button>
               )}
-            </Stack>
+            </Box>
             {reminderState === 'success' && (
               <Alert severity="success">Erinnerung ist aktiviert. Sie können sie jederzeit in den Einstellungen anpassen.</Alert>
             )}
