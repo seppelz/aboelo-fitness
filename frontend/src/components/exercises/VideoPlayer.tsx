@@ -45,7 +45,6 @@ const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props,
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
   const isPortrait = useMediaQuery('(orientation: portrait)');
   const [isPaused, setIsPaused] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
@@ -53,64 +52,63 @@ const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props,
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Simple setup - only run once when component mounts
-    if (videoRef.current) {
-      const video = videoRef.current;
-      
-      // Set up event listeners
-      const updateProgress = () => {
-        if (onTimeUpdate) onTimeUpdate();
-        const current = video.currentTime || 0;
-        const total = video.duration || 0;
-        setCurrentTime(current);
-        if (total > 0) {
-          setProgress((current / total) * 100);
-        }
-      };
-      
-      const handleEnded = () => {
-        if (onComplete) onComplete();
-      };
-      
-      const handleLoadedData = () => {
-        setIsPaused(video.paused);
-        // Check duration when data is loaded
-        const duration = video.duration;
-        if (duration && duration !== Infinity && !isNaN(duration)) {
-        }
-      };
-      
-      video.addEventListener('timeupdate', updateProgress);
-      video.addEventListener('ended', handleEnded);
-      video.addEventListener('loadeddata', handleLoadedData);
-      
-      // Add additional event listeners for duration detection
-      video.addEventListener('loadedmetadata', () => {
-        const videoDuration = video.duration;
-        if (videoDuration && videoDuration !== Infinity && !isNaN(videoDuration)) {
-          setDuration(videoDuration);
-        }
-      });
-      
-      video.addEventListener('durationchange', () => {
-        const videoDuration = video.duration;
-        if (videoDuration && videoDuration !== Infinity && !isNaN(videoDuration)) {
-          setDuration(videoDuration);
-        }
-      });
-      
-      // Load the video once
-      video.load();
-      
-      // Cleanup function
-      return () => {
-          video.removeEventListener('timeupdate', updateProgress);
-          video.removeEventListener('ended', handleEnded);
-          video.removeEventListener('loadeddata', handleLoadedData);
-          // Note: loadedmetadata and durationchange listeners will be cleaned up automatically
-        };
+    const video = videoRef.current;
+    if (!video) {
+      return;
     }
-  }, []); // Empty dependency array - only run once
+
+    const updateProgress = () => {
+      if (onTimeUpdate) onTimeUpdate();
+      const current = video.currentTime || 0;
+      const total = video.duration || 0;
+      setCurrentTime(current);
+      if (total > 0) {
+        setProgress((current / total) * 100);
+      }
+    };
+
+    const handleEnded = () => {
+      if (onComplete) onComplete();
+    };
+
+    const handleLoadedData = () => {
+      setIsPaused(video.paused);
+      const loadedDuration = video.duration;
+      if (loadedDuration && loadedDuration !== Infinity && !isNaN(loadedDuration)) {
+        setDuration(loadedDuration);
+      }
+    };
+
+    const handleLoadedMetadata = () => {
+      const videoDuration = video.duration;
+      if (videoDuration && videoDuration !== Infinity && !isNaN(videoDuration)) {
+        setDuration(videoDuration);
+      }
+    };
+
+    const handleDurationChange = () => {
+      const videoDuration = video.duration;
+      if (videoDuration && videoDuration !== Infinity && !isNaN(videoDuration)) {
+        setDuration(videoDuration);
+      }
+    };
+
+    video.addEventListener('timeupdate', updateProgress);
+    video.addEventListener('ended', handleEnded);
+    video.addEventListener('loadeddata', handleLoadedData);
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
+    video.addEventListener('durationchange', handleDurationChange);
+
+    video.load();
+
+    return () => {
+      video.removeEventListener('timeupdate', updateProgress);
+      video.removeEventListener('ended', handleEnded);
+      video.removeEventListener('loadeddata', handleLoadedData);
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      video.removeEventListener('durationchange', handleDurationChange);
+    };
+  }, [onComplete, onTimeUpdate]);
   
   // Handle autoplay in a separate effect
   useEffect(() => {
