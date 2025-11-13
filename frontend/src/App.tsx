@@ -163,7 +163,23 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const LandingRoute = () => {
-  const { isAuthenticated } = React.useContext(AuthContext);
+  const { isAuthenticated, loading } = React.useContext(AuthContext);
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+        }}
+      >
+        <CircularProgress color="primary" thickness={4} size={48} />
+      </Box>
+    );
+  }
+
   return isAuthenticated ? <Navigate to="/app" replace /> : <WelcomePage />;
 };
 

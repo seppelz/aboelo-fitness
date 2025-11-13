@@ -351,16 +351,6 @@ const WelcomeTutorialDialog: React.FC = () => {
           sx={{ width: { xs: '100%', sm: 'auto' }, justifyContent: 'flex-end', flexWrap: 'wrap' }}
         >
           <Button
-            variant="text"
-            onClick={() => {
-              navigate('/app');
-              handleClose();
-            }}
-            sx={{ fontWeight: 600 }}
-          >
-            Weitere Inhalte entdecken
-          </Button>
-          <Button
             variant="contained"
             color="primary"
             onClick={handleClose}
