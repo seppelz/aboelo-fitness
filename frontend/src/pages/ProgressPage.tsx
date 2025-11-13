@@ -12,15 +12,13 @@ import {
   Tabs,
   Tab,
   LinearProgress,
-  useTheme,
-  Chip
+  useTheme
 } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';

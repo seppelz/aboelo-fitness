@@ -107,7 +107,6 @@ const ProfilePage: React.FC = () => {
   }, []);
 
   const {
-    supportsNotifications,
     permission,
     requestPermission,
     triggerTestReminder,

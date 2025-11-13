@@ -10,9 +10,6 @@ import {
   Slide,
   Chip,
   LinearProgress,
-  Stack,
-  Card,
-  CardContent,
   useTheme,
   Alert
 } from '@mui/material';

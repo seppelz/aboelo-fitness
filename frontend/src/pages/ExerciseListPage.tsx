@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container} from '@mui/material';
 import ExerciseList from '../components/exercises/ExerciseList';
 
 const ExerciseListPage: React.FC = () => {

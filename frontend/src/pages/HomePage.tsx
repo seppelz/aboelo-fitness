@@ -21,7 +21,6 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import StarIcon from '@mui/icons-material/Star';
 import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import AccessibilityNewIcon from '@mui/icons-material/AccessibilityNew';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';

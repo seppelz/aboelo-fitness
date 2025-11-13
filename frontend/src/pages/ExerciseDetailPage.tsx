@@ -302,20 +302,7 @@ const ExerciseDetailPage: React.FC = () => {
       setProgress(currentProgress);
     }
   };
-  
-  // Handle video pause/play to track watch duration
-  const handleVideoPause = () => {
-    if (watchStartTime) {
-      const watchDuration = (Date.now() - watchStartTime) / 1000;
-      setTotalWatchDuration(prev => prev + watchDuration);
-      setWatchStartTime(null);
-    }
-  };
-  
-  const handleVideoPlay = () => {
-    setWatchStartTime(Date.now());
-  };
-  
+    
   const getExerciseDisplayName = () => {
     if (!exercise) return 'Übung';
     const goalText = exercise.goal && exercise.goal.trim().length > 0 ? exercise.goal : null;
