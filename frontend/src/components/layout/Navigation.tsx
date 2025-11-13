@@ -228,28 +228,6 @@ const Navigation = () => {
             )}
           </Box>
 
-          {canInstall && !isInstalled && (
-            <Box sx={{ display: { xs: 'none', md: 'flex' }, mr: 2 }}>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleInstallClick}
-                startIcon={<InstallMobileIcon />}
-                disabled={installing}
-                sx={{
-                  fontWeight: 700,
-                  borderRadius: 2,
-                  boxShadow: '0 6px 16px rgba(255, 138, 101, 0.35)',
-                  '&:hover': {
-                    boxShadow: '0 8px 18px rgba(255, 138, 101, 0.4)',
-                  },
-                }}
-              >
-                App installieren
-              </Button>
-            </Box>
-          )}
-
           <Divider orientation="vertical" flexItem sx={{ mx: 2, bgcolor: 'rgba(255,255,255,0.2)', display: { xs: 'none', md: 'block' } }} />
 
           {/* Benutzermenü */}
