@@ -1,101 +1,102 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
-const MorningMotivation: React.FC = () => {
-  // Array of motivational quotes
-  const motivationalQuotes = [
-    {
-      text: "Bewegung ist die beste Medizin - und sie ist kostenlos!",
-      icon: <FavoriteIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Jeder Schritt zählt, jede Bewegung macht Sie stärker!",
-      icon: <SelfImprovementIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Sie sind nie zu alt, um fit zu bleiben!",
-      icon: <EmojiEventsIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Ihr Körper dankt Ihnen für jede Übung!",
-      icon: <FavoriteIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Kleine Schritte führen zu großen Veränderungen!",
-      icon: <SelfImprovementIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Heute ist ein guter Tag für Bewegung!",
-      icon: <WbSunnyIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Gesundheit ist Reichtum - investieren Sie täglich!",
-      icon: <FavoriteIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Bleiben Sie aktiv, bleiben Sie jung!",
-      icon: <SelfImprovementIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Ihre Fitness-Reise beginnt mit einem einzigen Schritt!",
-      icon: <EmojiEventsIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Bewegung bringt Lebensfreude!",
-      icon: <WbSunnyIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Stark bleiben bedeutet, jeden Tag etwas zu tun!",
-      icon: <SelfImprovementIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Ihr Wohlbefinden liegt in Ihren Händen!",
-      icon: <FavoriteIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Regelmäßigkeit schlägt Intensität!",
-      icon: <EmojiEventsIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Bewegen Sie sich heute für ein besseres Morgen!",
-      icon: <WbSunnyIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Jede Übung ist ein Geschenk an Ihren Körper!",
-      icon: <FavoriteIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Fitness kennt kein Alter!",
-      icon: <SelfImprovementIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Bleiben Sie in Bewegung, bleiben Sie glücklich!",
-      icon: <WbSunnyIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Ihr Körper kann mehr, als Sie denken!",
-      icon: <EmojiEventsIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Gesundheit ist die Grundlage für alles!",
-      icon: <FavoriteIcon sx={{ fontSize: 40 }} />
-    },
-    {
-      text: "Heute trainieren, morgen profitieren!",
-      icon: <SelfImprovementIcon sx={{ fontSize: 40 }} />
-    }
-  ];
+// Array of motivational quotes (module scoped to keep reference stable)
+const motivationalQuotes = [
+  {
+    text: "Bewegung ist die beste Medizin - und sie ist kostenlos!",
+    icon: <FavoriteIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Jeder Schritt zählt, jede Bewegung macht Sie stärker!",
+    icon: <SelfImprovementIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Sie sind nie zu alt, um fit zu bleiben!",
+    icon: <EmojiEventsIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Ihr Körper dankt Ihnen für jede Übung!",
+    icon: <FavoriteIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Kleine Schritte führen zu großen Veränderungen!",
+    icon: <SelfImprovementIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Heute ist ein guter Tag für Bewegung!",
+    icon: <WbSunnyIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Gesundheit ist Reichtum - investieren Sie täglich!",
+    icon: <FavoriteIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Bleiben Sie aktiv, bleiben Sie jung!",
+    icon: <SelfImprovementIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Ihre Fitness-Reise beginnt mit einem einzigen Schritt!",
+    icon: <EmojiEventsIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Bewegung bringt Lebensfreude!",
+    icon: <WbSunnyIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Stark bleiben bedeutet, jeden Tag etwas zu tun!",
+    icon: <SelfImprovementIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Ihr Wohlbefinden liegt in Ihren Händen!",
+    icon: <FavoriteIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Regelmäßigkeit schlägt Intensität!",
+    icon: <EmojiEventsIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Bewegen Sie sich heute für ein besseres Morgen!",
+    icon: <WbSunnyIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Jede Übung ist ein Geschenk an Ihren Körper!",
+    icon: <FavoriteIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Fitness kennt kein Alter!",
+    icon: <SelfImprovementIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Bleiben Sie in Bewegung, bleiben Sie glücklich!",
+    icon: <WbSunnyIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Ihr Körper kann mehr, als Sie denken!",
+    icon: <EmojiEventsIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Gesundheit ist die Grundlage für alles!",
+    icon: <FavoriteIcon sx={{ fontSize: 40 }} />,
+  },
+  {
+    text: "Heute trainieren, morgen profitieren!",
+    icon: <SelfImprovementIcon sx={{ fontSize: 40 }} />,
+  },
+];
 
+const MorningMotivation: React.FC = () => {
   // Get quote of the day (changes daily)
-  const quoteOfTheDay = useMemo(() => {
-    const today = new Date();
-    const dayOfYear = Math.floor((today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24);
-    return motivationalQuotes[dayOfYear % motivationalQuotes.length];
-  }, []);
+  const today = new Date();
+  const dayOfYear = Math.floor(
+    (today.getTime() - new Date(today.getFullYear(), 0, 0).getTime()) /
+      (1000 * 60 * 60 * 24)
+  );
+  const quoteOfTheDay = motivationalQuotes[dayOfYear % motivationalQuotes.length];
 
   return (
     <Paper

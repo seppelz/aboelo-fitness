@@ -10,7 +10,6 @@ import {
   Container, 
   Button, 
   MenuItem,
-  useTheme,
   Divider,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -37,7 +36,6 @@ const baseNavItems = [
 ];
 
 const Navigation = () => {
-  const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout, isAdmin } = useContext(AuthContext);
@@ -125,6 +123,46 @@ const Navigation = () => {
             </IconButton>
             <AppLogo compact />
           </Box>
+
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorElNav}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+            open={Boolean(anchorElNav)}
+            onClose={handleCloseNavMenu}
+            sx={{ display: { xs: 'block', md: 'none' } }}
+          >
+            {user ? (
+              appNavItems.map((item) => (
+                <MenuItem key={item.path} onClick={() => handleNavigation(item.path)}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    {item.icon}
+                    <Typography textAlign="center">{item.name}</Typography>
+                  </Box>
+                </MenuItem>
+              ))
+            ) : (
+              <>
+                <MenuItem onClick={() => handleNavigation('/willkommen')}>
+                  <Typography textAlign="center">Willkommen</Typography>
+                </MenuItem>
+                <MenuItem onClick={() => { navigate('/login'); handleCloseNavMenu(); }}>
+                  <Typography textAlign="center">Anmelden</Typography>
+                </MenuItem>
+                <MenuItem onClick={() => { navigate('/register'); handleCloseNavMenu(); }}>
+                  <Typography textAlign="center">Registrieren</Typography>
+                </MenuItem>
+              </>
+            )}
+          </Menu>
 
           {/* Logo für große Bildschirme */}
           <Box sx={{ mr: 3, display: { xs: 'none', md: 'flex' } }}>
