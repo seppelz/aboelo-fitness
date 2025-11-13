@@ -249,7 +249,7 @@ const WelcomePage: React.FC = () => {
       publisher: {
         '@type': 'Organization',
         name: 'aboelo-fitness',
-        sameAs: ['https://www.linkedin.com/company/aboelo-fitness']
+        
       }
     };
     script.textContent = JSON.stringify(jsonLd);
