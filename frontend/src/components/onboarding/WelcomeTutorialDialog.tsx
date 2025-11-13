@@ -55,14 +55,30 @@ const WelcomeTutorialDialog: React.FC = () => {
 
   const { canInstall, promptInstall, isInstalled } = useInstallPromptContext();
 
-  const actionButtonSx = {
-    flexGrow: 1,
-    minWidth: { xs: '100%', sm: 260 },
-    px: { xs: 2.5, sm: 3 },
-    py: { xs: 1.25, sm: 1.5 },
-    borderRadius: 1.5,
+  const baseActionButtonSx = {
+    flex: { xs: '1 1 100%', md: '1 1 240px' },
+    minWidth: { xs: '100%', md: 'auto' },
+    minHeight: 64,
+    px: { xs: 2.5, md: 3.5 },
+    borderRadius: 2,
     fontWeight: 600,
-    justifyContent: 'flex-start',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 1.25,
+    textAlign: 'center',
+    textTransform: 'none',
+    letterSpacing: 0,
+    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+    '&:hover': {
+      transform: { md: 'translateY(-2px)' },
+    },
+    '& .MuiButton-startIcon': {
+      margin: 0,
+      '& > *:nth-of-type(1)': {
+        fontSize: '1.4rem',
+      },
+    },
   } as const;
 
   const infoListItemSx = {
@@ -232,19 +248,43 @@ const WelcomeTutorialDialog: React.FC = () => {
             </Typography>
             <Stack
               direction={{ xs: 'column', sm: 'row' }}
-              spacing={2}
-              sx={{ flexWrap: 'wrap', width: '100%', alignItems: 'stretch' }}
+              spacing={2.5}
+              sx={{ flexWrap: 'wrap', width: '100%', alignItems: 'stretch', justifyContent: { sm: 'space-between' } }}
             >
               <Button
                 variant="outlined"
                 startIcon={<AccessTimeIcon />}
                 onClick={handleEnableReminder}
                 disabled={reminderState === 'loading' || (reminderAlreadyActive && isSubscribed)}
-                sx={actionButtonSx}
+                sx={{
+                  ...baseActionButtonSx,
+                  boxShadow: '0px 8px 16px rgba(45, 125, 125, 0.08)',
+                  borderWidth: 2,
+                  borderColor: 'primary.main',
+                  color: 'primary.main',
+                  backgroundColor: 'common.white',
+                  '&:hover': {
+                    ...baseActionButtonSx['&:hover'],
+                    borderColor: 'primary.dark',
+                    boxShadow: '0px 10px 20px rgba(45, 125, 125, 0.12)',
+                    backgroundColor: 'common.white',
+                  },
+                }}
               >
                 {reminderAlreadyActive ? '60-Minuten-Erinnerung aktiv' : '60-Minuten-Erinnerung aktivieren'}
               </Button>
-              <Button variant="contained" onClick={() => navigate('/app/settings')} sx={actionButtonSx}>
+              <Button
+                variant="contained"
+                onClick={() => navigate('/app/settings')}
+                sx={{
+                  ...baseActionButtonSx,
+                  boxShadow: '0px 14px 28px rgba(45, 125, 125, 0.24)',
+                  '&:hover': {
+                    ...baseActionButtonSx['&:hover'],
+                    boxShadow: '0px 18px 32px rgba(45, 125, 125, 0.28)',
+                  },
+                }}
+              >
                 Zu Profil & Einstellungen
               </Button>
               {canInstall && !isInstalled && (
@@ -252,7 +292,20 @@ const WelcomeTutorialDialog: React.FC = () => {
                   variant="outlined"
                   startIcon={<InstallMobileIcon />}
                   onClick={handleInstallApp}
-                  sx={actionButtonSx}
+                  sx={{
+                    ...baseActionButtonSx,
+                    boxShadow: '0px 8px 16px rgba(45, 125, 125, 0.08)',
+                    borderWidth: 2,
+                    borderColor: 'primary.main',
+                    color: 'primary.main',
+                    backgroundColor: 'common.white',
+                    '&:hover': {
+                      ...baseActionButtonSx['&:hover'],
+                      borderColor: 'primary.dark',
+                      boxShadow: '0px 10px 20px rgba(45, 125, 125, 0.12)',
+                      backgroundColor: 'common.white',
+                    },
+                  }}
                 >
                   App installieren
                 </Button>
