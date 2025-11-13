@@ -6,7 +6,6 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { Link as RouterLink } from 'react-router-dom';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 const palette = {
   background: '#f0f7f7',
@@ -22,20 +21,6 @@ const palette = {
   secondaryText: '#3a6a6a',
   glassShadow: '0 24px 48px rgba(22, 69, 69, 0.25)'
 };
-
-interface NavItem {
-  label: string;
-  href: string;
-  emphasize?: boolean;
-  hasDropdown?: boolean;
-}
-
-const headerNavItems: NavItem[] = [
-  { label: "So geht's", href: '#explore' },
-  { label: 'Hilfsmittel-Ratgeber', href: '#senioren', hasDropdown: true },
-  { label: 'Info', href: '#faq', hasDropdown: true },
-  { label: 'Katalog', href: '#unternehmen', emphasize: true }
-];
 
 interface PageContent {
   metaTitle: string;
@@ -56,8 +41,6 @@ interface PageContent {
   medicalHeading: string;
   medicalSubtitle: string;
   medicalBenefits: string[];
-  testimonialHeading: string;
-  testimonials: { quote: string; name: string; role: string }[];
   faqHeading: string;
   faqs: { question: string; answer: string }[];
   finalCtaHeading: string;
@@ -75,11 +58,11 @@ interface PageContent {
 }
 
 const pageContent: PageContent = {
-  metaTitle: 'aboelo-fitness | Digitale Bewegungslösungen für Senioren, Unternehmen und Gesundheitspartner',
-  metaDescription: 'aboelo-fitness kombiniert evidenzbasierte Trainingsprogramme, Videoanleitungen und Analytics für Senioren, Mitarbeitende und Pflegeeinrichtungen. Jetzt informieren und registrieren.',
+  metaTitle: 'aboelo Fitness | Digitale Bewegungslösungen für Senioren, Unternehmen und Gesundheitspartner',
+  metaDescription: 'aboelo Fitness kombiniert evidenzbasierte Trainingsprogramme, Videoanleitungen und Analytics für Senioren, Mitarbeitende und Pflegeeinrichtungen. Jetzt informieren und registrieren.',
   heroBadge: 'Ganzheitliche Bewegungslösungen',
   heroTitle: 'Digitale Fitness, die Menschen bewegt – zuhause, im Büro und in der Pflege',
-  heroSubtitle: 'aboelo-fitness verbindet evidenzbasierte Mikro-Pausen von 1–2 Minuten mit klaren Videoanleitungen und intelligenten Erinnerungen. Wir helfen dabei, alle 60 Minuten aufzustehen und das 6-Übungen-pro-Tag-Ziel locker zu erreichen – ganz ohne Live-Coachings.',
+  heroSubtitle: 'aboelo Fitness verbindet evidenzbasierte Mikro-Pausen von 1–2 Minuten mit klaren Videoanleitungen und intelligenten Erinnerungen. Wir helfen dabei, alle 60 Minuten aufzustehen und das 6-Übungen-pro-Tag-Ziel locker zu erreichen – ganz ohne Live-Coachings.',
   heroPrimaryCta: 'Jetzt registrieren',
   heroSecondaryCta: 'Programm entdecken',
   stats: [
@@ -87,7 +70,7 @@ const pageContent: PageContent = {
     { value: '1–2 Min.', label: 'Dauer je Einheit – ideal für Meetings, Pflege und Zuhause.' },
     { value: '100+ Videos', label: 'Geführte Bewegungen für Arbeitsplatz, Wohnzimmer und Pflegeeinrichtungen.' }
   ],
-  featureHeading: 'Warum aboelo-fitness begeistert',
+  featureHeading: 'Warum aboelo Fitness begeistert',
   features: [
     {
       title: 'Geführte Mikro-Pausen',
@@ -122,19 +105,6 @@ const pageContent: PageContent = {
     'Gemeinsame Zieldefinition mit klaren Wochenempfehlungen (6 Übungen pro Tag)',
     'Infomaterialien für Pflegekräfte und Angehörige zur sicheren Durchführung'
   ],
-  testimonialHeading: 'Stimmen aus der Praxis',
-  testimonials: [
-    {
-      quote: 'Mit den 2-Minuten-Übungen hält unser Büro-Team jede Stunde kurz inne – und die Energie bleibt bis Feierabend hoch.',
-      name: 'Dr. Felix Stern',
-      role: 'Chief People Officer, TechWerk GmbH'
-    },
-    {
-      quote: 'Unsere Tagesgäste schaffen ihre Aktivpausen jetzt selbständig. Die klaren Videos geben Sicherheit und machen Spaß.',
-      name: 'Anja Hoffmann',
-      role: 'Pflegedienstleitung, Tagespflege Lebensfreude'
-    }
-  ],
   faqHeading: 'Häufige Fragen',
   faqs: [
     {
@@ -143,7 +113,7 @@ const pageContent: PageContent = {
     },
     {
       question: 'Gibt es Live-Coachings?',
-      answer: 'Nein. aboelo-fitness setzt auf leicht verständliche Videos und Schritt-für-Schritt-Anleitungen, damit jede Person selbstständig trainieren kann. Wir helfen dabei, alle 60 Minuten aufzustehen und das 6-Übungen-pro-Tag-Ziel locker zu erreichen – ganz ohne Live-Coachings.'
+      answer: 'Nein. aboelo Fitness setzt auf leicht verständliche Videos und Schritt-für-Schritt-Anleitungen, damit jede Person selbstständig trainieren kann. Wir helfen dabei, alle 60 Minuten aufzustehen und das 6-Übungen-pro-Tag-Ziel locker zu erreichen – ganz ohne Live-Coachings.'
     },
     {
       question: 'Welche Erinnerungen erhalte ich?',
@@ -155,7 +125,7 @@ const pageContent: PageContent = {
     }
   ],
   finalCtaHeading: 'Bereit für gesunde Routinen?',
-  finalCtaText: 'aboelo-fitness motiviert zu sechs kurzen Aktivpausen pro Tag. Starten Sie jetzt Ihren kostenlosen Testzugang und erleben Sie die Plattform live.',
+  finalCtaText: 'aboelo Fitness motiviert zu sechs kurzen Aktivpausen pro Tag. Starten Sie jetzt Ihren kostenlosen Testzugang und erleben Sie die Plattform live.',
   finalPrimaryCta: 'Kostenlosen Test starten',
   finalSecondaryCta: undefined,
   faqId: 'faq',
@@ -242,47 +212,34 @@ const WelcomePage: React.FC = () => {
           >
             <Stack direction="row" spacing={2} alignItems="center">
               <Box
-                component={RouterLink}
-                to="/"
+                component="a"
+                href="https://aboelo.de"
+                target="_blank"
+                rel="noopener"
                 sx={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
               >
                 <Box
                   component="img"
                   src="/aboeloLogo.png"
                   alt="aboelo Logo"
-                  sx={{ height: 28, width: 'auto' }}
+                  sx={{ height: 36, width: 'auto' }}
                 />
               </Box>
-              <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: 0.5, color: palette.primaryText }}>
-                Hilfsmittel-Finder
-              </Typography>
-            </Stack>
-            <Stack
-              direction={{ xs: 'column', md: 'row' }}
-              spacing={{ xs: 1, md: 3 }}
-              alignItems={{ xs: 'flex-start', md: 'center' }}
-            >
-              {headerNavItems.map((item) => (
-                <MuiLink
-                  key={item.label}
-                  href={item.href}
-                  underline="none"
-                  sx={{
-                    color: item.emphasize ? palette.primaryText : '#4a6464',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 0.5,
-                    fontWeight: item.emphasize ? 700 : 500,
-                    fontSize: '1rem',
-                    opacity: item.emphasize ? 1 : 0.85,
-                    transition: 'color 0.2s ease, opacity 0.2s ease',
-                    '&:hover': { opacity: 1, color: palette.primaryText }
-                  }}
-                >
-                  {item.label}
-                  {item.hasDropdown && <ArrowDropDownIcon sx={{ fontSize: 18, color: '#6b7e7e' }} />}
-                </MuiLink>
-              ))}
+              <MuiLink
+                href="https://fitness.aboelo.de"
+                target="_blank"
+                rel="noopener"
+                underline="none"
+                sx={{
+                  fontWeight: 700,
+                  letterSpacing: 0.5,
+                  color: palette.primaryText,
+                  fontSize: '1.15rem',
+                  '&:hover': { color: palette.primaryText, opacity: 0.8 }
+                }}
+              >
+                Fitness
+              </MuiLink>
             </Stack>
           </Stack>
         </Container>
@@ -572,37 +529,6 @@ const WelcomePage: React.FC = () => {
               </CardContent>
             </Card>
           </Box>
-        </Container>
-      </Box>
-
-      <Box sx={{ backgroundColor: '#f1f9f8' }}>
-        <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
-          <Stack spacing={6}>
-            <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 800, color: palette.primaryText }}>{pageContent.testimonialHeading}</Typography>
-            <Box
-              sx={{
-                display: 'grid',
-                gap: 4,
-                gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }
-              }}
-            >
-              {pageContent.testimonials.map((testimonial) => (
-                <Card key={testimonial.name} sx={{ height: '100%', borderRadius: 4, boxShadow: '0 10px 30px rgba(17,63,103,0.08)', background: '#fff' }}>
-                  <CardContent sx={{ p: 4 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: palette.primaryText }}>
-                      “{testimonial.quote}”
-                    </Typography>
-                    <Typography variant="subtitle1" color="primary">
-                      {testimonial.name}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: palette.secondaryText }}>
-                      {testimonial.role}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              ))}
-            </Box>
-          </Stack>
         </Container>
       </Box>
 
