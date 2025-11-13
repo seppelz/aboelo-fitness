@@ -820,6 +820,7 @@ const ExerciseDetailPage: React.FC = () => {
               onVideoComplete={handleExerciseComplete}
               videoRef={videoRef}
               onTimeUpdate={handleTimeUpdate}
+              autoplay
             />
           </Box>
         )}
@@ -867,6 +868,7 @@ const ExerciseDetailPage: React.FC = () => {
                 onVideoComplete={handleExerciseComplete}
                 videoRef={videoRef}
                 onTimeUpdate={handleTimeUpdate}
+                autoplay
               />
             </Box>
           ) : (

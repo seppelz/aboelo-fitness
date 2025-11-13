@@ -12,9 +12,10 @@ interface ExerciseVideoProps {
   onTimeUpdate?: () => void;
   onPlay?: () => void;
   onPause?: () => void;
+  autoplay?: boolean;
 }
 
-const ExerciseVideo: React.FC<ExerciseVideoProps> = ({ exercise, onVideoComplete, compact = false, videoRef, onTimeUpdate, onPlay, onPause }) => {
+const ExerciseVideo: React.FC<ExerciseVideoProps> = ({ exercise, onVideoComplete, compact = false, videoRef, onTimeUpdate, onPlay, onPause, autoplay = false }) => {
   // Memoize video details to prevent recalculation and re-renders
   const videoDetails = React.useMemo(() => getVideoDetails(exercise), [exercise]);
 
@@ -43,7 +44,7 @@ const ExerciseVideo: React.FC<ExerciseVideoProps> = ({ exercise, onVideoComplete
       onTimeUpdate={onTimeUpdate}
       onPlay={onPlay}
       onPause={onPause}
-      autoplay={false} // Don't autoplay - wait for user to start
+      autoplay={autoplay}
     />
   );
 };
