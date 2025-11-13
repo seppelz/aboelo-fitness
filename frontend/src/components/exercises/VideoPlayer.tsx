@@ -51,6 +51,17 @@ const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props,
   const [duration, setDuration] = useState(0);
   const [progress, setProgress] = useState(0);
 
+  const onCompleteRef = React.useRef(onComplete);
+  const onTimeUpdateRef = React.useRef(onTimeUpdate);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  useEffect(() => {
+    onTimeUpdateRef.current = onTimeUpdate;
+  }, [onTimeUpdate]);
+
   useEffect(() => {
     const video = videoRef.current;
     if (!video) {
@@ -58,7 +69,7 @@ const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props,
     }
 
     const updateProgress = () => {
-      if (onTimeUpdate) onTimeUpdate();
+      if (onTimeUpdateRef.current) onTimeUpdateRef.current();
       const current = video.currentTime || 0;
       const total = video.duration || 0;
       setCurrentTime(current);
@@ -68,7 +79,7 @@ const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props,
     };
 
     const handleEnded = () => {
-      if (onComplete) onComplete();
+      if (onCompleteRef.current) onCompleteRef.current();
     };
 
     const handleLoadedData = () => {
@@ -99,8 +110,6 @@ const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props,
     video.addEventListener('loadedmetadata', handleLoadedMetadata);
     video.addEventListener('durationchange', handleDurationChange);
 
-    video.load();
-
     return () => {
       video.removeEventListener('timeupdate', updateProgress);
       video.removeEventListener('ended', handleEnded);
@@ -108,7 +117,7 @@ const VideoPlayer = React.forwardRef<HTMLVideoElement, VideoPlayerProps>((props,
       video.removeEventListener('loadedmetadata', handleLoadedMetadata);
       video.removeEventListener('durationchange', handleDurationChange);
     };
-  }, [onComplete, onTimeUpdate]);
+  }, [src]);
   
   // Handle autoplay in a separate effect
   useEffect(() => {

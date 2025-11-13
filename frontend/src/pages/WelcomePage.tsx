@@ -35,9 +35,9 @@ const WelcomePage: React.FC = () => {
       heroPrimaryCta: 'Jetzt registrieren',
       heroSecondaryCta: 'Programm entdecken',
       stats: [
-        { value: '30 Min.', label: 'Tägliche Aktivpausen reichen, um spürbare Fortschritte zu erzielen.' },
-        { value: '+95%', label: 'der Pilotnutzer:innen berichten über mehr Energie im Alltag.' },
-        { value: '4 Zielgruppen', label: 'Senioren, Pflege, Unternehmen und medizinische Partner.' }
+        { value: '6 Übungen', label: 'Kurze Aktivpausen pro Tag – flexibel abrufbar für jeden Alltag.' },
+        { value: '1–2 Min.', label: 'Dauer je Einheit – ideal für Meetings, Pflege und Zuhause.' },
+        { value: '100+ Videos', label: 'Geführte Bewegungen für Arbeitsplatz, Wohnzimmer und Pflegeeinrichtungen.' }
       ],
       featureHeading: 'Warum aboelo-fitness begeistert',
       features: [
@@ -107,9 +107,9 @@ const WelcomePage: React.FC = () => {
         }
       ],
       finalCtaHeading: 'Bereit für gesunde Routinen?',
-      finalCtaText: 'aboelo-fitness motiviert zu sechs kurzen Aktivpausen pro Tag. Starten Sie jetzt Ihren kostenlosen Testzugang oder sprechen Sie mit uns über Ihren Einsatz im Team.',
+      finalCtaText: 'aboelo-fitness motiviert zu sechs kurzen Aktivpausen pro Tag. Starten Sie jetzt Ihren kostenlosen Testzugang und erleben Sie die Plattform live.',
       finalPrimaryCta: 'Kostenlosen Test starten',
-      finalSecondaryCta: 'Beratung anfragen',
+      finalSecondaryCta: '',
       languageLabelDe: 'Deutsch',
       languageLabelEn: 'English',
       faqId: 'faq',
@@ -130,9 +130,9 @@ const WelcomePage: React.FC = () => {
       heroPrimaryCta: 'Register now',
       heroSecondaryCta: 'Explore the program',
       stats: [
-        { value: '30 min', label: 'Daily active breaks are enough to feel the difference.' },
-        { value: '95%', label: 'of pilot users report more energy during the day.' },
-        { value: '4 segments', label: 'Seniors, care teams, employers and health professionals.' }
+        { value: '6 sessions', label: 'Short activity breaks each day—triggered whenever your schedule allows.' },
+        { value: '1–2 min', label: 'Per session duration—designed to slot between meetings or routines.' },
+        { value: '100+ videos', label: 'Guided movements for office, home and care environments.' }
       ],
       featureHeading: 'Why organizations choose aboelo-fitness',
       features: [
@@ -202,9 +202,9 @@ const WelcomePage: React.FC = () => {
         }
       ],
       finalCtaHeading: 'Ready to inspire healthy routines?',
-      finalCtaText: 'aboelo-fitness inspires six short movement breaks each day. Launch your free trial or chat with us about rolling it out to your team.',
+      finalCtaText: 'aboelo-fitness inspires six short movement breaks each day. Launch your free trial and experience the platform with your team.',
       finalPrimaryCta: 'Start free trial',
-      finalSecondaryCta: 'Request consultation',
+      finalSecondaryCta: '',
       languageLabelDe: 'Deutsch',
       languageLabelEn: 'English',
       faqId: 'faq',
@@ -637,9 +637,7 @@ const WelcomePage: React.FC = () => {
               <Button component={RouterLink} to="/register" variant="contained" color="secondary" size="large" endIcon={<ArrowForwardIcon />} sx={{ borderRadius: 3 }}>
                 {selectedContent.finalPrimaryCta}
               </Button>
-              <Button component={RouterLink} to="/kontakt" variant="outlined" size="large" sx={{ borderRadius: 3, borderColor: 'rgba(255,255,255,0.6)', color: '#fff' }}>
-                {selectedContent.finalSecondaryCta}
-              </Button>
+              
             </Stack>
           </Stack>
         </Container>
