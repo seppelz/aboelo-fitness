@@ -451,7 +451,7 @@ const WelcomePage: React.FC = () => {
           >
             <CardMedia
               component="img"
-              image="https://images.unsplash.com/photo-1573497491208-6b1acb260507?auto=format&fit=crop&w=1200&q=80"
+              image="/aboelo-fitness-progress.png"
               alt={selectedContent.officeImageAlt}
               sx={{ borderRadius: 4, boxShadow: '0 28px 52px rgba(22,69,69,0.2)' }}
             />

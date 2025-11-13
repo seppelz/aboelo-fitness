@@ -227,7 +227,7 @@ Name: Schultergürtel kräftigen 1 - stehend
 Vorbereitung: Führen Sie das Theraband hinterm Rücken und greifen Sie beide Enden, die Hände zeigen nach innen.
 Ausführung: Drücken Sie das Theraband nach vorne oben, bis die Ellbogen auf Schulterhöhe sind. Langsam in die Ausgangspostion zurückkehren.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung aus- bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
@@ -241,7 +241,7 @@ Name: Schultergürtel kräftigen 2 - stehend
 Vorbereitung: Führen Sie das Theraband hinterm Rücken und greifen Sie beide Enden, die Hände zeigen nach unten.
 Ausführung: Drücken Sie das Theraband nach vorne oben, bis die Ellbogen auf Schulterhöhe sind. Langsam in die Ausgangspostion zurückkehren.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung ausatmen, bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
@@ -255,7 +255,7 @@ Name: Schultergürtel kräftigen 3 - stehend
 Vorbereitung: Führen Sie das Theraband hinterm Rücken auf Brusthöhe und greifen Sie beide Enden.
 Ausführung: Drücken Sie das Theraband nach vorne und überkreuzen Sie die Hände. Langsam in die Ausgangslage zurückkehren.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung aus- bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
@@ -269,7 +269,7 @@ Name: Schultergürtel kräftigen 4 - stehend
 Vorbereitung: Fixieren Sie die Mitte des Therabands mit beiden Füßen und greifen die beiden Enden.
 Ausführung: Ziehen Sie das Theraband mit gestreckten Armen nach hinten. Langsam in die Ausganglage zurückkehren.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Nicht nach vorn lehnen. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Nicht nach vorn lehnen. Bei der Belastung aus- bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
@@ -283,7 +283,7 @@ Name: Schultergürtel kräftigen 5 - stehend
 Vorbereitung: Stellen Sie sich aufrecht und hüftbreit hin. Greifen Sie das Theraband mit beiden Händen. Die Ellbogen bleiben am Körper, die Unterarme zeigen parallel zum Boden.
 Ausführung: Ziehen Sie das Theraband nach außen, die Ellbogen bleibem am Körper.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung aus- bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
@@ -297,7 +297,7 @@ Name: Schultergürtel kräftigen 6 - stehend
 Vorbereitung: Führen Sie das Theraband hinterm Rücken und greifen Sie beide Enden mit den Händen, die Ellbogen sind auf Rumpfhöhe.
 Ausführung: Drücken Sie das Theraband nach vorn. Langsam in die Ausganglage zurückkehren.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Nicht nach vorn lehnen. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Nicht nach vorn lehnen. Bei der Belastung aus- bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
@@ -311,7 +311,7 @@ Name: Schultergürtel kräftigen 7 - stehend
 Vorbereitung: Machen Sie einen kleinen Ausfallschritt nach vorn und fixieren ein Ende des Therabands mit dem Fuß. Neigen Sie den Oberkörper in der Hüfte nach vorne, der Rücken bleibt gerade. 
 Ausführung: Ziehen Sie das Theraband nach hinten und oben, indem Sie den Ellbogen strecken.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Bei der Belastung aus- bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
@@ -325,7 +325,7 @@ Name: Schultergürtel kräftigen 8 - stehend
 Vorbereitung: Machen Sie einen leichten Ausfallschritt nach vorn. Fixieren Sie die Mitte des Therabands mit dem hinteren Fuß und greifen Sie die beiden Enden.
 Ausführung: Ziehen Sie das Theraband mit gestreckten Armen nach oben über den Kopf. Die Daumen zeigen nach oben. Langsam in die Ausganglage zurückkehren.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Schultern nicht nach oben ziehen. Bei der Belastung aus- bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
@@ -339,7 +339,7 @@ Name: Schultergürtel kräftigen 9 - stehend
 Vorbereitung: Greifen Sie das Theraband schulterbreit an beiden Enden und strecken sie die Arme nach vorne weg.
 Ausführung: Ziehen Sie das Theraband langsam auseinander bis beie Arme eine Linie bilden. Langsam in die Ausgangsposition zurückkehren.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Bei der Belastung aus- bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
@@ -353,7 +353,7 @@ Name: Schultergürtel kräftigen 10 - stehend
 Vorbereitung: Machen Sie einen leichten Ausfallschritt nach vorn. Fixieren Sie die Mitte des Therabands mit dem voderen Fuß und greifen Sie die beiden Enden unter Spannung.
 Ausführung: Ziehen Sie die Schultern langsam nach oben. Kehren Sie langsam in die Ausganglage zurückkehren.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Ellbogen gestreckt lassen. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Ellbogen gestreckt lassen. Bei der Belastung aus- bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
@@ -367,7 +367,7 @@ Name: Schultergürtel kräftigen 11 - stehend
 Vorbereitung: Fixieren Sie das Theraband mit beiden Füßen und greifen Sie die beiden Enden.
 Ausführung: Ziehen Sie die Schultern langsam nach oben und hinten. Langsam in die Ausgangsposition zurückkehren.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Ellbogen gestreckt lassen. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Ellbogen gestreckt lassen. Bei der Belastung aus- bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
@@ -381,7 +381,7 @@ Name: Schultergürtel kräftigen 12 - stehend
 Vorbereitung: Fixieren Sie das Theraband mit beiden Füßen und greifen Sie die beiden Enden.
 Ausführung: Ziehen Sie das Theraband nach oben bis zum Kinn, die Ellbogen sind auf Höhe der Hände. Langsam in die Ausgangsposition zurückkehren.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Bei der Belastung aus- bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
@@ -395,7 +395,7 @@ Name: Schultergürtel kräftigen 13 - stehend
 Vorbereitung: Fixieren Sie ein Ende des Therabands mit beiden Füßen und greifen das andere.
 Ausführung: Ziehen Sie das Band mit gestrecktem Arm bis über den Kopf. Langsam in die Ausgangsposition zurückkehren.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Ellbogen gestreckt lassen. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Ellbogen gestreckt lassen. Bei der Belastung aus- bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
@@ -409,7 +409,7 @@ Name: Schultergürtel kräftigen 14 - stehend
 Vorbereitung: Fixieren Sie ein Ende des Therabands mit beiden Füßen und greifen das andere.
 Ausführung: Ziehen Sie das Band mit gestrecktem Arm nach oben, bis der Arm parallel zum Boden ist. Langsam in die Ausgangsposition zurückkehren.
 Ziel: Kräftigung des Schultergürtels
-Tipps: Rücken gerade halten. Ellbogen gestreckt lassen. Bei der Belastung ein- bei Entlastung ausatmen.
+Tipps: Rücken gerade halten. Ellbogen gestreckt lassen. Bei der Belastung aus- bei Entlastung einatmen.
 Muskelgruppe: Schulter
 Kategorie: Kraft
 IsSitzend: false
