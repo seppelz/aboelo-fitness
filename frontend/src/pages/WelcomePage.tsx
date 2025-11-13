@@ -225,6 +225,70 @@ const WelcomePage: React.FC = () => {
   return (
     <Box sx={{ background: palette.background }}>
       <Box
+        component="header"
+        sx={{
+          backgroundColor: '#ffffff',
+          borderBottom: '1px solid rgba(31,95,95,0.12)',
+          position: 'relative',
+          zIndex: 2
+        }}
+      >
+        <Container maxWidth="lg" sx={{ py: { xs: 2.5, md: 3 } }}>
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            alignItems={{ xs: 'flex-start', md: 'center' }}
+            justifyContent="space-between"
+            spacing={{ xs: 2, md: 4 }}
+          >
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Box
+                component={RouterLink}
+                to="/"
+                sx={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
+              >
+                <Box
+                  component="img"
+                  src="/aboeloLogo.png"
+                  alt="aboelo Logo"
+                  sx={{ height: 28, width: 'auto' }}
+                />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: 0.5, color: palette.primaryText }}>
+                Hilfsmittel-Finder
+              </Typography>
+            </Stack>
+            <Stack
+              direction={{ xs: 'column', md: 'row' }}
+              spacing={{ xs: 1, md: 3 }}
+              alignItems={{ xs: 'flex-start', md: 'center' }}
+            >
+              {headerNavItems.map((item) => (
+                <MuiLink
+                  key={item.label}
+                  href={item.href}
+                  underline="none"
+                  sx={{
+                    color: item.emphasize ? palette.primaryText : '#4a6464',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 0.5,
+                    fontWeight: item.emphasize ? 700 : 500,
+                    fontSize: '1rem',
+                    opacity: item.emphasize ? 1 : 0.85,
+                    transition: 'color 0.2s ease, opacity 0.2s ease',
+                    '&:hover': { opacity: 1, color: palette.primaryText }
+                  }}
+                >
+                  {item.label}
+                  {item.hasDropdown && <ArrowDropDownIcon sx={{ fontSize: 18, color: '#6b7e7e' }} />}
+                </MuiLink>
+              ))}
+            </Stack>
+          </Stack>
+        </Container>
+      </Box>
+
+      <Box
         sx={{
           position: 'relative',
           overflow: 'hidden',
@@ -242,61 +306,6 @@ const WelcomePage: React.FC = () => {
           }}
         />
         <Container maxWidth="lg" sx={{ position: 'relative' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              mb: { xs: 5, md: 7 },
-              flexWrap: 'wrap',
-              gap: { xs: 2, md: 4 }
-            }}
-          >
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Box
-                component={RouterLink}
-                to="/"
-                sx={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
-              >
-                <Box
-                  component="img"
-                  src="/aboeloLogo.png"
-                  alt="aboelo Logo"
-                  sx={{ height: 28, width: 'auto' }}
-                />
-              </Box>
-              <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: 0.5, color: '#fff' }}>
-                Hilfsmittel-Finder
-              </Typography>
-            </Stack>
-            <Stack
-              direction={{ xs: 'column', md: 'row' }}
-              spacing={{ xs: 1, md: 3 }}
-              alignItems={{ xs: 'flex-start', md: 'center' }}
-            >
-              {headerNavItems.map((item) => (
-                <MuiLink
-                  key={item.label}
-                  href={item.href}
-                  underline="none"
-                  sx={{
-                    color: '#fff',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: 0.5,
-                    fontWeight: item.emphasize ? 700 : 500,
-                    fontSize: '1rem',
-                    opacity: item.emphasize ? 1 : 0.88,
-                    transition: 'opacity 0.2s ease',
-                    '&:hover': { opacity: 1 }
-                  }}
-                >
-                  {item.label}
-                  {item.hasDropdown && <ArrowDropDownIcon sx={{ fontSize: 18 }} />}
-                </MuiLink>
-              ))}
-            </Stack>
-          </Box>
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 6, md: 8 }} alignItems="center">
             <Stack spacing={3} flex={1}>
               <Chip 
@@ -632,7 +641,7 @@ const WelcomePage: React.FC = () => {
         </Container>
       </Box>
 
-      <Box component="footer" sx={{ backgroundColor: '#0f3b3b', color: '#fff' }}>
+      <Box component="footer" sx={{ backgroundColor: '#ffffff', color: palette.primaryText, borderTop: '1px solid rgba(31,95,95,0.12)' }}>
         <Container maxWidth="lg" sx={{ py: { xs: 4, md: 5 } }}>
           <Stack
             direction={{ xs: 'column', sm: 'row' }}
@@ -642,15 +651,15 @@ const WelcomePage: React.FC = () => {
           >
             <Stack direction="row" spacing={1.5} alignItems="center">
               <Box component="img" src="/aboeloLogo.png" alt="aboelo Logo" sx={{ height: 24, width: 'auto' }} />
-              <Typography variant="body2" sx={{ opacity: 0.8 }}>
+              <Typography variant="body2" sx={{ opacity: 0.7 }}>
                 © {new Date().getFullYear()} aboelo-fitness
               </Typography>
             </Stack>
             <Stack direction="row" spacing={3}>
-              <MuiLink href="https://aboelo.de/impressum" target="_blank" rel="noopener" underline="none" sx={{ color: '#fff', opacity: 0.9, '&:hover': { opacity: 1 } }}>
+              <MuiLink href="https://aboelo.de/impressum" target="_blank" rel="noopener" underline="none" sx={{ color: palette.primaryText, opacity: 0.8, '&:hover': { opacity: 1 } }}>
                 Impressum
               </MuiLink>
-              <MuiLink href="https://aboelo.de/datenschutz" target="_blank" rel="noopener" underline="none" sx={{ color: '#fff', opacity: 0.9, '&:hover': { opacity: 1 } }}>
+              <MuiLink href="https://aboelo.de/datenschutz" target="_blank" rel="noopener" underline="none" sx={{ color: palette.primaryText, opacity: 0.8, '&:hover': { opacity: 1 } }}>
                 Datenschutz
               </MuiLink>
             </Stack>
