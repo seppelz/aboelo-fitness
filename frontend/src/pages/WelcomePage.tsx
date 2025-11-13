@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Box, Container, Typography, Button, Stack, Chip, ToggleButtonGroup, ToggleButton, Card, CardContent, CardMedia, Accordion, AccordionSummary, AccordionDetails, Divider, IconButton } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Box, Container, Typography, Button, Stack, Chip, Card, CardContent, CardMedia, Accordion, AccordionSummary, AccordionDetails, Divider, IconButton, Link as MuiLink } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { Link as RouterLink } from 'react-router-dom';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 const palette = {
   background: '#f0f7f7',
@@ -22,215 +23,164 @@ const palette = {
   glassShadow: '0 24px 48px rgba(22, 69, 69, 0.25)'
 };
 
-const WelcomePage: React.FC = () => {
-  const [language, setLanguage] = useState<'de' | 'en'>('de');
+interface NavItem {
+  label: string;
+  href: string;
+  emphasize?: boolean;
+  hasDropdown?: boolean;
+}
 
-  const content = useMemo(() => ({
-    de: {
-      metaTitle: 'aboelo-fitness | Digitale Bewegungslösungen für Senioren, Unternehmen und Gesundheitspartner',
-      metaDescription: 'aboelo-fitness kombiniert evidenzbasierte Trainingsprogramme, Videoanleitungen und Analytics für Senioren, Mitarbeitende und Pflegeeinrichtungen. Jetzt informieren und registrieren.',
-      heroBadge: 'Ganzheitliche Bewegungslösungen',
-      heroTitle: 'Digitale Fitness, die Menschen bewegt – zuhause, im Büro und in der Pflege',
-      heroSubtitle: 'aboelo-fitness verbindet evidenzbasierte Mikro-Pausen von 1–2 Minuten mit klaren Videoanleitungen und intelligenten Erinnerungen. Wir helfen dabei, alle 60 Minuten aufzustehen und das 6-Übungen-pro-Tag-Ziel locker zu erreichen – ganz ohne Live-Coachings.',
-      heroPrimaryCta: 'Jetzt registrieren',
-      heroSecondaryCta: 'Programm entdecken',
-      stats: [
-        { value: '6 Übungen', label: 'Kurze Aktivpausen pro Tag – flexibel abrufbar für jeden Alltag.' },
-        { value: '1–2 Min.', label: 'Dauer je Einheit – ideal für Meetings, Pflege und Zuhause.' },
-        { value: '100+ Videos', label: 'Geführte Bewegungen für Arbeitsplatz, Wohnzimmer und Pflegeeinrichtungen.' }
-      ],
-      featureHeading: 'Warum aboelo-fitness begeistert',
-      features: [
-        {
-          title: 'Geführte Mikro-Pausen',
-          description: '1–2-minütige Bewegungsblöcke mit seniorengerechten Videoinstruktionen – perfekt für den Schreibtisch, fürs Wohnzimmer oder die Pflegeeinrichtung.'
-        },
-        {
-          title: 'Transparenter Fortschritt',
-          description: 'Wöchentliche und monatliche Übersichten machen jede absolvierte Übung sichtbar und fördern Motivation sowie Compliance.'
-        },
-        {
-          title: 'Intelligente Erinnerungen',
-          description: 'In Kürze: individuell planbare Browser-Reminder, die an die nächste Aktivpause erinnern und Teams synchron aktiv halten.'
-        }
-      ],
-      seniorsHeading: 'Aktiv & selbstbestimmt im besten Alter',
-      seniorsPoints: [
-        'Schonende Mobilisation, Sturzprävention und kräftigende Kurzprogramme für Zuhause',
-        'Großzügige Schriften, kontrastreiche Darstellung und optionale Audios unterstützen jede Bewegung',
-        'Motivationsimpulse über Streaks, Wochenziele und geteilte Erfolgsmeldungen mit Angehörigen'
-      ],
-      corporateHeading: 'Fit im Büro und im Schichtdienst',
-      corporateSubtitle: 'Jede Stunde 1–2 Minuten Bewegung: stärkt Konzentration, reduziert Ausfälle und zeigt Fürsorge am Arbeitsplatz.',
-      corporateBenefits: [
-        'Sechs geführte Aktivpausen pro Arbeitstag – flexibel abrufbar und jederzeit wiederholbar',
-        'In Kürze: Browser-Erinnerungen, die Teams automatisch an die nächste Pause erinnern',
-        'Kompakte Ergonomie-Impulse, Schulteröffner und Augen-Reset für produktive Meetings'
-      ],
-      medicalHeading: 'Für Ärzt:innen, Therapeut:innen und Pflegeeinrichtungen',
-      medicalSubtitle: 'Strukturierte Aktivierung ohne Zusatzaufwand – ideal für Tagespflege, betreutes Wohnen und Ambulanz.',
-      medicalBenefits: [
-        'Automatisierte Dokumentation von Teilnahme und Fortschritt',
-        'Gemeinsame Zieldefinition mit klaren Wochenempfehlungen (6 Übungen pro Tag)',
-        'Infomaterialien für Pflegekräfte und Angehörige zur sicheren Durchführung'
-      ],
-      testimonialHeading: 'Stimmen aus der Praxis',
-      testimonials: [
-        {
-          quote: 'Mit den 2-Minuten-Übungen hält unser Büro-Team jede Stunde kurz inne – und die Energie bleibt bis Feierabend hoch.',
-          name: 'Dr. Felix Stern',
-          role: 'Chief People Officer, TechWerk GmbH'
-        },
-        {
-          quote: 'Unsere Tagesgäste schaffen ihre Aktivpausen jetzt selbständig. Die klaren Videos geben Sicherheit und machen Spaß.',
-          name: 'Anja Hoffmann',
-          role: 'Pflegedienstleitung, Tagespflege Lebensfreude'
-        }
-      ],
-      faqHeading: 'Häufige Fragen',
-      faqs: [
-        {
-          question: 'Wie häufig sollte ich die Übungen machen?',
-          answer: 'Wir empfehlen sechs Aktivpausen pro Tag – jeweils 1–2 Minuten. Das entspricht einer kurzen Bewegung pro Stunde im Büro oder Zuhause.'
-        },
-        {
-          question: 'Gibt es Live-Coachings?',
-          answer: 'Nein. aboelo-fitness setzt auf leicht verständliche Videos und Schritt-für-Schritt-Anleitungen, damit jede Person selbstständig trainieren kann. Wir helfen dabei, alle 60 Minuten aufzustehen und das 6-Übungen-pro-Tag-Ziel locker zu erreichen – ganz ohne Live-Coachings.'
-        },
-        {
-          question: 'Welche Erinnerungen erhalte ich?',
-          answer: 'Aktuell gibt es feste Tagesziele und Streak-Hinweise. Bald können Browser-Erinnerungen individuell pro Uhrzeit oder Rhythmus eingestellt werden.'
-        },
-        {
-          question: 'Welche Daten werden gespeichert?',
-          answer: 'Wir speichern nur trainingsrelevante Informationen wie absolvierte Übungen, Dauer und persönliche Ziele. Alle Daten werden DSGVO-konform verarbeitet.'
-        }
-      ],
-      finalCtaHeading: 'Bereit für gesunde Routinen?',
-      finalCtaText: 'aboelo-fitness motiviert zu sechs kurzen Aktivpausen pro Tag. Starten Sie jetzt Ihren kostenlosen Testzugang und erleben Sie die Plattform live.',
-      finalPrimaryCta: 'Kostenlosen Test starten',
-      finalSecondaryCta: '',
-      languageLabelDe: 'Deutsch',
-      languageLabelEn: 'English',
-      faqId: 'faq',
-      seniorsId: 'senioren',
-      corporateId: 'unternehmen',
-      medicalId: 'partner',
-      heroCtaHref: '/register',
-      officeImageAlt: 'Team macht aktive Pause im Büro',
-      seniorImageAlt: 'Seniorin trainiert mit Tablet',
-      contactCta: 'Kontakt aufnehmen'
+const headerNavItems: NavItem[] = [
+  { label: "So geht's", href: '#explore' },
+  { label: 'Hilfsmittel-Ratgeber', href: '#senioren', hasDropdown: true },
+  { label: 'Info', href: '#faq', hasDropdown: true },
+  { label: 'Katalog', href: '#unternehmen', emphasize: true }
+];
+
+interface PageContent {
+  metaTitle: string;
+  metaDescription: string;
+  heroBadge: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  heroPrimaryCta: string;
+  heroSecondaryCta: string;
+  stats: { value: string; label: string }[];
+  featureHeading: string;
+  features: { title: string; description: string }[];
+  seniorsHeading: string;
+  seniorsPoints: string[];
+  corporateHeading: string;
+  corporateSubtitle: string;
+  corporateBenefits: string[];
+  medicalHeading: string;
+  medicalSubtitle: string;
+  medicalBenefits: string[];
+  testimonialHeading: string;
+  testimonials: { quote: string; name: string; role: string }[];
+  faqHeading: string;
+  faqs: { question: string; answer: string }[];
+  finalCtaHeading: string;
+  finalCtaText: string;
+  finalPrimaryCta: string;
+  finalSecondaryCta?: string;
+  faqId: string;
+  seniorsId: string;
+  corporateId: string;
+  medicalId: string;
+  heroCtaHref: string;
+  officeImageAlt: string;
+  seniorImageAlt: string;
+  contactCta: string;
+}
+
+const pageContent: PageContent = {
+  metaTitle: 'aboelo-fitness | Digitale Bewegungslösungen für Senioren, Unternehmen und Gesundheitspartner',
+  metaDescription: 'aboelo-fitness kombiniert evidenzbasierte Trainingsprogramme, Videoanleitungen und Analytics für Senioren, Mitarbeitende und Pflegeeinrichtungen. Jetzt informieren und registrieren.',
+  heroBadge: 'Ganzheitliche Bewegungslösungen',
+  heroTitle: 'Digitale Fitness, die Menschen bewegt – zuhause, im Büro und in der Pflege',
+  heroSubtitle: 'aboelo-fitness verbindet evidenzbasierte Mikro-Pausen von 1–2 Minuten mit klaren Videoanleitungen und intelligenten Erinnerungen. Wir helfen dabei, alle 60 Minuten aufzustehen und das 6-Übungen-pro-Tag-Ziel locker zu erreichen – ganz ohne Live-Coachings.',
+  heroPrimaryCta: 'Jetzt registrieren',
+  heroSecondaryCta: 'Programm entdecken',
+  stats: [
+    { value: '6 Übungen', label: 'Kurze Aktivpausen pro Tag – flexibel abrufbar für jeden Alltag.' },
+    { value: '1–2 Min.', label: 'Dauer je Einheit – ideal für Meetings, Pflege und Zuhause.' },
+    { value: '100+ Videos', label: 'Geführte Bewegungen für Arbeitsplatz, Wohnzimmer und Pflegeeinrichtungen.' }
+  ],
+  featureHeading: 'Warum aboelo-fitness begeistert',
+  features: [
+    {
+      title: 'Geführte Mikro-Pausen',
+      description: '1–2-minütige Bewegungsblöcke mit seniorengerechten Videoinstruktionen – perfekt für den Schreibtisch, fürs Wohnzimmer oder die Pflegeeinrichtung.'
     },
-    en: {
-      metaTitle: 'aboelo-fitness | Digital movement solutions for seniors, teams and care partners',
-      metaDescription: 'aboelo-fitness delivers science-backed exercise programs, guided videos and analytics for seniors, caregivers, companies and medical partners. Discover the platform and sign up today.',
-      heroBadge: 'Holistic Movement Platform',
-      heroTitle: 'Digital fitness that empowers people – at home, at work and in care',
-      heroSubtitle: 'aboelo-fitness blends science-backed 1–2 minute movement breaks with easy-to-follow videos and intelligent reminders. We help desk workers stand up every hour and hit their 6-exercises-a-day goal—no live coaching required.',
-      heroPrimaryCta: 'Register now',
-      heroSecondaryCta: 'Explore the program',
-      stats: [
-        { value: '6 sessions', label: 'Short activity breaks each day—triggered whenever your schedule allows.' },
-        { value: '1–2 min', label: 'Per session duration—designed to slot between meetings or routines.' },
-        { value: '100+ videos', label: 'Guided movements for office, home and care environments.' }
-      ],
-      featureHeading: 'Why organizations choose aboelo-fitness',
-      features: [
-        {
-          title: 'Guided micro breaks',
-          description: '1–2 minute activity bursts with age-friendly demonstrations—ideal for desks, living rooms or care facilities.'
-        },
-        {
-          title: 'Transparent progress',
-          description: 'Weekly and monthly dashboards keep every completed exercise visible and encourage sustainable routines.'
-        },
-        {
-          title: 'Smart reminders',
-          description: 'Coming soon: customizable browser nudges that prompt the next movement break and sync whole teams.'
-        }
-      ],
-      seniorsHeading: 'Active ageing made joyful',
-      seniorsPoints: [
-        'Gentle mobility, fall prevention and strength routines tailored for the home',
-        'Large type, high contrast visuals and optional audio cues support every move',
-        'Positive reinforcement via streaks, weekly goals and shared updates with loved ones'
-      ],
-      corporateHeading: 'Healthy teams in every workplace',
-      corporateSubtitle: 'Stand up every hour for a 1–2 minute reset—more focus, fewer sick days, visible care for your people.',
-      corporateBenefits: [
-        'Six guided activity breaks per workday—on demand and repeatable whenever needed',
-        'Coming soon: browser reminders that nudge teams automatically at the right time',
-        'Quick ergonomics tips, shoulder openers and eye resets for meeting-heavy days'
-      ],
-      medicalHeading: 'For physicians, therapists and care facilities',
-      medicalSubtitle: 'Structured activation without extra staffing—ideal for day care, assisted living and outpatient programs.',
-      medicalBenefits: [
-        'Automated records of participation and adherence',
-        'Shared goal-setting with clear weekly recommendations (6 exercises per day)',
-        'Support materials for caregivers and families to ensure safe execution'
-      ],
-      testimonialHeading: 'Voices from the field',
-      testimonials: [
-        {
-          quote: 'Our teams love the 2-minute reset between meetings—it keeps energy high right through to the afternoon.',
-          name: 'Dr. Felix Stern',
-          role: 'Chief People Officer, TechWerk GmbH'
-        },
-        {
-          quote: 'Day-care guests now complete their activation breaks independently. The clear videos make every move safe and fun.',
-          name: 'Anja Hoffmann',
-          role: 'Head Nurse, Lebensfreude Day Care'
-        }
-      ],
-      faqHeading: 'Frequently asked questions',
-      faqs: [
-        {
-          question: 'How often should I do the exercises?',
-          answer: 'We recommend six activity breaks per day—one short movement every hour keeps your desk routine healthy.'
-        },
-        {
-          question: 'Do you offer live coaching?',
-          answer: 'No. aboelo-fitness focuses on self-guided videos with clear instructions so everyone can move safely and independently.'
-        },
-        {
-          question: 'What reminders are available?',
-          answer: 'Right now you receive daily goals and streak prompts. Customizable browser reminders are on the roadmap and will launch soon.'
-        },
-        {
-          question: 'What data do you store?',
-          answer: 'We only keep training-related metrics such as completed sessions, duration and personal goals. All processing is GDPR compliant.'
-        }
-      ],
-      finalCtaHeading: 'Ready to inspire healthy routines?',
-      finalCtaText: 'aboelo-fitness inspires six short movement breaks each day. Launch your free trial and experience the platform with your team.',
-      finalPrimaryCta: 'Start free trial',
-      finalSecondaryCta: '',
-      languageLabelDe: 'Deutsch',
-      languageLabelEn: 'English',
-      faqId: 'faq',
-      seniorsId: 'seniors',
-      corporateId: 'workplace',
-      medicalId: 'partners',
-      heroCtaHref: '/register',
-      officeImageAlt: 'Team enjoying an active break in the office',
-      seniorImageAlt: 'Senior woman exercising with a tablet',
-      contactCta: 'Contact us'
+    {
+      title: 'Transparenter Fortschritt',
+      description: 'Wöchentliche und monatliche Übersichten machen jede absolvierte Übung sichtbar und fördern Motivation sowie Compliance.'
+    },
+    {
+      title: 'Intelligente Erinnerungen',
+      description: 'In Kürze: individuell planbare Browser-Reminder, die an die nächste Aktivpause erinnern und Teams synchron aktiv halten.'
     }
-  }), []);
+  ],
+  seniorsHeading: 'Aktiv & selbstbestimmt im besten Alter',
+  seniorsPoints: [
+    'Schonende Mobilisation, Sturzprävention und kräftigende Kurzprogramme für Zuhause',
+    'Großzügige Schriften, kontrastreiche Darstellung und optionale Audios unterstützen jede Bewegung',
+    'Motivationsimpulse über Streaks, Wochenziele und geteilte Erfolgsmeldungen mit Angehörigen'
+  ],
+  corporateHeading: 'Fit im Büro und im Schichtdienst',
+  corporateSubtitle: 'Jede Stunde 1–2 Minuten Bewegung: stärkt Konzentration, reduziert Ausfälle und zeigt Fürsorge am Arbeitsplatz.',
+  corporateBenefits: [
+    'Sechs geführte Aktivpausen pro Arbeitstag – flexibel abrufbar und jederzeit wiederholbar',
+    'In Kürze: Browser-Erinnerungen, die Teams automatisch an die nächste Pause erinnern',
+    'Kompakte Ergonomie-Impulse, Schulteröffner und Augen-Reset für produktive Meetings'
+  ],
+  medicalHeading: 'Für Ärzt:innen, Therapeut:innen und Pflegeeinrichtungen',
+  medicalSubtitle: 'Strukturierte Aktivierung ohne Zusatzaufwand – ideal für Tagespflege, betreutes Wohnen und Ambulanz.',
+  medicalBenefits: [
+    'Automatisierte Dokumentation von Teilnahme und Fortschritt',
+    'Gemeinsame Zieldefinition mit klaren Wochenempfehlungen (6 Übungen pro Tag)',
+    'Infomaterialien für Pflegekräfte und Angehörige zur sicheren Durchführung'
+  ],
+  testimonialHeading: 'Stimmen aus der Praxis',
+  testimonials: [
+    {
+      quote: 'Mit den 2-Minuten-Übungen hält unser Büro-Team jede Stunde kurz inne – und die Energie bleibt bis Feierabend hoch.',
+      name: 'Dr. Felix Stern',
+      role: 'Chief People Officer, TechWerk GmbH'
+    },
+    {
+      quote: 'Unsere Tagesgäste schaffen ihre Aktivpausen jetzt selbständig. Die klaren Videos geben Sicherheit und machen Spaß.',
+      name: 'Anja Hoffmann',
+      role: 'Pflegedienstleitung, Tagespflege Lebensfreude'
+    }
+  ],
+  faqHeading: 'Häufige Fragen',
+  faqs: [
+    {
+      question: 'Wie häufig sollte ich die Übungen machen?',
+      answer: 'Wir empfehlen sechs Aktivpausen pro Tag – jeweils 1–2 Minuten. Das entspricht einer kurzen Bewegung pro Stunde im Büro oder Zuhause.'
+    },
+    {
+      question: 'Gibt es Live-Coachings?',
+      answer: 'Nein. aboelo-fitness setzt auf leicht verständliche Videos und Schritt-für-Schritt-Anleitungen, damit jede Person selbstständig trainieren kann. Wir helfen dabei, alle 60 Minuten aufzustehen und das 6-Übungen-pro-Tag-Ziel locker zu erreichen – ganz ohne Live-Coachings.'
+    },
+    {
+      question: 'Welche Erinnerungen erhalte ich?',
+      answer: 'Aktuell gibt es feste Tagesziele und Streak-Hinweise. Bald können Browser-Erinnerungen individuell pro Uhrzeit oder Rhythmus eingestellt werden.'
+    },
+    {
+      question: 'Welche Daten werden gespeichert?',
+      answer: 'Wir speichern nur trainingsrelevante Informationen wie absolvierte Übungen, Dauer und persönliche Ziele. Alle Daten werden DSGVO-konform verarbeitet.'
+    }
+  ],
+  finalCtaHeading: 'Bereit für gesunde Routinen?',
+  finalCtaText: 'aboelo-fitness motiviert zu sechs kurzen Aktivpausen pro Tag. Starten Sie jetzt Ihren kostenlosen Testzugang und erleben Sie die Plattform live.',
+  finalPrimaryCta: 'Kostenlosen Test starten',
+  finalSecondaryCta: undefined,
+  faqId: 'faq',
+  seniorsId: 'senioren',
+  corporateId: 'unternehmen',
+  medicalId: 'partner',
+  heroCtaHref: '/register',
+  officeImageAlt: 'Team macht aktive Pause im Büro',
+  seniorImageAlt: 'Seniorin trainiert mit Tablet',
+  contactCta: 'Kontakt aufnehmen'
+};
 
+const WelcomePage: React.FC = () => {
   useEffect(() => {
-    const selected = content[language];
-    document.title = selected.metaTitle;
+    document.title = pageContent.metaTitle;
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', selected.metaDescription);
+      metaDescription.setAttribute('content', pageContent.metaDescription);
     } else {
       const meta = document.createElement('meta');
       meta.setAttribute('name', 'description');
-      meta.setAttribute('content', selected.metaDescription);
+      meta.setAttribute('content', pageContent.metaDescription);
       document.head.appendChild(meta);
     }
-    document.documentElement.lang = language;
+    document.documentElement.lang = 'de';
     const script = document.createElement('script');
     script.type = 'application/ld+json';
     script.id = 'aboelo-structured-data';
@@ -239,17 +189,16 @@ const WelcomePage: React.FC = () => {
       '@type': 'WebSite',
       name: 'aboelo-fitness',
       url: 'https://www.aboelo-fitness.de/',
-      inLanguage: language === 'de' ? 'de-DE' : 'en-US',
-      description: selected.metaDescription,
+      inLanguage: 'de-DE',
+      description: pageContent.metaDescription,
       potentialAction: {
         '@type': 'RegisterAction',
         target: 'https://www.aboelo-fitness.de/register',
-        name: language === 'de' ? 'Jetzt registrieren' : 'Register now'
+        name: 'Jetzt registrieren'
       },
       publisher: {
         '@type': 'Organization',
-        name: 'aboelo-fitness',
-        
+        name: 'aboelo-fitness'
       }
     };
     script.textContent = JSON.stringify(jsonLd);
@@ -264,9 +213,7 @@ const WelcomePage: React.FC = () => {
         cleanupScript.remove();
       }
     };
-  }, [content, language]);
-
-  const selectedContent = content[language];
+  }, []);
 
   useEffect(() => {
     document.body.style.background = palette.background;
@@ -295,51 +242,94 @@ const WelcomePage: React.FC = () => {
           }}
         />
         <Container maxWidth="lg" sx={{ position: 'relative' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              mb: { xs: 5, md: 7 },
+              flexWrap: 'wrap',
+              gap: { xs: 2, md: 4 }
+            }}
+          >
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Box
+                component={RouterLink}
+                to="/"
+                sx={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}
+              >
+                <Box
+                  component="img"
+                  src="/aboeloLogo.png"
+                  alt="aboelo Logo"
+                  sx={{ height: 28, width: 'auto' }}
+                />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 700, letterSpacing: 0.5, color: '#fff' }}>
+                Hilfsmittel-Finder
+              </Typography>
+            </Stack>
+            <Stack
+              direction={{ xs: 'column', md: 'row' }}
+              spacing={{ xs: 1, md: 3 }}
+              alignItems={{ xs: 'flex-start', md: 'center' }}
+            >
+              {headerNavItems.map((item) => (
+                <MuiLink
+                  key={item.label}
+                  href={item.href}
+                  underline="none"
+                  sx={{
+                    color: '#fff',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 0.5,
+                    fontWeight: item.emphasize ? 700 : 500,
+                    fontSize: '1rem',
+                    opacity: item.emphasize ? 1 : 0.88,
+                    transition: 'opacity 0.2s ease',
+                    '&:hover': { opacity: 1 }
+                  }}
+                >
+                  {item.label}
+                  {item.hasDropdown && <ArrowDropDownIcon sx={{ fontSize: 18 }} />}
+                </MuiLink>
+              ))}
+            </Stack>
+          </Box>
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 6, md: 8 }} alignItems="center">
             <Stack spacing={3} flex={1}>
-              <Stack direction="row" alignItems="center" spacing={2}>
-                <Chip 
-                  label={selectedContent.heroBadge} 
-                  color="default" 
-                  sx={{ 
-                    backgroundColor: palette.heroOverlay,
-                    color: '#fff', 
-                    fontSize: '1rem', 
-                    px: 2.5, 
-                    py: 3, 
-                    borderRadius: 999,
-                    backdropFilter: 'blur(12px)',
-                    border: '1px solid rgba(255,255,255,0.25)'
-                  }} 
-                />
-                <ToggleButtonGroup
-                  color="standard"
-                  value={language}
-                  exclusive
-                  onChange={(_, value) => value && setLanguage(value)}
-                  sx={{ backgroundColor: 'rgba(255,255,255,0.12)', borderRadius: 999, backdropFilter: 'blur(10px)' }}
-                >
-                  <ToggleButton value="de" sx={{ color: '#fff', px: 2 }}>{selectedContent.languageLabelDe}</ToggleButton>
-                  <ToggleButton value="en" sx={{ color: '#fff', px: 2 }}>{selectedContent.languageLabelEn}</ToggleButton>
-                </ToggleButtonGroup>
-              </Stack>
+              <Chip 
+                label={pageContent.heroBadge} 
+                color="default" 
+                sx={{ 
+                  backgroundColor: palette.heroOverlay,
+                  color: '#fff', 
+                  fontSize: '1rem', 
+                  px: 2.5, 
+                  py: 3, 
+                  borderRadius: 999,
+                  backdropFilter: 'blur(12px)',
+                  border: '1px solid rgba(255,255,255,0.25)'
+                }} 
+              />
               <Typography variant="h2" sx={{ fontWeight: 800, lineHeight: 1.05, fontSize: { xs: '2.7rem', md: '3.9rem' }, textShadow: '0 12px 30px rgba(0,0,0,0.25)' }}>
-                {selectedContent.heroTitle}
+                {pageContent.heroTitle}
               </Typography>
               <Typography variant="h6" sx={{ opacity: 0.92, fontSize: { xs: '1.15rem', md: '1.32rem' }, maxWidth: 660, lineHeight: 1.6 }}>
-                {selectedContent.heroSubtitle}
+                {pageContent.heroSubtitle}
               </Typography>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ xs: 'stretch', sm: 'center' }}>
                 <Button
                   component={RouterLink}
-                  to={selectedContent.heroCtaHref}
+                  to={pageContent.heroCtaHref}
                   size="large"
                   variant="contained"
                   color="primary"
                   endIcon={<ArrowForwardIcon />}
                   sx={{ fontSize: '1.15rem', py: 1.6, px: 4.25, borderRadius: 999, boxShadow: palette.glassShadow }}
                 >
-                  {selectedContent.heroPrimaryCta}
+                  {pageContent.heroPrimaryCta}
                 </Button>
                 <Button
                   href="#explore"
@@ -348,7 +338,7 @@ const WelcomePage: React.FC = () => {
                   endIcon={<ArrowDownwardIcon />}
                   sx={{ fontSize: '1.05rem', py: 1.6, px: 4, borderColor: 'rgba(255,255,255,0.55)', color: '#fff', borderRadius: 999, backdropFilter: 'blur(6px)' }}
                 >
-                  {selectedContent.heroSecondaryCta}
+                  {pageContent.heroSecondaryCta}
                 </Button>
               </Stack>
               <Box
@@ -359,7 +349,7 @@ const WelcomePage: React.FC = () => {
                   gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' }
                 }}
               >
-                {selectedContent.stats.map((item) => (
+                {pageContent.stats.map((item) => (
                   <Box 
                     key={item.value} 
                     sx={{ 
@@ -381,14 +371,12 @@ const WelcomePage: React.FC = () => {
               <CardMedia
                 component="img"
                 image="/buero-uebung-aboelo.png"
-                alt={selectedContent.seniorImageAlt}
+                alt={pageContent.seniorImageAlt}
                 sx={{ height: { xs: 280, md: 420 }, objectFit: 'cover', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
               />
               <CardContent sx={{ color: '#fff' }}>
                 <Typography variant="subtitle1" sx={{ opacity: 0.85 }}>
-                  {language === 'de'
-                    ? 'Geführte Video-Routinen, alltagstaugliche Übungen und motivierende Gamification.'
-                    : 'Guided video routines, everyday-friendly workouts and motivational gamification.'}
+                  Geführte Video-Routinen, alltagstaugliche Übungen und motivierende Gamification.
                 </Typography>
               </CardContent>
             </Card>
@@ -399,8 +387,8 @@ const WelcomePage: React.FC = () => {
       <Box id="explore">
         <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
           <Stack spacing={4} alignItems="center">
-            <Typography variant="h3" sx={{ fontWeight: 800, textAlign: 'center', maxWidth: 720, color: palette.primaryText }}>
-              {selectedContent.featureHeading}
+            <Typography variant="h4" sx={{ fontWeight: 800, textAlign: 'center', maxWidth: 720, color: palette.primaryText }}>
+              {pageContent.featureHeading}
             </Typography>
             <Box
               sx={{
@@ -410,7 +398,7 @@ const WelcomePage: React.FC = () => {
                 width: '100%'
               }}
             >
-              {selectedContent.features.map((feature) => (
+              {pageContent.features.map((feature) => (
                 <Card 
                   key={feature.title} 
                   sx={{ 
@@ -439,7 +427,7 @@ const WelcomePage: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={selectedContent.seniorsId} sx={{ background: 'linear-gradient(135deg, #ffffff 0%, #e3f4f2 100%)' }}>
+      <Box id={pageContent.seniorsId} sx={{ background: 'linear-gradient(135deg, #ffffff 0%, #e3f4f2 100%)' }}>
         <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
           <Box
             sx={{
@@ -452,14 +440,14 @@ const WelcomePage: React.FC = () => {
             <CardMedia
               component="img"
               image="/aboelo-fitness-progress.png"
-              alt={selectedContent.officeImageAlt}
+              alt={pageContent.officeImageAlt}
               sx={{ borderRadius: 4, boxShadow: '0 28px 52px rgba(22,69,69,0.2)' }}
             />
             <Stack spacing={3}>
-              <Chip label={language === 'de' ? 'Senioren' : 'Seniors'} color="primary" sx={{ alignSelf: 'flex-start', fontWeight: 600 }} />
-              <Typography variant="h4" sx={{ fontWeight: 800, color: palette.primaryText }}>{selectedContent.seniorsHeading}</Typography>
+              <Chip label="Senioren" color="primary" sx={{ alignSelf: 'flex-start', fontWeight: 600 }} />
+              <Typography variant="h4" sx={{ fontWeight: 800, color: palette.primaryText }}>{pageContent.seniorsHeading}</Typography>
               <Stack spacing={2}>
-                {selectedContent.seniorsPoints.map((point) => (
+                {pageContent.seniorsPoints.map((point) => (
                   <Stack key={point} direction="row" spacing={2} alignItems="flex-start">
                     <CheckCircleOutlineIcon color="primary" sx={{ mt: 0.5 }} />
                     <Typography variant="body1" sx={{ lineHeight: 1.75, color: palette.secondaryText }}>{point}</Typography>
@@ -469,10 +457,10 @@ const WelcomePage: React.FC = () => {
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <Button component={RouterLink} to="/register" variant="contained" color="primary" size="large" endIcon={<ArrowForwardIcon />}
                   sx={{ borderRadius: 3 }}>
-                  {selectedContent.heroPrimaryCta}
+                  {pageContent.heroPrimaryCta}
                 </Button>
                 <Button component={RouterLink} to="/kontakt" variant="outlined" size="large" sx={{ borderRadius: 3 }}>
-                  {selectedContent.contactCta}
+                  {pageContent.contactCta}
                 </Button>
               </Stack>
             </Stack>
@@ -480,7 +468,7 @@ const WelcomePage: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={selectedContent.corporateId} sx={{ background: palette.darkSurface, color: '#fff' }}>
+      <Box id={pageContent.corporateId} sx={{ background: palette.darkSurface, color: '#fff' }}>
         <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
           <Box
             sx={{
@@ -491,11 +479,11 @@ const WelcomePage: React.FC = () => {
             }}
           >
             <Stack spacing={3}>
-              <Chip label={language === 'de' ? 'Unternehmen' : 'Workplace'} color="default" sx={{ backgroundColor: 'rgba(255,255,255,0.2)', alignSelf: 'flex-start' }} />
-              <Typography variant="h4" sx={{ fontWeight: 800 }}>{selectedContent.corporateHeading}</Typography>
-              <Typography variant="h6" sx={{ opacity: 0.88 }}>{selectedContent.corporateSubtitle}</Typography>
+              <Chip label="Unternehmen" color="default" sx={{ backgroundColor: 'rgba(255,255,255,0.2)', alignSelf: 'flex-start' }} />
+              <Typography variant="h4" sx={{ fontWeight: 800 }}>{pageContent.corporateHeading}</Typography>
+              <Typography variant="h6" sx={{ opacity: 0.88 }}>{pageContent.corporateSubtitle}</Typography>
               <Stack spacing={2}>
-                {selectedContent.corporateBenefits.map((benefit) => (
+                {pageContent.corporateBenefits.map((benefit) => (
                   <Stack key={benefit} direction="row" spacing={2} alignItems="flex-start">
                     <CheckCircleOutlineIcon sx={{ color: '#41b3a3', mt: 0.5 }} />
                     <Typography variant="body1" sx={{ lineHeight: 1.7 }}>{benefit}</Typography>
@@ -504,11 +492,13 @@ const WelcomePage: React.FC = () => {
               </Stack>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
                 <Button component={RouterLink} to="/register" variant="contained" size="large" color="secondary" endIcon={<ArrowForwardIcon />} sx={{ borderRadius: 3 }}>
-                  {selectedContent.heroPrimaryCta}
+                  {pageContent.heroPrimaryCta}
                 </Button>
-                <Button component={RouterLink} to="/kontakt" variant="outlined" size="large" sx={{ borderRadius: 3, borderColor: 'rgba(255,255,255,0.6)', color: '#fff' }}>
-                  {selectedContent.finalSecondaryCta}
-                </Button>
+                {pageContent.finalSecondaryCta && (
+                  <Button component={RouterLink} to="/kontakt" variant="outlined" size="large" sx={{ borderRadius: 3, borderColor: 'rgba(255,255,255,0.6)', color: '#fff' }}>
+                    {pageContent.finalSecondaryCta}
+                  </Button>
+                )}
               </Stack>
             </Stack>
             <Card sx={{ backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 4, boxShadow: '0 20px 40px rgba(0,0,0,0.35)' }}>
@@ -520,7 +510,7 @@ const WelcomePage: React.FC = () => {
               />
               <CardContent sx={{ color: '#fff' }}>
                 <Typography variant="subtitle1" sx={{ opacity: 0.85 }}>
-                  {language === 'de' ? 'Geführte Active Breaks steigern Produktivität und Wohlbefinden innerhalb weniger Wochen.' : 'Guided active breaks elevate productivity and wellbeing in just a few weeks.'}
+                  Geführte Active Breaks steigern Produktivität und Wohlbefinden innerhalb weniger Wochen.
                 </Typography>
               </CardContent>
             </Card>
@@ -528,7 +518,7 @@ const WelcomePage: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={selectedContent.medicalId} sx={{ background: 'linear-gradient(135deg, #ffffff 0%, #f2f7ff 100%)' }}>
+      <Box id={pageContent.medicalId} sx={{ background: 'linear-gradient(135deg, #ffffff 0%, #f2f7ff 100%)' }}>
         <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
           <Box
             sx={{
@@ -539,11 +529,11 @@ const WelcomePage: React.FC = () => {
             }}
           >
             <Stack spacing={3}>
-              <Chip label={language === 'de' ? 'Medizin & Pflege' : 'Healthcare'} color="primary" sx={{ alignSelf: 'flex-start' }} />
-              <Typography variant="h4" sx={{ fontWeight: 800, color: palette.primaryText }}>{selectedContent.medicalHeading}</Typography>
-              <Typography variant="h6" sx={{ color: palette.secondaryText }}>{selectedContent.medicalSubtitle}</Typography>
+              <Chip label="Medizin & Pflege" color="primary" sx={{ alignSelf: 'flex-start' }} />
+              <Typography variant="h4" sx={{ fontWeight: 800, color: palette.primaryText }}>{pageContent.medicalHeading}</Typography>
+              <Typography variant="h6" sx={{ color: palette.secondaryText }}>{pageContent.medicalSubtitle}</Typography>
               <Stack spacing={2}>
-                {selectedContent.medicalBenefits.map((benefit) => (
+                {pageContent.medicalBenefits.map((benefit) => (
                   <Stack key={benefit} direction="row" spacing={2} alignItems="flex-start">
                     <CheckCircleOutlineIcon color="primary" sx={{ mt: 0.5 }} />
                     <Typography variant="body1" sx={{ lineHeight: 1.75, color: palette.secondaryText }}>{benefit}</Typography>
@@ -554,20 +544,20 @@ const WelcomePage: React.FC = () => {
             <Card sx={{ borderRadius: 4, boxShadow: '0 25px 45px rgba(17,63,103,0.2)' }}>
               <CardContent sx={{ p: 4 }}>
                 <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
-                  {language === 'de' ? 'Einsatzmöglichkeiten' : 'Use cases'}
+                  Einsatzmöglichkeiten
                 </Typography>
                 <Stack spacing={2}>
                   <Stack direction="row" spacing={2} alignItems="center">
                     <PlayArrowIcon color="primary" />
-                    <Typography variant="body1">{language === 'de' ? 'Tele-Reha und Nachsorge mit klaren Protokollen' : 'Tele-rehab and aftercare with structured protocols'}</Typography>
+                    <Typography variant="body1">Tele-Reha und Nachsorge mit klaren Protokollen</Typography>
                   </Stack>
                   <Stack direction="row" spacing={2} alignItems="center">
                     <PlayArrowIcon color="primary" />
-                    <Typography variant="body1">{language === 'de' ? 'Aktivierungsprogramme in Tagespflege und betreutem Wohnen' : 'Activation programs in day care and assisted living'}</Typography>
+                    <Typography variant="body1">Aktivierungsprogramme in Tagespflege und betreutem Wohnen</Typography>
                   </Stack>
                   <Stack direction="row" spacing={2} alignItems="center">
                     <PlayArrowIcon color="primary" />
-                    <Typography variant="body1">{language === 'de' ? 'Case-Management mit 360° Compliance-Übersicht' : 'Case management with 360° adherence overview'}</Typography>
+                    <Typography variant="body1">Case-Management mit 360° Compliance-Übersicht</Typography>
                   </Stack>
                 </Stack>
               </CardContent>
@@ -579,7 +569,7 @@ const WelcomePage: React.FC = () => {
       <Box sx={{ backgroundColor: '#f1f9f8' }}>
         <Container maxWidth="lg" sx={{ py: { xs: 8, md: 10 } }}>
           <Stack spacing={6}>
-            <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 800, color: palette.primaryText }}>{selectedContent.testimonialHeading}</Typography>
+            <Typography variant="h4" sx={{ textAlign: 'center', fontWeight: 800, color: palette.primaryText }}>{pageContent.testimonialHeading}</Typography>
             <Box
               sx={{
                 display: 'grid',
@@ -587,7 +577,7 @@ const WelcomePage: React.FC = () => {
                 gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }
               }}
             >
-              {selectedContent.testimonials.map((testimonial) => (
+              {pageContent.testimonials.map((testimonial) => (
                 <Card key={testimonial.name} sx={{ height: '100%', borderRadius: 4, boxShadow: '0 10px 30px rgba(17,63,103,0.08)', background: '#fff' }}>
                   <CardContent sx={{ p: 4 }}>
                     <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: palette.primaryText }}>
@@ -607,13 +597,13 @@ const WelcomePage: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={selectedContent.faqId} sx={{ backgroundColor: '#ffffff' }}>
+      <Box id={pageContent.faqId} sx={{ backgroundColor: '#ffffff' }}>
         <Container maxWidth="md" sx={{ py: { xs: 8, md: 10 } }}>
           <Stack spacing={4} alignItems="center">
-            <Typography variant="h4" sx={{ fontWeight: 800, color: palette.primaryText }}>{selectedContent.faqHeading}</Typography>
+            <Typography variant="h4" sx={{ fontWeight: 800, color: palette.primaryText }}>{pageContent.faqHeading}</Typography>
             <Divider sx={{ width: '100%', maxWidth: 240 }} />
             <Stack spacing={2} width="100%">
-              {selectedContent.faqs.map((item, index) => (
+              {pageContent.faqs.map((item, index) => (
                 <Accordion key={item.question} defaultExpanded={index === 0} sx={{ borderRadius: 3, boxShadow: '0 10px 25px rgba(17,63,103,0.08)' }}>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography variant="h6" sx={{ fontWeight: 600, color: palette.primaryText }}>{item.question}</Typography>
@@ -631,13 +621,38 @@ const WelcomePage: React.FC = () => {
       <Box sx={{ background: 'linear-gradient(140deg, #1f5f5f 0%, #2d7d7d 50%, #3fa3a3 100%)', color: '#fff' }}>
         <Container maxWidth="md" sx={{ py: { xs: 8, md: 10 } }}>
           <Stack spacing={4.5} alignItems="center" textAlign="center">
-            <Typography variant="h3" sx={{ fontWeight: 800 }}>{selectedContent.finalCtaHeading}</Typography>
-            <Typography variant="h6" sx={{ maxWidth: 640, opacity: 0.92, lineHeight: 1.7 }}>{selectedContent.finalCtaText}</Typography>
+            <Typography variant="h3" sx={{ fontWeight: 800 }}>{pageContent.finalCtaHeading}</Typography>
+            <Typography variant="h6" sx={{ maxWidth: 640, opacity: 0.92, lineHeight: 1.7 }}>{pageContent.finalCtaText}</Typography>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
               <Button component={RouterLink} to="/register" variant="contained" color="secondary" size="large" endIcon={<ArrowForwardIcon />} sx={{ borderRadius: 3 }}>
-                {selectedContent.finalPrimaryCta}
+                {pageContent.finalPrimaryCta}
               </Button>
-              
+            </Stack>
+          </Stack>
+        </Container>
+      </Box>
+
+      <Box component="footer" sx={{ backgroundColor: '#0f3b3b', color: '#fff' }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 5 } }}>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            justifyContent="space-between"
+            alignItems={{ xs: 'flex-start', sm: 'center' }}
+            spacing={2}
+          >
+            <Stack direction="row" spacing={1.5} alignItems="center">
+              <Box component="img" src="/aboeloLogo.png" alt="aboelo Logo" sx={{ height: 24, width: 'auto' }} />
+              <Typography variant="body2" sx={{ opacity: 0.8 }}>
+                © {new Date().getFullYear()} aboelo-fitness
+              </Typography>
+            </Stack>
+            <Stack direction="row" spacing={3}>
+              <MuiLink href="https://aboelo.de/impressum" target="_blank" rel="noopener" underline="none" sx={{ color: '#fff', opacity: 0.9, '&:hover': { opacity: 1 } }}>
+                Impressum
+              </MuiLink>
+              <MuiLink href="https://aboelo.de/datenschutz" target="_blank" rel="noopener" underline="none" sx={{ color: '#fff', opacity: 0.9, '&:hover': { opacity: 1 } }}>
+                Datenschutz
+              </MuiLink>
             </Stack>
           </Stack>
         </Container>
