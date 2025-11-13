@@ -26,7 +26,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 
 const palette = {
-  pageBackground: '#f2f7f7',
+  pageBackground: 'linear-gradient(180deg, #f6fbfa 0%, #edf4f3 100%)',
   heroGradient: 'linear-gradient(115deg, #0f3d3d 0%, #1f5f5f 40%, #3fa3a3 100%)',
   heroGlass: 'linear-gradient(160deg, rgba(255,255,255,0.94) 0%, rgba(225,243,241,0.88) 55%, rgba(216,238,236,0.75) 100%)',
   neutral: '#ffffff',
@@ -37,7 +37,12 @@ const palette = {
   accent: '#2d7d7d',
   accentSoft: 'rgba(45, 125, 125, 0.12)',
   highlight: '#3fa3a3',
-  shadow: '0 28px 46px rgba(15,63,63,0.25)'
+  shadow: '0 28px 46px rgba(15,63,63,0.25)',
+  featureBackground: 'linear-gradient(135deg, rgba(45,125,125,0.06) 0%, rgba(45,125,125,0.01) 100%)',
+  sectionalLight: 'linear-gradient(140deg, #ffffff 0%, #e7f4f1 100%)',
+  sectionalBlue: 'linear-gradient(135deg, #ffffff 0%, #eef3ff 100%)',
+  tealSection: 'linear-gradient(135deg, #103c3c 0%, #1b5d5d 60%, #2d7d7d 100%)',
+  faqBackground: 'linear-gradient(135deg, #ffffff 0%, #f2f7f6 100%)'
 };
 
 const layout = {
@@ -232,7 +237,7 @@ const WelcomePage2: React.FC = () => {
   }, []);
 
   return (
-    <Box sx={{ background: palette.pageBackground }}>
+    <Box sx={{ background: palette.pageBackground, minHeight: '100vh' }}>
       <Box
         component="header"
         sx={{
@@ -280,13 +285,64 @@ const WelcomePage2: React.FC = () => {
                 Fitness
               </MuiLink>
             </Stack>
+            <Stack
+              direction={{ xs: 'column', md: 'row' }}
+              spacing={{ xs: 1.5, md: 2.5 }}
+              alignItems={{ xs: 'flex-start', md: 'center' }}
+            >
+              <Button
+                component="a"
+                href="https://aboelo.de"
+                target="_blank"
+                rel="noopener"
+                variant="text"
+                sx={{
+                  color: palette.textPrimary,
+                  fontWeight: 600,
+                  px: { md: 1.5 },
+                  '&:hover': { color: palette.accent }
+                }}
+              >
+                Zurück zu Aboelo
+              </Button>
+              <Button
+                component="a"
+                href="https://hilfsmittel.aboelo.de"
+                target="_blank"
+                rel="noopener"
+                variant="text"
+                sx={{
+                  color: palette.textPrimary,
+                  fontWeight: 600,
+                  px: { md: 1.5 },
+                  '&:hover': { color: palette.accent }
+                }}
+              >
+                Hilfsmittel-Finder
+              </Button>
+              <Button
+                component="a"
+                href="https://sudoku.aboelo.de"
+                target="_blank"
+                rel="noopener"
+                variant="text"
+                sx={{
+                  color: palette.textPrimary,
+                  fontWeight: 600,
+                  px: { md: 1.5 },
+                  '&:hover': { color: palette.accent }
+                }}
+              >
+                Sudoku
+              </Button>
+            </Stack>
           </Stack>
         </Container>
       </Box>
 
       <Box
         sx={{
-          backgroundColor: palette.pageBackground,
+          background: palette.pageBackground,
           pt: { xs: 10, md: 12 },
           pb: { xs: 6, md: 8 },
           px: { xs: 2.5, md: 4 }
@@ -477,9 +533,9 @@ const WelcomePage2: React.FC = () => {
       >
         <Box
           sx={{
-            background: palette.neutral,
+            background: palette.sectionalLight,
             borderRadius: { xs: 4, md: 5 },
-            boxShadow: '0 32px 60px rgba(12,63,63,0.14)',
+            boxShadow: '0 28px 54px rgba(12,63,63,0.12)',
             border: '1px solid rgba(15,63,63,0.08)',
             p: { xs: 3, md: 4 }
           }}
@@ -509,7 +565,7 @@ const WelcomePage2: React.FC = () => {
         </Box>
       </Container>
 
-      <Box id="explore" sx={{ py: { xs: 8, md: 12 } }}>
+      <Box id="explore" sx={{ py: { xs: 8, md: 12 }, background: palette.featureBackground }}>
         <Container maxWidth={layout.maxWidth} sx={{ ...layout.section }}>
           <Stack spacing={{ xs: 4, md: 5 }} alignItems="center">
             <Typography
@@ -557,7 +613,7 @@ const WelcomePage2: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={pageContent.seniorsId} sx={{ background: palette.pageBackground }}>
+      <Box id={pageContent.seniorsId} sx={{ background: palette.sectionalLight }}>
         <Container
           maxWidth={layout.maxWidth}
           sx={{ ...layout.section, py: { xs: 8, md: 10 } }}
@@ -605,7 +661,7 @@ const WelcomePage2: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={pageContent.corporateId} sx={{ backgroundColor: palette.pageBackground }}>
+      <Box id={pageContent.corporateId} sx={{ background: palette.tealSection, color: '#fff' }}>
         <Container
           maxWidth={layout.maxWidth}
           sx={{ ...layout.section, py: { xs: 8, md: 10 } }}
@@ -615,12 +671,12 @@ const WelcomePage2: React.FC = () => {
               <Chip
                 label="Unternehmen"
                 color="default"
-                sx={{ alignSelf: 'flex-start', backgroundColor: 'rgba(45,125,125,0.1)', color: palette.textPrimary }}
+                sx={{ alignSelf: 'flex-start', backgroundColor: 'rgba(255,255,255,0.18)', color: '#fff' }}
               />
-              <Typography variant="h4" sx={{ fontWeight: 800, color: palette.textPrimary }}>
+              <Typography variant="h4" sx={{ fontWeight: 800 }}>
                 {pageContent.corporateHeading}
               </Typography>
-              <Typography variant="h6" sx={{ color: palette.textSecondary }}>
+              <Typography variant="h6" sx={{ opacity: 0.9 }}>
                 {pageContent.corporateSubtitle}
               </Typography>
               <Stack spacing={2.5}>
@@ -652,10 +708,10 @@ const WelcomePage2: React.FC = () => {
             </Stack>
             <Card
               sx={{
-                background: 'linear-gradient(150deg, rgba(255,255,255,0.92) 0%, rgba(211,239,235,0.7) 100%)',
+                background: 'linear-gradient(150deg, rgba(255,255,255,0.22) 0%, rgba(0,0,0,0.35) 100%)',
                 borderRadius: 5,
                 overflow: 'hidden',
-                boxShadow: '0 28px 60px rgba(12,63,63,0.18)',
+                boxShadow: '0 36px 72px rgba(0,0,0,0.35)',
                 width: { xs: '100%', md: '52%' }
               }}
             >
@@ -665,7 +721,7 @@ const WelcomePage2: React.FC = () => {
                 alt="Team Session"
                 sx={{ height: { xs: 280, md: 360 }, objectFit: 'cover' }}
               />
-              <CardContent sx={{ color: palette.textPrimary }}>
+              <CardContent sx={{ color: '#fff' }}>
                 <Typography variant="subtitle1" sx={{ opacity: 0.88 }}>
                   Geführte Active Breaks steigern Produktivität und Wohlbefinden innerhalb weniger Wochen.
                 </Typography>
@@ -675,7 +731,7 @@ const WelcomePage2: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={pageContent.medicalId} sx={{ background: palette.pageBackground }}>
+      <Box id={pageContent.medicalId} sx={{ background: palette.sectionalBlue }}>
         <Container
           maxWidth={layout.maxWidth}
           sx={{ ...layout.section, py: { xs: 8, md: 10 } }}
@@ -733,7 +789,7 @@ const WelcomePage2: React.FC = () => {
 
       <Box
         sx={{
-          backgroundColor: palette.pageBackground
+          background: palette.pageBackground
         }}
       >
         <Container
@@ -746,7 +802,7 @@ const WelcomePage2: React.FC = () => {
             gap: 4,
             alignItems: 'center',
             borderRadius: { xs: 4, md: 5 },
-            background: 'linear-gradient(120deg, rgba(15,61,61,0.95) 0%, rgba(45,125,125,0.95) 60%, rgba(83,181,181,0.92) 100%)',
+            background: 'linear-gradient(120deg, rgba(15,61,61,0.95) 0%, rgba(45,125,125,0.94) 55%, rgba(83,181,181,0.9) 100%)',
             boxShadow: '0 30px 60px rgba(12,63,63,0.22)'
           }}
         >
@@ -770,7 +826,7 @@ const WelcomePage2: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={pageContent.faqId} sx={{ backgroundColor: palette.pageBackground }}>
+      <Box id={pageContent.faqId} sx={{ background: palette.faqBackground }}>
         <Container
           maxWidth={layout.maxWidth}
           sx={{ ...layout.section, maxWidth: '840px', mx: 'auto', py: { xs: 8, md: 10 } }}
