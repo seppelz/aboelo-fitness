@@ -67,7 +67,7 @@ const LoginPage: React.FC = () => {
               Anmelden
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              Willkommen zurück bei aboelo-fitness!
+              Willkommen zurück bei aboelo Fitness!
             </Typography>
           </Box>
           

@@ -10,7 +10,7 @@ const AccessibilityPage: React.FC = () => {
 
       <Box sx={{ mb: 4 }}>
         <Typography variant="body1" paragraph>
-          Wir möchten sicherstellen, dass alle Menschen, unabhängig von ihren Fähigkeiten, Zugang zu aboelo-fitness haben. Diese Erklärung beschreibt den aktuellen Stand der Barrierefreiheit unseres Angebots sowie unsere geplanten Verbesserungen.
+          Wir möchten sicherstellen, dass alle Menschen, unabhängig von ihren Fähigkeiten, Zugang zu aboelo Fitness haben. Diese Erklärung beschreibt den aktuellen Stand der Barrierefreiheit unseres Angebots sowie unsere geplanten Verbesserungen.
         </Typography>
       </Box>
 
@@ -19,7 +19,7 @@ const AccessibilityPage: React.FC = () => {
           Geltungsbereich
         </Typography>
         <Typography variant="body1" paragraph>
-          Diese Erklärung zur Barrierefreiheit gilt für die Website und die Web-Anwendung von aboelo-fitness unter www.aboelo-fitness.de.
+          Diese Erklärung zur Barrierefreiheit gilt für die Website und die Web-Anwendung von aboelo Fitness unter www.fitness.aboelo.de.
         </Typography>
       </Box>
 

@@ -50,7 +50,7 @@ const Footer: React.FC = () => {
             align="center"
             sx={{ fontSize: '1.3rem', fontWeight: 'bold' }}
           >
-            aboelo-fitness
+            aboelo Fitness
           </Typography>
           
           <Typography 
@@ -79,7 +79,7 @@ const Footer: React.FC = () => {
             align="center"
             sx={{ fontSize: '1rem' }}
           >
-            © {currentYear} aboelo-fitness
+            © {currentYear} aboelo Ftness
           </Typography>
         </Box>
 

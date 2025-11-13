@@ -38,7 +38,7 @@ const AppLogo: React.FC<AppLogoProps> = ({ compact = false }) => {
             lineHeight: 1,
           }}
         >
-          aboelo-fitness
+          aboelo Fitness
         </Typography>
         {!compact && (
           <Typography

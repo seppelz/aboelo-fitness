@@ -13,7 +13,7 @@ const DatenschutzPage: React.FC = () => {
             Datenschutzerklärung
           </Typography>
           <Typography variant="subtitle1" color="textSecondary">
-            Informationen zum Datenschutz bei aboelo-fitness
+            Informationen zum Datenschutz bei aboelo Fitness
           </Typography>
         </Box>
 
@@ -95,7 +95,7 @@ const DatenschutzPage: React.FC = () => {
               Die verantwortliche Stelle für die Datenverarbeitung auf dieser Website ist:
             </Typography>
             <Typography variant="body1" paragraph sx={{ fontFamily: 'monospace', bgcolor: 'grey.100', p: 2, borderRadius: 1 }}>
-              aboelo-fitness<br />
+              aboelo Fitness<br />
               E-Mail: info@aboelo.de
             </Typography>
             <Typography variant="body1" paragraph>

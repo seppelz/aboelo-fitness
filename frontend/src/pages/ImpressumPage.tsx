@@ -27,7 +27,7 @@ const ImpressumPage: React.FC = () => {
               Anbieter
             </Typography>
             <Typography variant="body1" paragraph sx={{ fontFamily: 'monospace', bgcolor: 'grey.100', p: 3, borderRadius: 1 }}>
-              aboelo-fitness<br />
+              aboelo Fitness<br />
               Fitness-App für Senioren
             </Typography>
           </Box>
@@ -52,7 +52,7 @@ const ImpressumPage: React.FC = () => {
               Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:
             </Typography>
             <Typography variant="body1" paragraph sx={{ fontFamily: 'monospace', bgcolor: 'grey.100', p: 3, borderRadius: 1 }}>
-              aboelo-fitness<br />
+              aboelo Fitness<br />
               info@aboelo.de
             </Typography>
           </Box>

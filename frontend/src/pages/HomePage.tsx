@@ -397,7 +397,7 @@ const HomePage: React.FC = () => {
               lineHeight: 1.3
             }}
           >
-            Willkommen bei aboelo-fitness
+            Willkommen bei aboelo Fitness
           </Typography>
           <Typography 
             variant={isMobile ? "body1" : "h6"} 

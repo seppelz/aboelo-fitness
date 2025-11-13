@@ -192,7 +192,7 @@ const WelcomeTutorialDialog: React.FC = () => {
       PaperProps={{ sx: dialogPaperSx }}
     >
       <DialogTitle sx={{ fontWeight: 800, fontSize: { xs: '1.35rem', sm: '1.5rem' }, pb: 2 }}>
-        Willkommen bei aboelo-fitness
+        Willkommen bei aboelo Fitness
       </DialogTitle>
       <DialogContent dividers sx={{ px: { xs: 3, sm: 4 }, py: { xs: 3, sm: 4 } }}>
         <Stack spacing={3.5}>

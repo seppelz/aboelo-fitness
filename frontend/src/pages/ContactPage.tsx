@@ -218,7 +218,7 @@ const ContactPage: React.FC = () => {
             Hinweis
           </Typography>
           <Typography variant="body2" color="textSecondary">
-            Wir senden Ihre Nachricht direkt an das aboelo-fitness Team. Sie erhalten eine Bestätigung auf dieser Seite, sobald alles erfolgreich war.
+            Wir senden Ihre Nachricht direkt an das aboelo Fitness Team. Sie erhalten eine Bestätigung auf dieser Seite, sobald alles erfolgreich war.
           </Typography>
         </Box>
       </Paper>

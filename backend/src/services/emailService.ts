@@ -138,13 +138,13 @@ export const sendPasswordResetEmail = async (recipientEmail: string, token: stri
     method,
   });
 
-  const subject = 'aboelo-fitness | Passwort zurücksetzen';
-  const textContent = `Hallo!\n\nSie haben eine Zurücksetzung Ihres Passworts angefordert. Klicken Sie auf den folgenden Link, um ein neues Passwort zu vergeben:\n\n${resetUrl}\n\nWenn Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren.\n\nViele Grüße\nIhr aboelo-fitness Team`;
+  const subject = 'aboelo Fitness | Passwort zurücksetzen';
+  const textContent = `Hallo!\n\nSie haben eine Zurücksetzung Ihres Passworts angefordert. Klicken Sie auf den folgenden Link, um ein neues Passwort zu vergeben:\n\n${resetUrl}\n\nWenn Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren.\n\nViele Grüße\nIhr aboelo Fitness Team`;
   const htmlContent = `<p>Hallo!</p>
 <p>Sie haben eine Zurücksetzung Ihres Passworts angefordert. Klicken Sie auf den folgenden Link, um ein neues Passwort zu vergeben:</p>
 <p><a href="${resetUrl}">${resetUrl}</a></p>
 <p>Wenn Sie diese Anfrage nicht gestellt haben, können Sie diese E-Mail ignorieren.</p>
-<p>Viele Grüße<br/>Ihr aboelo-fitness Team</p>`;
+<p>Viele Grüße<br/>Ihr aboelo Fitness Team</p>`;
 
   // Use MailerSend API if configured
   if (method === 'mailersend') {
@@ -218,18 +218,18 @@ export const sendWelcomeEmail = async (recipientEmail: string, userName: string)
   const method = getEmailMethod();
   const loginUrl = `${appConfig.frontendBaseUrl.replace(/\/?$/, '')}/login`;
 
-  const subject = 'Willkommen bei aboelo-fitness! 🎉';
-  const textContent = `Hallo ${userName}!\n\nHerzlich willkommen bei aboelo-fitness! Wir freuen uns, dass Sie dabei sind.\n\nSie können sich jetzt unter ${loginUrl} anmelden und mit Ihrem Trainingsprogramm beginnen.\n\nViel Erfolg und bleiben Sie aktiv!\n\nIhr aboelo-fitness Team`;
+  const subject = 'Willkommen bei aboelo Fitness! 🎉';
+  const textContent = `Hallo ${userName}!\n\nHerzlich willkommen bei aboelo-fitness! Wir freuen uns, dass Sie dabei sind.\n\nSie können sich jetzt unter ${loginUrl} anmelden und mit Ihrem Trainingsprogramm beginnen.\n\nViel Erfolg und bleiben Sie aktiv!\n\nIhr aboelo Fitness Team`;
   const htmlContent = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-      <h2 style="color: #2d7d7d;">Willkommen bei aboelo-fitness! 🎉</h2>
+      <h2 style="color: #2d7d7d;">Willkommen bei aboelo Fitness! 🎉</h2>
       <p>Hallo ${userName}!</p>
-      <p>Herzlich willkommen bei aboelo-fitness! Wir freuen uns, dass Sie dabei sind.</p>
+      <p>Herzlich willkommen bei aboelo Fitness! Wir freuen uns, dass Sie dabei sind.</p>
       <p>Sie können sich jetzt anmelden und mit Ihrem Trainingsprogramm beginnen:</p>
       <p style="text-align: center; margin: 30px 0;">
         <a href="${loginUrl}" style="background-color: #2d7d7d; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block;">Jetzt anmelden</a>
       </p>
       <p>Viel Erfolg und bleiben Sie aktiv!</p>
-      <p>Ihr aboelo-fitness Team</p>
+      <p>Ihr aboelo Fitness Team</p>
     </div>`;
 
   // Use MailerSend API if configured
