@@ -87,44 +87,43 @@ const ExerciseDetailPage: React.FC = () => {
 
   // Übung vom Server laden
   useEffect(() => {
-    if (!id) {
-      return () => {};
-    }
-
-    let metadataTimeout: ReturnType<typeof setTimeout> | null = null;
-    let tempVideoElement: HTMLVideoElement | null = null;
-
     const fetchExercise = async () => {
+      if (!id) return;
+      
       try {
         setLoading(true);
         const data = await getExerciseById(id);
         setExercise(data);
-
+        
+        // Video-Dauer vorberechnen
         if (data) {
+          const videoElement = document.createElement('video');
           const videoDetails = getVideoDetails(data);
           if (videoDetails.type === 'video') {
-            tempVideoElement = document.createElement('video');
-            durationVideoRef.current = tempVideoElement;
-
-            tempVideoElement.src = videoDetails.source;
-            tempVideoElement.onloadedmetadata = () => {
-              console.log('Video metadata loaded, duration:', tempVideoElement?.duration);
-              if (tempVideoElement?.duration && tempVideoElement.duration > 0) {
-                setVideoDuration(tempVideoElement.duration);
+            videoElement.src = videoDetails.source;
+            videoElement.onloadedmetadata = () => {
+              console.log('Video metadata loaded, duration:', videoElement.duration);
+              if (videoElement.duration && videoElement.duration > 0) {
+                setVideoDuration(videoElement.duration);
               }
             };
-            tempVideoElement.onerror = () => {
+            videoElement.onerror = () => {
               console.error('Fehler beim Laden des Videos für Dauer-Berechnung');
             };
-            tempVideoElement.load();
-
-            metadataTimeout = window.setTimeout(() => {
+            // Load the video to get metadata
+            videoElement.load();
+            
+            // Fallback timeout for metadata loading
+            const timeout = setTimeout(() => {
               if (data.duration && data.duration > 0) {
                 console.log('Using fallback duration from exercise data:', data.duration);
                 setVideoDuration(data.duration);
               }
             }, 3000);
+            
+            return () => clearTimeout(timeout);
           } else if (data.duration) {
+            // Fallback auf die Dauer aus den Metadaten
             setVideoDuration(data.duration);
           }
         }
@@ -135,19 +134,14 @@ const ExerciseDetailPage: React.FC = () => {
         setLoading(false);
       }
     };
-
+    
     fetchExercise();
-
-    const durationVideoEl = durationVideoRef.current;
-
+    
     return () => {
-      if (metadataTimeout) {
-        clearTimeout(metadataTimeout);
+      // Cleanup
+      if (durationVideoRef.current) {
+        durationVideoRef.current.src = '';
       }
-      if (durationVideoEl) {
-        durationVideoEl.src = '';
-      }
-      durationVideoRef.current = null;
     };
   }, [id]);
   
@@ -830,8 +824,6 @@ const ExerciseDetailPage: React.FC = () => {
               onVideoComplete={handleExerciseComplete}
               videoRef={videoRef}
               onTimeUpdate={handleTimeUpdate}
-              onPause={handleVideoPause}
-              onPlay={handleVideoPlay}
             />
           </Box>
         )}
@@ -879,8 +871,6 @@ const ExerciseDetailPage: React.FC = () => {
                 onVideoComplete={handleExerciseComplete}
                 videoRef={videoRef}
                 onTimeUpdate={handleTimeUpdate}
-                onPause={handleVideoPause}
-                onPlay={handleVideoPlay}
               />
             </Box>
           ) : (

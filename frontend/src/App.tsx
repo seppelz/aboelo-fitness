@@ -1,7 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { CssBaseline, ThemeProvider, CircularProgress, Box } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
+import { trackPageView } from './utils/analytics';
 
 // Contexts
 import { AuthProvider, AuthContext } from './contexts/AuthContext';
@@ -166,6 +167,16 @@ const LandingRoute = () => {
   return isAuthenticated ? <Navigate to="/app" replace /> : <WelcomePage />;
 };
 
+const AnalyticsListener = () => {
+  const location = useLocation();
+
+  React.useEffect(() => {
+    trackPageView(`${location.pathname}${location.search}`);
+  }, [location.pathname, location.search]);
+
+  return null;
+};
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -175,6 +186,7 @@ function App() {
           <InstallPromptProvider>
             <ErrorBoundary>
               <Router>
+                <AnalyticsListener />
                 <Routes>
               <Route path="/" element={<LandingRoute />} />
               <Route path="/willkommen" element={<WelcomePage />} />
