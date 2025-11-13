@@ -192,7 +192,7 @@ const ExerciseList: React.FC = () => {
     }
     
     setFilteredExercises(result);
-  }, [exercises, muscleGroup, category, isSitting, usesTheraband, isDynamic, type, equipment, user]);
+  }, [exercises, muscleGroup, category, isSitting, usesTheraband, isDynamic, isUnilateral, type, equipment, user]);
   
 
   // Laden oder Fehler anzeigen - Senior-friendly mit Beschreibung

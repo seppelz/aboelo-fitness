@@ -17,7 +17,8 @@ const getCookieValue = (name: string): string | null => {
     return null;
   }
 
-  const match = document.cookie.match(new RegExp(`(?:^|; )${name.replace(/([.$?*|{}()\[\]\\\/\+^])/g, '\\$1')}=([^;]*)`));
+  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = document.cookie.match(new RegExp(`(?:^|; )${escapedName}=([^;]*)`));
   return match ? decodeURIComponent(match[1]) : null;
 };
 
