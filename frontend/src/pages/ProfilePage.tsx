@@ -39,13 +39,6 @@ const ProfilePage: React.FC = () => {
   // Wir verwenden nur die Eigenschaften, die tatsächlich im Kontext verfügbar sind
   const { user, refreshUser, updateUserLocally } = useContext(AuthContext);
   
-  // Calculate estimated exercises from points for data consistency
-  const estimatedExercises = user ? Math.floor((user.points || 0) / 10) : 0;
-  const actualExercises = user?.completedExercises?.length || 0;
-  
-  // Use the higher value to show more accurate count until data is consistent
-  const displayExercises = Math.max(estimatedExercises, actualExercises);
-  
   // Zustandsvariablen für das Formular
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -56,6 +49,7 @@ const ProfilePage: React.FC = () => {
   const [hasTheraband, setHasTheraband] = useState(user?.hasTheraband || false);
   const [reminderEnabled, setReminderEnabled] = useState<boolean>(user?.reminderSettings?.enabled ?? true);
   const [reminderInterval, setReminderInterval] = useState<number>(user?.reminderSettings?.intervalMinutes ?? 60);
+  const [weeklyGoal, setWeeklyGoal] = useState<number>(user?.weeklyGoal?.exercisesTarget ?? 5);
   
   // Zustandsvariablen für den Bearbeitungsmodus und Feedback
   const [isEditing, setIsEditing] = useState(false);
@@ -134,6 +128,7 @@ const ProfilePage: React.FC = () => {
       setHasTheraband(user.hasTheraband || false);
       setReminderEnabled(user.reminderSettings?.enabled ?? true);
       setReminderInterval(user.reminderSettings?.intervalMinutes ?? 60);
+      setWeeklyGoal(user.weeklyGoal?.exercisesTarget ?? 5);
     }
   }, [user]);
   
@@ -154,6 +149,7 @@ const ProfilePage: React.FC = () => {
       setConfirmPassword('');
       setReminderEnabled(user.reminderSettings?.enabled ?? true);
       setReminderInterval(user.reminderSettings?.intervalMinutes ?? 60);
+      setWeeklyGoal(user.weeklyGoal?.exercisesTarget ?? 5);
     }
   };
   
@@ -205,6 +201,9 @@ const ProfilePage: React.FC = () => {
         reminderSettings: {
           enabled: reminderEnabled,
           intervalMinutes: reminderInterval
+        },
+        weeklyGoal: {
+          exercisesTarget: weeklyGoal
         }
       };
       
@@ -496,6 +495,31 @@ const ProfilePage: React.FC = () => {
                 }}
               />
 
+              {/* Weekly Goal Setting */}
+              <Box sx={{ mt: 3, mb: 3 }}>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
+                  Wochenziel
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  Legen Sie fest, wie viele Übungen Sie pro Woche absolvieren möchten. Standard sind 5 Übungen (ideal für Montag-Freitag).
+                </Typography>
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="Übungen pro Woche"
+                  value={weeklyGoal}
+                  onChange={(e) => setWeeklyGoal(Math.max(1, Math.min(50, parseInt(e.target.value) || 1)))}
+                  disabled={!isEditing || isSubmitting}
+                  inputProps={{
+                    min: 1,
+                    max: 50,
+                    step: 1
+                  }}
+                  helperText={`Empfehlung: 5 Übungen/Woche (Mo-Fr) oder 42 Übungen/Woche (6/Tag × 7 Tage)`}
+                  sx={{ maxWidth: 400 }}
+                />
+              </Box>
+
               <Box sx={{ mt: 3 }}>
                 <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold' }}>
                   Aktivpausen-Erinnerung
@@ -729,7 +753,7 @@ const ProfilePage: React.FC = () => {
                   <ListItemText
                     primary={
                       <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                        {displayExercises} Übungen
+                        {user?.completedExercises?.length || 0} Übungen
                       </Typography>
                     }
                     secondary="Abgeschlossen"

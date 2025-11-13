@@ -10,6 +10,7 @@ import { InstallPromptProvider } from './contexts/InstallPromptContext';
 
 // Layout Components
 import Layout from './components/layout/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Pages
 import WelcomePage from './pages/WelcomePage';
@@ -172,8 +173,9 @@ function App() {
       <CustomThemeProvider>
         <AuthProvider>
           <InstallPromptProvider>
-            <Router>
-              <Routes>
+            <ErrorBoundary>
+              <Router>
+                <Routes>
               <Route path="/" element={<LandingRoute />} />
               <Route path="/willkommen" element={<WelcomePage />} />
 
@@ -214,12 +216,12 @@ function App() {
                 <Route path="datenschutz" element={<DatenschutzPage />} />
                 <Route path="impressum" element={<ImpressumPage />} />
                 <Route path="kontakt" element={<ContactPage />} />
-                <Route path="settings" element={<ProfilePage />} />
               </Route>
 
                 <Route path="*" element={<NotFoundPage />} />
               </Routes>
             </Router>
+            </ErrorBoundary>
           </InstallPromptProvider>
         </AuthProvider>
       </CustomThemeProvider>

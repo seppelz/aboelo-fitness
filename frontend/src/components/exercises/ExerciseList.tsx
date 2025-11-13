@@ -51,6 +51,12 @@ const getCategoryText = (category: string): string => {
   return category === 'Kraft' ? 'Kräftigend' : 'Mobilisierend';
 };
 
+// Helper function to get display name for muscle groups
+const getMuscleGroupDisplayName = (muscleGroup: string): string => {
+  if (muscleGroup === 'Schulter') return 'Schulter/Arme';
+  return muscleGroup;
+};
+
 const ExerciseList: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
@@ -647,7 +653,7 @@ const ExerciseList: React.FC = () => {
                   <CardContent sx={{ flexGrow: 1, p: { xs: 2, sm: 2.5 } }}>
                     <Box sx={{ mb: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                       <Chip 
-                        label={exercise.muscleGroup} 
+                        label={getMuscleGroupDisplayName(exercise.muscleGroup)} 
                         color="primary" 
                         size="medium"
                         sx={{ 

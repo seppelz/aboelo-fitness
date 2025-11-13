@@ -76,9 +76,10 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401 && typeof window !== 'undefined') {
+      const hadUserData = !!localStorage.getItem('userData');
       console.log('🔒 Sitzung ungültig - Benutzer wird abgemeldet');
       localStorage.removeItem('userData');
-      if (!window.location.pathname.includes('/login')) {
+      if (hadUserData && !window.location.pathname.includes('/login')) {
         window.location.href = '/login?expired=true';
       }
     }

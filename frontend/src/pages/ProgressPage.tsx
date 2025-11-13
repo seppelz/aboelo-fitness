@@ -399,8 +399,13 @@ const ProgressPage: React.FC = () => {
                   </Card>
                 ))
               ) : (
-                <Alert severity="info">
-                  Sie haben heute noch keine Übungen absolviert.
+                <Alert severity="info" sx={{ textAlign: 'center' }}>
+                  <Typography variant="body1" sx={{ mb: 1 }}>
+                    Sie haben heute noch keine Übungen absolviert.
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    🎯 Starten Sie jetzt mit Ihrer ersten Übung!
+                  </Typography>
                 </Alert>
               )}
               
@@ -419,11 +424,11 @@ const ProgressPage: React.FC = () => {
                       </Box>
                       <LinearProgress 
                         variant="determinate" 
-                        value={(dailyProgress.totalExercisesCompleted / (dailyProgress.targetExercisesPerDay || 1)) * 100} 
+                        value={(dailyProgress.totalExercisesCompleted / (dailyProgress.targetExercisesPerDay || 6)) * 100} 
                         sx={{ height: 10, borderRadius: 5 }}
                       />
                       <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
-                        Ziel: {dailyProgress.targetExercisesPerDay || 3} Übungen pro Tag
+                        Ziel: {dailyProgress.targetExercisesPerDay || 6} Übungen pro Tag
                       </Typography>
                     </CardContent>
                   </Card>
@@ -431,8 +436,13 @@ const ProgressPage: React.FC = () => {
               )}
             </Box>
           ) : (
-            <Alert severity="info">
-              Keine Daten für heute verfügbar.
+            <Alert severity="info" sx={{ textAlign: 'center' }}>
+              <Typography variant="body1" sx={{ mb: 1 }}>
+                Keine Daten für heute verfügbar.
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Beginnen Sie mit Ihrem Training, um Ihren Fortschritt zu sehen!
+              </Typography>
             </Alert>
           )}
         </TabPanel>
@@ -458,7 +468,7 @@ const ProgressPage: React.FC = () => {
                     </Box>
                     <LinearProgress 
                       variant="determinate" 
-                      value={Math.min(100, (day.exercisesCompleted / 8) * 100)} 
+                      value={Math.min(100, (day.exercisesCompleted / 6) * 100)} 
                       sx={{ 
                         height: 10, 
                         borderRadius: 5,
@@ -525,45 +535,6 @@ const ProgressPage: React.FC = () => {
               <Divider sx={{ my: 3 }} />
               
               <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
-                Tägliche Aktivität dieser Woche
-              </Typography>
-              
-              {weeklyProgress.dailyActivitySummary && weeklyProgress.dailyActivitySummary.length > 0 ? (
-                <Box sx={{ mb: 4 }}>
-                  {weeklyProgress.dailyActivitySummary.map((day: { dayOfWeek: number; exercisesCompleted: number }, index: number) => (
-                    <Box key={index} sx={{ mb: 2 }}>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                        <Typography variant="body1" sx={{ fontWeight: day.exercisesCompleted > 0 ? 'bold' : 'normal' }}>
-                          {['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'][day.dayOfWeek]}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {day.exercisesCompleted} Übungen
-                        </Typography>
-                      </Box>
-                      <LinearProgress 
-                        variant="determinate" 
-                        value={Math.min(100, (day.exercisesCompleted / 8) * 100)} 
-                        sx={{ 
-                          height: 10, 
-                          borderRadius: 5,
-                          bgcolor: 'grey.200',
-                          '& .MuiLinearProgress-bar': {
-                            bgcolor: day.exercisesCompleted > 0 ? 'success.main' : 'grey.400'
-                          }
-                        }} 
-                      />
-                    </Box>
-                  ))}
-                </Box>
-              ) : (
-                <Alert severity="info">
-                  Keine täglichen Aktivitätsdaten verfügbar.
-                </Alert>
-              )}
-              
-              <Divider sx={{ my: 3 }} />
-              
-              <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
                 Trainierte Muskelgruppen diese Woche
               </Typography>
               
@@ -595,14 +566,24 @@ const ProgressPage: React.FC = () => {
                   ))}
                 </Grid>
               ) : (
-                <Alert severity="info">
-                  Keine Muskelgruppen-Statistiken für diese Woche verfügbar.
+                <Alert severity="info" sx={{ textAlign: 'center' }}>
+                  <Typography variant="body1" sx={{ mb: 1 }}>
+                    Keine Muskelgruppen-Statistiken für diese Woche verfügbar.
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Trainieren Sie verschiedene Muskelgruppen, um Statistiken zu sehen!
+                  </Typography>
                 </Alert>
               )}
             </Box>
           ) : (
-            <Alert severity="info">
-              Keine Daten für diese Woche verfügbar.
+            <Alert severity="info" sx={{ textAlign: 'center' }}>
+              <Typography variant="body1" sx={{ mb: 1 }}>
+                Keine Daten für diese Woche verfügbar.
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Ihre Aktivitäten dieser Woche werden hier angezeigt.
+              </Typography>
             </Alert>
           )}
         </TabPanel>
@@ -680,7 +661,7 @@ const ProgressPage: React.FC = () => {
                         </Box>
                         <LinearProgress 
                           variant="determinate" 
-                          value={Math.min(100, (dayActivity.exercisesCompleted / 5) * 100)} 
+                          value={Math.min(100, (dayActivity.exercisesCompleted / 6) * 100)} 
                           sx={{ height: 10, borderRadius: 5 }}
                         />
                         <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
@@ -691,14 +672,24 @@ const ProgressPage: React.FC = () => {
                   ))}
                 </Box>
               ) : (
-                <Alert severity="info">
-                  Keine Aktivitäten in diesem Monat aufgezeichnet.
+                <Alert severity="info" sx={{ textAlign: 'center' }}>
+                  <Typography variant="body1" sx={{ mb: 1 }}>
+                    Keine Aktivitäten in diesem Monat aufgezeichnet.
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Starten Sie Ihr Training, um Ihre monatliche Entwicklung zu verfolgen!
+                  </Typography>
                 </Alert>
               )}
             </Box>
           ) : (
-            <Alert severity="info">
-              Keine Daten für diesen Monat verfügbar.
+            <Alert severity="info" sx={{ textAlign: 'center' }}>
+              <Typography variant="body1" sx={{ mb: 1 }}>
+                Keine Daten für diesen Monat verfügbar.
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Trainieren Sie regelmäßig, um Ihren monatlichen Fortschritt zu sehen!
+              </Typography>
             </Alert>
           )}
         </TabPanel>

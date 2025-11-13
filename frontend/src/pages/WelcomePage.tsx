@@ -380,7 +380,7 @@ const WelcomePage: React.FC = () => {
             <Card sx={{ flex: 1, backgroundColor: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(18px)', borderRadius: 5, border: '1px solid rgba(255,255,255,0.28)', boxShadow: palette.glassShadow }}>
               <CardMedia
                 component="img"
-                image="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80"
+                image="/buero-uebung-aboelo.png"
                 alt={selectedContent.seniorImageAlt}
                 sx={{ height: { xs: 280, md: 420 }, objectFit: 'cover', borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
               />
