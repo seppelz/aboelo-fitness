@@ -52,7 +52,7 @@ const ExerciseDetailPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [completed, setCompleted] = useState(false);
   const [watchStartTime, setWatchStartTime] = useState<number | null>(null);
-  const [totalWatchDuration, setTotalWatchDuration] = useState<number>(0);
+  const [totalWatchDuration] = useState<number>(0);
   const [isSaving, setIsSaving] = useState(false);
   const completionHandledRef = useRef(false);
   const [celebrationModalOpen, setCelebrationModalOpen] = useState(false);
@@ -87,6 +87,9 @@ const ExerciseDetailPage: React.FC = () => {
 
   // Übung vom Server laden
   useEffect(() => {
+    let metadataTimeout: number | null = null;
+    let cleanupVideoElement: HTMLVideoElement | null = null;
+
     const fetchExercise = async () => {
       if (!id) return;
       
@@ -98,6 +101,8 @@ const ExerciseDetailPage: React.FC = () => {
         // Video-Dauer vorberechnen
         if (data) {
           const videoElement = document.createElement('video');
+          durationVideoRef.current = videoElement;
+          cleanupVideoElement = videoElement;
           const videoDetails = getVideoDetails(data);
           if (videoDetails.type === 'video') {
             videoElement.src = videoDetails.source;
@@ -114,14 +119,12 @@ const ExerciseDetailPage: React.FC = () => {
             videoElement.load();
             
             // Fallback timeout for metadata loading
-            const timeout = setTimeout(() => {
+            metadataTimeout = window.setTimeout(() => {
               if (data.duration && data.duration > 0) {
                 console.log('Using fallback duration from exercise data:', data.duration);
                 setVideoDuration(data.duration);
               }
             }, 3000);
-            
-            return () => clearTimeout(timeout);
           } else if (data.duration) {
             // Fallback auf die Dauer aus den Metadaten
             setVideoDuration(data.duration);
@@ -139,8 +142,14 @@ const ExerciseDetailPage: React.FC = () => {
     
     return () => {
       // Cleanup
-      if (durationVideoRef.current) {
-        durationVideoRef.current.src = '';
+      if (metadataTimeout) {
+        clearTimeout(metadataTimeout);
+      }
+      if (cleanupVideoElement) {
+        cleanupVideoElement.src = '';
+        if (durationVideoRef.current === cleanupVideoElement) {
+          durationVideoRef.current = null;
+        }
       }
     };
   }, [id]);

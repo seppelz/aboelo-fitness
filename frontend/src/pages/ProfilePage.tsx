@@ -227,19 +227,6 @@ const ProfilePage: React.FC = () => {
     }
   };
   
-  // Passwort ändern validieren
-  const validatePasswordChange = (): boolean => {
-    if (newPassword !== confirmPassword) {
-      setError('Die neuen Passwörter stimmen nicht überein');
-      return false;
-    }
-    if (newPassword.length < 6) {
-      setError('Das neue Passwort muss mindestens 6 Zeichen lang sein');
-      return false;
-    }
-    return true;
-  };
-
   // Reset progress handler
   const handleResetProgress = async () => {
     if (!window.confirm('Sind Sie sicher, dass Sie Ihren gesamten Fortschritt zurücksetzen möchten? Diese Aktion kann nicht rückgängig gemacht werden.')) {
