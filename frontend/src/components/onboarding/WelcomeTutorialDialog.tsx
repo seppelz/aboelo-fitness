@@ -55,7 +55,32 @@ const WelcomeTutorialDialog: React.FC = () => {
 
   const { canInstall, promptInstall, isInstalled } = useInstallPromptContext();
 
-  const actionButtonSx = { flexGrow: 1, minWidth: { xs: '100%', sm: 220 } };
+  const actionButtonSx = {
+    flexGrow: 1,
+    minWidth: { xs: '100%', sm: 260 },
+    px: { xs: 2.5, sm: 3 },
+    py: { xs: 1.25, sm: 1.5 },
+    borderRadius: 1.5,
+    fontWeight: 600,
+    justifyContent: 'flex-start',
+  } as const;
+
+  const infoListItemSx = {
+    alignItems: 'flex-start',
+    gap: 2,
+    px: 0,
+  } as const;
+
+  const dialogPaperSx = {
+    width: { xs: '100%', sm: 760 },
+    borderRadius: 3,
+    boxShadow: '0px 16px 40px rgba(0, 0, 0, 0.18)',
+  } as const;
+
+  const sectionTitleSx = {
+    fontWeight: 700,
+    fontSize: { xs: '1.15rem', sm: '1.25rem' },
+  } as const;
 
   useEffect(() => {
     if (!user || loading) {
@@ -149,52 +174,67 @@ const WelcomeTutorialDialog: React.FC = () => {
       onClose={handleClose}
       maxWidth="md"
       fullWidth
-      PaperProps={{ sx: { width: { xs: '100%', sm: 720 } } }}
+      PaperProps={{ sx: dialogPaperSx }}
     >
-      <DialogTitle sx={{ fontWeight: 700 }}>Willkommen bei aboelo-fitness</DialogTitle>
-      <DialogContent dividers>
-        <Stack spacing={3}>
-          <Typography>
-            Schön, dass Sie da sind! In wenigen Schritten erfahren Sie, wie Sie Ihr Training optimal nutzen und an Ihre Bedürfnisse anpassen.
-          </Typography>
+      <DialogTitle sx={{ fontWeight: 800, fontSize: { xs: '1.35rem', sm: '1.5rem' }, pb: 2 }}>
+        Willkommen bei aboelo-fitness
+      </DialogTitle>
+      <DialogContent dividers sx={{ px: { xs: 3, sm: 4 }, py: { xs: 3, sm: 4 } }}>
+        <Stack spacing={3.5}>
+          <Stack spacing={1.5}>
+            <Typography variant="subtitle1" sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
+              Schön, dass Sie da sind! In wenigen Schritten erfahren Sie, wie Sie Ihr Training optimal nutzen und an Ihre Bedürfnisse anpassen.
+            </Typography>
 
-          <List disablePadding>
-            <ListItem>
-              <ListItemIcon>
-                <FitnessCenterIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText
-                primary="Trainieren Sie im Stehen oder Sitzen"
-                secondary="Für das Training der verschiedenen Muskelgruppen können Sie zwischen Übungen im Stehen oder Sitzen wählen."             />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <Diversity3Icon color="primary" />
-              </ListItemIcon>
-              <ListItemText
-                primary="Kraft und Mobilität kombinieren"
-                secondary="Wechseln Sie flexibel zwischen Kräftigungs- und Mobilitätsübungen, um Ihren Tagesplan abwechslungsreich zu gestalten."
-              />
-            </ListItem>
-            <ListItem>
-              <ListItemIcon>
-                <AirlineSeatReclineNormalIcon color="primary" />
-              </ListItemIcon>
-              <ListItemText
-                primary="Mit oder ohne Theraband"
-                secondary="Aktivieren Sie in den Einstellungen das Theraband, um zusätzliche Varianten freizuschalten. Ohne Theraband erhalten Sie passende Alternativen."
-              />
-            </ListItem>
-          </List>
+            <List disablePadding sx={{ display: 'grid', gap: 2 }}>
+              <ListItem sx={infoListItemSx}>
+                <ListItemIcon sx={{ minWidth: 36, mt: 0.5 }}>
+                  <FitnessCenterIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText
+                  primaryTypographyProps={{ fontWeight: 600, fontSize: '1rem' }}
+                  secondaryTypographyProps={{ color: 'text.secondary' }}
+                  primary="Trainieren Sie im Stehen oder Sitzen"
+                  secondary="Für das Training der verschiedenen Muskelgruppen können Sie zwischen Übungen im Stehen oder Sitzen wählen."
+                />
+              </ListItem>
+              <ListItem sx={infoListItemSx}>
+                <ListItemIcon sx={{ minWidth: 36, mt: 0.5 }}>
+                  <Diversity3Icon color="primary" />
+                </ListItemIcon>
+                <ListItemText
+                  primaryTypographyProps={{ fontWeight: 600, fontSize: '1rem' }}
+                  secondaryTypographyProps={{ color: 'text.secondary' }}
+                  primary="Kraft und Mobilität kombinieren"
+                  secondary="Wechseln Sie flexibel zwischen Kräftigungs- und Mobilitätsübungen, um Ihren Tagesplan abwechslungsreich zu gestalten."
+                />
+              </ListItem>
+              <ListItem sx={infoListItemSx}>
+                <ListItemIcon sx={{ minWidth: 36, mt: 0.5 }}>
+                  <AirlineSeatReclineNormalIcon color="primary" />
+                </ListItemIcon>
+                <ListItemText
+                  primaryTypographyProps={{ fontWeight: 600, fontSize: '1rem' }}
+                  secondaryTypographyProps={{ color: 'text.secondary' }}
+                  primary="Mit oder ohne Theraband"
+                  secondary="Aktivieren Sie in den Einstellungen das Theraband, um zusätzliche Varianten freizuschalten. Ohne Theraband erhalten Sie passende Alternativen."
+                />
+              </ListItem>
+            </List>
+          </Stack>
 
           <Divider />
 
-          <Stack spacing={2}>
-            <Typography variant="h6">Erinnerungsfunktion testen</Typography>
-            <Typography>
+          <Stack spacing={2.5}>
+            <Typography sx={sectionTitleSx}>Erinnerungsfunktion testen</Typography>
+            <Typography sx={{ color: 'text.secondary', lineHeight: 1.6 }}>
               Bleiben Sie mit kurzen Aktivpausen am Ball. Aktivieren Sie bei Bedarf den standardmäßigen 60-Minuten-Reminder in den Einstellungen.
             </Typography>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} sx={{ flexWrap: 'wrap', width: '100%' }}>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={2}
+              sx={{ flexWrap: 'wrap', width: '100%', alignItems: 'stretch' }}
+            >
               <Button
                 variant="outlined"
                 startIcon={<AccessTimeIcon />}
@@ -226,7 +266,16 @@ const WelcomeTutorialDialog: React.FC = () => {
           </Stack>
         </Stack>
       </DialogContent>
-      <DialogActions sx={{ flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1 }}>
+      <DialogActions
+        sx={{
+          flexDirection: { xs: 'column', sm: 'row' },
+          alignItems: { xs: 'stretch', sm: 'center' },
+          gap: { xs: 2, sm: 1.5 },
+          px: { xs: 3, sm: 4 },
+          py: { xs: 2.5, sm: 3 },
+          backgroundColor: 'background.default',
+        }}
+      >
         <Box sx={{ flexGrow: 1 }}>
           <FormControlLabel
             control={
@@ -238,17 +287,28 @@ const WelcomeTutorialDialog: React.FC = () => {
             label="Willkommensanleitung beim Start anzeigen"
           />
         </Box>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ width: { xs: '100%', sm: 'auto' } }}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1.5}
+          sx={{ width: { xs: '100%', sm: 'auto' }, justifyContent: 'flex-end', flexWrap: 'wrap' }}
+        >
           <Button
             variant="text"
             onClick={() => {
               navigate('/app');
               handleClose();
             }}
+            sx={{ fontWeight: 600 }}
           >
             Weitere Inhalte entdecken
           </Button>
-          <Button variant="contained" onClick={handleClose} startIcon={<CheckCircleOutlineIcon />}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleClose}
+            startIcon={<CheckCircleOutlineIcon />}
+            sx={{ px: { xs: 2.5, sm: 3 }, py: 1.25, borderRadius: 1.5, fontWeight: 700 }}
+          >
             Los geht&apos;s
           </Button>
         </Stack>
