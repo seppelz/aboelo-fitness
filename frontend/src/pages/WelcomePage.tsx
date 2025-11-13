@@ -272,55 +272,63 @@ const WelcomePage: React.FC = () => {
           }}
         />
         <Container maxWidth={false} sx={{ ...layout.section, position: 'relative' }}>
-          <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 6, md: 10 }} alignItems="stretch">
-            <Stack spacing={{ xs: 3, md: 3.5 }} flex={1} justifyContent="center" sx={{ maxWidth: { md: 540 } }}>
-              <Chip 
-                label={pageContent.heroBadge} 
-                color="default" 
-                sx={{ 
-                  alignSelf: { xs: 'flex-start', md: 'center' },
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            spacing={{ xs: 6, md: 10 }}
+            alignItems={{ xs: 'flex-start', md: 'center' }}
+          >
+            <Stack
+              spacing={{ xs: 3.5, md: 4 }}
+              flex={1}
+              justifyContent="center"
+              sx={{ maxWidth: { md: 560 } }}
+            >
+              <Chip
+                label={pageContent.heroBadge}
+                color="default"
+                sx={{
+                  alignSelf: { xs: 'flex-start', md: 'flex-start' },
                   backgroundColor: palette.heroOverlay,
-                  color: '#fff', 
-                  fontSize: '0.95rem', 
+                  color: '#fff',
+                  fontSize: '0.95rem',
                   letterSpacing: 0.5,
-                  px: 2.5, 
+                  px: 2.5,
                   py: 2,
                   borderRadius: 999,
                   backdropFilter: 'blur(12px)',
                   border: '1px solid rgba(255,255,255,0.25)'
-                }} 
+                }}
               />
-              <Typography
-                variant="h2"
-                sx={{
-                  fontWeight: 800,
-                  lineHeight: 1.04,
-                  fontSize: { xs: '2.8rem', sm: '3.2rem', md: '3.75rem' },
-                  textAlign: { xs: 'left', md: 'center' },
-                  textShadow: '0 12px 30px rgba(0,0,0,0.25)'
-                }}
-              >
-                {pageContent.heroTitle}
-              </Typography>
-              <Typography
-                variant="h6"
-                sx={{
-                  opacity: 0.9,
-                  fontWeight: 500,
-                  fontSize: { xs: '1.12rem', md: '1.22rem' },
-                  textAlign: { xs: 'left', md: 'center' },
-                  maxWidth: { md: 520 },
-                  mx: { md: 'auto' },
-                  lineHeight: 1.6
-                }}
-              >
-                {pageContent.heroSubtitle}
-              </Typography>
+              <Stack spacing={{ xs: 2.5, md: 3 }}>
+                <Typography
+                  variant="h2"
+                  sx={{
+                    fontWeight: 800,
+                    lineHeight: 1.05,
+                    fontSize: { xs: '2.75rem', sm: '3.2rem', md: '3.8rem' },
+                    textAlign: { xs: 'left', md: 'left' },
+                    textShadow: '0 12px 30px rgba(0,0,0,0.25)'
+                  }}
+                >
+                  {pageContent.heroTitle}
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    opacity: 0.9,
+                    fontWeight: 500,
+                    fontSize: { xs: '1.14rem', md: '1.24rem' },
+                    textAlign: { xs: 'left', md: 'left' },
+                    lineHeight: 1.62
+                  }}
+                >
+                  {pageContent.heroSubtitle}
+                </Typography>
+              </Stack>
               <Stack
                 direction={{ xs: 'column', sm: 'row' }}
-                spacing={2}
+                spacing={{ xs: 2, sm: 2.5 }}
                 alignItems={{ xs: 'stretch', sm: 'center' }}
-                justifyContent={{ sm: 'center' }}
               >
                 <Button
                   component={RouterLink}
@@ -329,7 +337,13 @@ const WelcomePage: React.FC = () => {
                   variant="contained"
                   color="primary"
                   endIcon={<ArrowForwardIcon />}
-                  sx={{ fontSize: '1.08rem', py: 1.5, px: 4, borderRadius: 999, boxShadow: palette.glassShadow }}
+                  sx={{
+                    fontSize: '1.08rem',
+                    py: 1.5,
+                    px: 4,
+                    borderRadius: 999,
+                    boxShadow: palette.glassShadow
+                  }}
                 >
                   {pageContent.heroPrimaryCta}
                 </Button>
@@ -338,96 +352,132 @@ const WelcomePage: React.FC = () => {
                   size="large"
                   variant="outlined"
                   endIcon={<ArrowDownwardIcon />}
-                  sx={{ fontSize: '1.03rem', py: 1.5, px: 3.75, borderColor: 'rgba(255,255,255,0.55)', color: '#fff', borderRadius: 999, backdropFilter: 'blur(6px)', textAlign: 'center' }}
+                  sx={{
+                    fontSize: '1.04rem',
+                    py: 1.5,
+                    px: 3.75,
+                    borderColor: 'rgba(255,255,255,0.55)',
+                    color: '#fff',
+                    borderRadius: 999,
+                    backdropFilter: 'blur(6px)',
+                    textAlign: 'center'
+                  }}
                 >
                   {pageContent.heroSecondaryCta}
                 </Button>
               </Stack>
               <Box
                 sx={{
-                  pt: 4,
-                  display: 'grid',
-                  gap: { xs: 2.5, md: 3.5 },
-                  gridTemplateColumns: {
-                    xs: 'repeat(1, minmax(0, 1fr))',
-                    sm: 'repeat(2, minmax(0, 1fr))',
-                    md: 'repeat(3, minmax(0, 1fr))'
-                  }
+                  mt: { xs: 3.5, md: 5 },
+                  p: { xs: 2.5, md: 3 },
+                  borderRadius: 4,
+                  backgroundColor: 'rgba(255,255,255,0.14)',
+                  border: '1px solid rgba(255,255,255,0.32)',
+                  backdropFilter: 'blur(16px)',
+                  boxShadow: '0 22px 48px rgba(12,45,45,0.18)'
                 }}
               >
-                {pageContent.stats.map((item) => (
-                  <Box 
-                    key={item.value} 
-                    sx={{ 
-                      background: palette.neutralSurface,
-                      borderRadius: 3,
-                      p: { xs: 2.5, md: 3 },
-                      minHeight: { xs: 140, md: 160 },
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
-                      gap: 1,
-                      boxShadow: '0 18px 38px rgba(22,69,69,0.12)',
-                      border: '1px solid rgba(255,255,255,0.28)'
-                    }}
-                  >
-                    <Typography variant="h4" sx={{ fontWeight: 700, color: palette.primaryText }}>{item.value}</Typography>
-                    <Typography variant="body1" sx={{ color: 'rgba(31,95,95,0.78)', lineHeight: 1.65 }}>{item.label}</Typography>
-                  </Box>
-                ))}
+                <Box
+                  sx={{
+                    display: 'grid',
+                    gap: { xs: 2.5, sm: 3, md: 3.5 },
+                    gridTemplateColumns: {
+                      xs: 'repeat(1, minmax(0, 1fr))',
+                      sm: 'repeat(2, minmax(0, 1fr))',
+                      md: 'repeat(3, minmax(0, 1fr))'
+                    }
+                  }}
+                >
+                  {pageContent.stats.map((item) => (
+                    <Box
+                      key={item.value}
+                      sx={{
+                        background: palette.neutralSurface,
+                        borderRadius: 3,
+                        p: { xs: 2.75, md: 3.25 },
+                        minHeight: { xs: 150, md: 180 },
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        gap: 1.5,
+                        boxShadow: '0 20px 44px rgba(22,69,69,0.14)',
+                        border: '1px solid rgba(255,255,255,0.32)'
+                      }}
+                    >
+                      <Typography variant="h4" sx={{ fontWeight: 700, color: palette.primaryText }}>
+                        {item.value}
+                      </Typography>
+                      <Typography variant="body1" sx={{ color: 'rgba(31,95,95,0.78)', lineHeight: 1.7 }}>
+                        {item.label}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
               </Box>
             </Stack>
-            <Card
+            <Box
               sx={{
                 flex: 1,
+                width: { xs: '100%', md: 'auto' },
                 display: 'flex',
-                flexDirection: 'column',
-                borderRadius: 5,
-                overflow: 'hidden',
-                background: 'linear-gradient(180deg, rgba(255,255,255,0.22) 0%, rgba(31,95,95,0.18) 100%)',
-                border: '1px solid rgba(255,255,255,0.32)',
-                boxShadow: palette.glassShadow,
-                minHeight: { xs: 360, md: 500 }
+                justifyContent: 'center',
+                position: 'relative',
+                pt: { xs: 1, md: 0 }
               }}
             >
               <Box
                 sx={{
+                  position: 'absolute',
+                  inset: 'auto',
+                  top: { xs: '10%', md: '12%' },
+                  width: { xs: '72%', md: '65%' },
+                  height: { xs: '72%', md: '68%' },
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle, rgba(255,255,255,0.45) 0%, transparent 75%)',
+                  filter: 'blur(36px)',
+                  opacity: 0.85,
+                  zIndex: 0
+                }}
+              />
+              <Box
+                sx={{
                   position: 'relative',
-                  flex: 1,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  p: { xs: 3, md: 4 },
-                  background: 'linear-gradient(160deg, rgba(255,255,255,0.92) 0%, rgba(146,209,204,0.35) 65%, rgba(31,95,95,0.25) 100%)'
+                  borderRadius: { xs: 4, md: 5 },
+                  p: { xs: 2.75, sm: 3.25, md: 4 },
+                  background: 'linear-gradient(160deg, rgba(255,255,255,0.96) 0%, rgba(210,236,231,0.9) 60%, rgba(31,95,95,0.18) 100%)',
+                  border: '1px solid rgba(255,255,255,0.54)',
+                  boxShadow: '0 28px 52px rgba(15,56,56,0.35)',
+                  maxWidth: { xs: 360, sm: 380, md: 420 },
+                  width: '100%',
+                  zIndex: 1
                 }}
               >
-                <Box
-                  component="img"
-                  src="/aboelo-fitness-uebungen.png"
-                  alt={pageContent.seniorImageAlt}
-                  sx={{
-                    width: '100%',
-                    maxWidth: { xs: 260, md: 360 },
-                    height: 'auto',
-                    filter: 'drop-shadow(0 18px 28px rgba(22,69,69,0.25))'
-                  }}
-                />
-                <Box
-                  aria-hidden
-                  sx={{
-                    position: 'absolute',
-                    inset: 0,
-                    borderRadius: 5,
-                    border: '1px solid rgba(255,255,255,0.25)'
-                  }}
-                />
+                <Stack spacing={2.5} alignItems="center">
+                  <Box
+                    component="img"
+                    src="/buero-uebung-aboelo.png"
+                    alt={pageContent.officeImageAlt}
+                    sx={{
+                      width: '100%',
+                      height: 'auto',
+                      borderRadius: 3,
+                      boxShadow: '0 22px 44px rgba(22,69,69,0.18)'
+                    }}
+                  />
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      textAlign: 'center',
+                      color: palette.primaryText,
+                      opacity: 0.9,
+                      lineHeight: 1.55
+                    }}
+                  >
+                    Geführte Video-Routinen, alltagstaugliche Übungen und motivierende Gamification.
+                  </Typography>
+                </Stack>
               </Box>
-              <CardContent sx={{ color: '#fff', p: { xs: 3, md: 4 } }}>
-                <Typography variant="subtitle1" sx={{ opacity: 0.85, lineHeight: 1.6 }}>
-                  Geführte Video-Routinen, alltagstaugliche Übungen und motivierende Gamification.
-                </Typography>
-              </CardContent>
-            </Card>
+            </Box>
           </Stack>
         </Container>
       </Box>
