@@ -14,7 +14,7 @@ import Layout from './components/layout/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 
 // Pages
-import WelcomePage from './pages/WelcomePage';
+import WelcomePage2 from './pages/WelcomePage2';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -180,7 +180,7 @@ const LandingRoute = () => {
     );
   }
 
-  return isAuthenticated ? <Navigate to="/app" replace /> : <WelcomePage />;
+  return isAuthenticated ? <Navigate to="/app" replace /> : <WelcomePage2 />;
 };
 
 const AnalyticsListener = () => {
@@ -205,7 +205,7 @@ function App() {
                 <AnalyticsListener />
                 <Routes>
               <Route path="/" element={<LandingRoute />} />
-              <Route path="/willkommen" element={<WelcomePage />} />
+              <Route path="/willkommen" element={<WelcomePage2 />} />
 
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
