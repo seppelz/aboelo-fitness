@@ -356,10 +356,27 @@ const WelcomePage2: React.FC = () => {
               >
                 Sudoku
               </Button>
+              <Button
+                component={RouterLink}
+                to="/register"
+                variant="contained"
+                color="primary"
+                size="medium"
+                sx={{
+                  borderRadius: 18,
+                  px: { xs: 2.5, md: 3 },
+                  fontWeight: 700,
+                  boxShadow: palette.shadow
+                }}
+              >
+                Jetzt registrieren
+              </Button>
             </Stack>
           </Stack>
         </Container>
       </Box>
+
+      <Box component="main">
 
       <Box
         sx={{
@@ -416,6 +433,7 @@ const WelcomePage2: React.FC = () => {
               />
               <Stack spacing={{ xs: 2.5, md: 3 }}>
                 <Typography
+                  component="h1"
                   variant="h2"
                   sx={{
                     fontWeight: 800,
@@ -436,6 +454,17 @@ const WelcomePage2: React.FC = () => {
                   }}
                 >
                   {pageContent.heroSubtitle}
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    opacity: 0.95,
+                    fontWeight: 500,
+                    fontSize: { xs: '1.02rem', md: '1.08rem' },
+                    lineHeight: 1.7
+                  }}
+                >
+                  Egal ob 65+ oder im Buero – wir holen Sie da ab, wo Sie gerade sind.
                 </Typography>
               </Stack>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 2, sm: 2.5 }} alignItems={{ xs: 'stretch', sm: 'center' }}>
@@ -474,6 +503,40 @@ const WelcomePage2: React.FC = () => {
                 >
                   {pageContent.heroSecondaryCta}
                 </Button>
+              </Stack>
+              <Stack
+                direction={{ xs: 'column', sm: 'row' }}
+                spacing={{ xs: 1, sm: 2 }}
+                sx={{ mt: { xs: 2.5, md: 3 } }}
+              >
+                <MuiLink
+                  href={`#${pageContent.seniorsId}`}
+                  underline="hover"
+                  sx={{ color: '#ffffff', opacity: 0.9, fontWeight: 500 }}
+                >
+                  Für Senioren
+                </MuiLink>
+                <MuiLink
+                  href={`#${pageContent.corporateId}`}
+                  underline="hover"
+                  sx={{ color: '#ffffff', opacity: 0.9, fontWeight: 500 }}
+                >
+                  Für Unternehmen
+                </MuiLink>
+                <MuiLink
+                  href={`#${pageContent.medicalId}`}
+                  underline="hover"
+                  sx={{ color: '#ffffff', opacity: 0.9, fontWeight: 500 }}
+                >
+                  Medizin & Pflege
+                </MuiLink>
+                <MuiLink
+                  href={`#${pageContent.faqId}`}
+                  underline="hover"
+                  sx={{ color: '#ffffff', opacity: 0.9, fontWeight: 500 }}
+                >
+                  FAQ
+                </MuiLink>
               </Stack>
             </Stack>
             <Box
@@ -586,7 +649,7 @@ const WelcomePage2: React.FC = () => {
         </Box>
       </Container>
 
-      <Box id="explore" sx={{ py: { xs: 8, md: 12 }, background: palette.featureBackground }}>
+      <Box id="explore" sx={{ py: { xs: 8, md: 12 }, background: palette.featureBackground, scrollMarginTop: { xs: 80, md: 96 } }}>
         <Container maxWidth={layout.maxWidth} sx={{ ...layout.section }}>
           <Stack spacing={{ xs: 4, md: 5 }} alignItems="center">
             <Typography
@@ -634,7 +697,7 @@ const WelcomePage2: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={pageContent.seniorsId} sx={{ background: palette.sectionalLight }}>
+      <Box id={pageContent.seniorsId} sx={{ background: palette.sectionalLight, scrollMarginTop: { xs: 80, md: 96 } }}>
         <Container
           maxWidth={layout.maxWidth}
           sx={{ ...layout.section, py: { xs: 8, md: 10 } }}
@@ -669,11 +732,11 @@ const WelcomePage2: React.FC = () => {
                   color="primary"
                   size="large"
                   endIcon={<ArrowForwardIcon />}
-                  sx={{ borderRadius: 3 }}
+                  sx={{ borderRadius: 18 }}
                 >
                   {pageContent.heroPrimaryCta}
                 </Button>
-                <Button component={RouterLink} to="/kontakt" variant="outlined" size="large" sx={{ borderRadius: 3 }}>
+                <Button component={RouterLink} to="/kontakt" variant="outlined" size="large" sx={{ borderRadius: 18 }}>
                   {pageContent.contactCta}
                 </Button>
               </Stack>
@@ -682,7 +745,7 @@ const WelcomePage2: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={pageContent.corporateId} sx={{ background: palette.tealSection, color: '#fff' }}>
+      <Box id={pageContent.corporateId} sx={{ background: palette.tealSection, color: '#fff', scrollMarginTop: { xs: 80, md: 96 } }}>
         <Container
           maxWidth={layout.maxWidth}
           sx={{ ...layout.section, py: { xs: 8, md: 10 } }}
@@ -711,7 +774,15 @@ const WelcomePage2: React.FC = () => {
                 ))}
               </Stack>
               <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5}>
-                <Button component={RouterLink} to="/register" variant="contained" size="large" color="secondary" endIcon={<ArrowForwardIcon />}>
+                <Button
+                  component={RouterLink}
+                  to="/register"
+                  variant="contained"
+                  size="large"
+                  color="secondary"
+                  endIcon={<ArrowForwardIcon />}
+                  sx={{ borderRadius: 18 }}
+                >
                   {pageContent.heroPrimaryCta}
                 </Button>
                 {pageContent.finalSecondaryCta && (
@@ -720,7 +791,7 @@ const WelcomePage2: React.FC = () => {
                     to="/kontakt"
                     variant="outlined"
                     size="large"
-                    sx={{ borderRadius: 3, borderColor: 'rgba(255,255,255,0.6)', color: '#fff' }}
+                    sx={{ borderRadius: 18, borderColor: 'rgba(255,255,255,0.6)', color: '#fff' }}
                   >
                     {pageContent.finalSecondaryCta}
                   </Button>
@@ -752,7 +823,7 @@ const WelcomePage2: React.FC = () => {
         </Container>
       </Box>
 
-      <Box id={pageContent.medicalId} sx={{ background: palette.sectionalBlue }}>
+      <Box id={pageContent.medicalId} sx={{ background: palette.sectionalBlue, scrollMarginTop: { xs: 80, md: 96 } }}>
         <Container
           maxWidth={layout.maxWidth}
           sx={{ ...layout.section, py: { xs: 8, md: 10 } }}
@@ -808,6 +879,36 @@ const WelcomePage2: React.FC = () => {
         </Container>
       </Box>
 
+      <Box id={pageContent.faqId} sx={{ background: palette.faqBackground, scrollMarginTop: { xs: 80, md: 96 } }}>
+        <Container
+          maxWidth={layout.maxWidth}
+          sx={{ ...layout.section, maxWidth: '840px', mx: 'auto', py: { xs: 8, md: 10 } }}
+        >
+          <Stack spacing={4} alignItems="center">
+            <Typography variant="h4" sx={{ fontWeight: 800, color: palette.textPrimary }}>
+              {pageContent.faqHeading}
+            </Typography>
+            <Divider sx={{ width: '100%', maxWidth: 240 }} />
+            <Stack spacing={2} width="100%">
+              {pageContent.faqs.map((item, index) => (
+                <Accordion key={item.question} defaultExpanded={index === 0} sx={{ borderRadius: 3, boxShadow: '0 16px 30px rgba(17,63,63,0.1)' }}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, color: palette.textPrimary }}>
+                      {item.question}
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography variant="body1" sx={{ lineHeight: 1.8, color: palette.textSecondary }}>
+                      {item.answer}
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </Stack>
+          </Stack>
+        </Container>
+      </Box>
+
       <Box
         sx={{
           background: palette.pageBackground
@@ -840,38 +941,55 @@ const WelcomePage2: React.FC = () => {
             color="primary"
             size="large"
             endIcon={<ArrowForwardIcon />}
-            sx={{ borderRadius: 3, px: { xs: 4, md: 5 }, py: 1.6 }}
+            sx={{ borderRadius: 18, px: { xs: 4, md: 5 }, py: 1.6 }}
           >
             {pageContent.finalPrimaryCta}
           </Button>
         </Container>
       </Box>
 
-      <Box id={pageContent.faqId} sx={{ background: palette.faqBackground }}>
-        <Container
-          maxWidth={layout.maxWidth}
-          sx={{ ...layout.section, maxWidth: '840px', mx: 'auto', py: { xs: 8, md: 10 } }}
-        >
-          <Stack spacing={4} alignItems="center">
-            <Typography variant="h4" sx={{ fontWeight: 800, color: palette.textPrimary }}>
-              {pageContent.faqHeading}
-            </Typography>
-            <Divider sx={{ width: '100%', maxWidth: 240 }} />
-            <Stack spacing={2} width="100%">
-              {pageContent.faqs.map((item, index) => (
-                <Accordion key={item.question} defaultExpanded={index === 0} sx={{ borderRadius: 3, boxShadow: '0 16px 30px rgba(17,63,63,0.1)' }}>
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, color: palette.textPrimary }}>
-                      {item.question}
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography variant="body1" sx={{ lineHeight: 1.8, color: palette.textSecondary }}>
-                      {item.answer}
-                    </Typography>
-                  </AccordionDetails>
-                </Accordion>
-              ))}
+      </Box>
+
+      <Box
+        component="footer"
+        sx={{
+          backgroundColor: palette.neutral,
+          color: palette.textPrimary,
+          borderTop: '1px solid rgba(15,63,63,0.12)'
+        }}
+      >
+        <Container maxWidth="lg" sx={{ py: { xs: 4, md: 5 } }}>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            justifyContent="space-between"
+            alignItems={{ xs: 'flex-start', sm: 'center' }}
+            spacing={2}
+          >
+            <Stack direction="row" spacing={1.5} alignItems="center">
+              <Box component="img" src="/aboeloLogo.png" alt="aboelo Logo" sx={{ height: 24, width: 'auto' }} />
+              <Typography variant="body2" sx={{ opacity: 0.7 }}>
+                © {new Date().getFullYear()} aboelo Fitness
+              </Typography>
+            </Stack>
+            <Stack direction="row" spacing={3}>
+              <MuiLink
+                href="https://aboelo.de/impressum"
+                target="_blank"
+                rel="noopener"
+                underline="none"
+                sx={{ color: palette.textPrimary, opacity: 0.8, '&:hover': { opacity: 1 } }}
+              >
+                Impressum
+              </MuiLink>
+              <MuiLink
+                href="https://aboelo.de/datenschutz"
+                target="_blank"
+                rel="noopener"
+                underline="none"
+                sx={{ color: palette.textPrimary, opacity: 0.8, '&:hover': { opacity: 1 } }}
+              >
+                Datenschutz
+              </MuiLink>
             </Stack>
           </Stack>
         </Container>
