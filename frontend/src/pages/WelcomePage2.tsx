@@ -827,10 +827,10 @@ const WelcomePage2: React.FC = () => {
             boxShadow: '0 30px 60px rgba(12,63,63,0.22)'
           }}
         >
-          <Typography variant="h4" sx={{ color: 'white' , fontWeight: 800, textAlign: 'center', maxWidth: 700 }}>
+          <Typography variant="h4" sx={{ fontWeight: 800, textAlign: 'center', maxWidth: 700, color: '#fff' }}>
             {pageContent.finalCtaHeading}
           </Typography>
-          <Typography variant="h6" sx={{ color: 'white' , opacity: 0.9, textAlign: 'center', maxWidth: 720 }}>
+          <Typography variant="h6" sx={{ opacity: 0.9, textAlign: 'center', maxWidth: 720, color: '#fff' }}>
             {pageContent.finalCtaText}
           </Typography>
           <Button
