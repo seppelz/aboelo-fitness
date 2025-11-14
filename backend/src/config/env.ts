@@ -5,16 +5,18 @@ import type { Secret, SignOptions } from 'jsonwebtoken';
 dotenv.config();
 
 const ensureEnv = (key: string, fallback?: string): string => {
-  const value = process.env[key];
+  const rawValue = process.env[key];
+  const value = rawValue && rawValue.trim() !== '' ? rawValue.trim() : undefined;
 
-  if (value && value.trim() !== '') {
+  if (value) {
     return value;
   }
 
   if (fallback !== undefined) {
-    if (process.env.NODE_ENV !== 'production') {
-      console.warn(`Environment variable ${key} is not set. Using fallback value. This must be changed for production deployments.`);
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(`Environment variable ${key} is required in production deployments.`);
     }
+    console.warn(`Environment variable ${key} is not set. Using fallback value. This must be changed for production deployments.`);
     return fallback;
   }
 
