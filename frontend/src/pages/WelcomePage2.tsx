@@ -33,7 +33,7 @@ const palette = {
   neutralMuted: 'rgba(255,255,255,0.75)',
   borderSoft: 'rgba(255,255,255,0.35)',
   textPrimary: '#0f3d3d',
-  textSecondary: '#285c5c',
+  textSecondary: '#6a6d6dff',
   accent: '#2d7d7d',
   accentSoft: 'rgba(45, 125, 125, 0.12)',
   highlight: '#3fa3a3',
@@ -827,10 +827,10 @@ const WelcomePage2: React.FC = () => {
             boxShadow: '0 30px 60px rgba(12,63,63,0.22)'
           }}
         >
-          <Typography variant="h4" sx={{ fontWeight: 800, textAlign: 'center', maxWidth: 700 }}>
+          <Typography variant="h4" sx={{ color: 'white' , fontWeight: 800, textAlign: 'center', maxWidth: 700 }}>
             {pageContent.finalCtaHeading}
           </Typography>
-          <Typography variant="h6" sx={{ opacity: 0.9, textAlign: 'center', maxWidth: 720 }}>
+          <Typography variant="h6" sx={{ color: 'white' , opacity: 0.9, textAlign: 'center', maxWidth: 720 }}>
             {pageContent.finalCtaText}
           </Typography>
           <Button
